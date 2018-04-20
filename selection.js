@@ -45,6 +45,7 @@
         let defaults = {
             class: 'selection-area',
             startThreshold: 0,
+            disableTouch: false,
             containers: [],
             selectables: []
         };
@@ -64,21 +65,26 @@
 
         // Bind events
         _on(document, 'mousedown', this._onTapStart);
+
+        if (!this.options.disableTouch) {
+            _on(document, 'touchstart', this._onTapStart);
+        }
     }
 
     Selection.prototype = {
         constructor: Selection,
 
         _onTapStart(evt) {
-            const target = evt.target;
+            const touch = evt.touches && evt.touches[0];
+            const target = (touch || evt).target;
 
             if (_dispatchFilterEvent(this, 'startFilter', target) === false) {
                 return;
             }
 
             // Save start coordinates
-            this._lastX = evt.clientX;
-            this._lastY = evt.clientY;
+            this._lastX = (touch || evt).clientX;
+            this._lastY = (touch || evt).clientY;
 
             this._containers = _selectAll(this.options.containers);
             this._selectables = _selectAll(this.options.selectables);
@@ -95,16 +101,28 @@
 
             this._updatePosition(evt);
             _on(document, 'mousemove', this._delayedTapMove);
+            _on(document, 'touchmove', this._delayedTapMove);
+
             _on(document, 'mouseup', this._onTapStop);
+            _on(document, 'touchcancel', this._onTapStop);
+            _on(document, 'touchend', this._onTapStop);
 
             _dispatchEvent(this, 'onStart', areaElement, evt, this._touchedElements, this._changedElements);
         },
 
         _delayedTapMove(evt) {
-            if (abs((evt.clientX + evt.clientY) - (this._lastX + this._lastY)) >= this.options.startThreshold) {
+            const touch = evt.touches && evt.touches[0];
+            const x = (touch || evt).clientX;
+            const y = (touch || evt).clientY;
+
+            if (abs((x + y) - (this._lastX + this._lastY)) >= this.options.startThreshold) {
 
                 _off(document, 'mousemove', this._delayedTapMove);
+                _off(document, 'touchmove', this._delayedTapMove);
+
                 _on(document, 'mousemove', this._onTapMove);
+                _on(document, 'touchmove', this._onTapMove);
+
                 _css(areaElement, 'display', 'block');
             }
         },
@@ -118,8 +136,9 @@
         },
 
         _updatePosition(evt) {
-            const x2 = evt.clientX;
-            const y2 = evt.clientY;
+            const touch = evt.touches && evt.touches[0];
+            const x2 = (touch || evt).clientX;
+            const y2 = (touch || evt).clientY;
 
             const x3 = min(this._lastX, x2);
             const y3 = min(this._lastY, y2);
@@ -138,7 +157,11 @@
             _css(areaElement, 'display', 'none');
 
             _off(document, 'mousemove', this._delayedTapMove);
+            _off(document, 'touchmove', this._delayedTapMove);
+
             _off(document, 'mouseup', this._onTapStop);
+            _off(document, 'touchcancel', this._onTapStop);
+            _off(document, 'touchend', this._onTapStop);
 
 
             if (!noevent) {
