@@ -21,20 +21,7 @@
     // Constants
     const captureMode = false;
 
-    let areaElement = (() => {
-            const ae = document.createElement('div');
-            ae.style.position = 'absolute';
-
-            _css(ae, {
-                top: 0,
-                left: 0,
-                position: 'fixed'
-            });
-
-            document.body.appendChild(ae);
-            return ae;
-        })(),
-        abs = Math.abs,
+    const abs = Math.abs,
         max = Math.max,
         min = Math.min;
 
@@ -48,8 +35,8 @@
             disableTouch: false,
             containers: [],
             selectables: [],
-            startareas: [],
-            boundarys: [document.body]
+            startareas: ['html'],
+            boundarys: ['html']
         };
 
         // Set default options
@@ -64,6 +51,18 @@
             }
         }
 
+        this.areaElement = (() => {
+            const ae = document.createElement('div');
+            document.body.appendChild(ae);
+
+            _css(ae, {
+                top: 0,
+                left: 0,
+                position: 'fixed'
+            });
+
+            return ae;
+        })();
 
         // Bind events
         _on(document, 'mousedown', this._onTapStart);
@@ -102,9 +101,8 @@
                 removed: []
             };
 
-
             // Add class to the area element
-            areaElement.classList.add(this.options.class);
+            this.areaElement.classList.add(this.options.class);
 
             _on(document, 'mousemove', this._delayedTapMove);
             _on(document, 'touchmove', this._delayedTapMove);
@@ -113,7 +111,7 @@
             _on(document, 'touchcancel', this._onTapStop);
             _on(document, 'touchend', this._onTapStop);
 
-            _dispatchEvent(this, 'onStart', areaElement, evt, this._touchedElements, this._changedElements);
+            _dispatchEvent(this, 'onStart', this.areaElement, evt, this._touchedElements, this._changedElements);
         },
 
         _delayedTapMove(evt) {
@@ -129,7 +127,7 @@
                 _on(document, 'mousemove', this._onTapMove);
                 _on(document, 'touchmove', this._onTapMove);
 
-                _css(areaElement, 'display', 'block');
+                _css(this.areaElement, 'display', 'block');
             }
         },
 
@@ -149,7 +147,7 @@
             const x4 = max(this._lastX, x2);
             const y4 = max(this._lastY, y2);
 
-            _css(areaElement, {
+            _css(this.areaElement, {
                 top: y3,
                 left: x3,
                 width: x4 - x3,
@@ -159,14 +157,17 @@
             this._updatedTouchingElements();
             const touched = this._touchedElements;
             const changed = this._changedElements;
-            _dispatchEvent(this, 'onMove', areaElement, evt, touched, changed);
+            _dispatchEvent(this, 'onMove', this.areaElement, evt, touched, changed);
         },
 
         _onTapStop(evt, noevent) {
-            _css(areaElement, 'display', 'none');
+            _css(this.areaElement, 'display', 'none');
 
             _off(document, 'mousemove', this._delayedTapMove);
             _off(document, 'touchmove', this._delayedTapMove);
+
+            _off(document, 'mousemove', this._onTapMove);
+            _off(document, 'touchmove', this._onTapMove);
 
             _off(document, 'mouseup', this._onTapStop);
             _off(document, 'touchcancel', this._onTapStop);
@@ -176,7 +177,7 @@
                 this._updatedTouchingElements();
                 const touched = this._touchedElements;
                 const changed = this._changedElements;
-                _dispatchEvent(this, 'onStop', areaElement, evt, touched, changed);
+                _dispatchEvent(this, 'onStop', this.areaElement, evt, touched, changed);
             }
         },
 
@@ -190,7 +191,7 @@
             const check = ((node) => {
                 if (_dispatchFilterEvent(this, 'selectionFilter', node) !== false) {
 
-                    if (_intersects(areaElement, node)) {
+                    if (_intersects(this.areaElement, node)) {
 
                         // Check if the element wasn't present in the last selection.
                         if (!this._touchedElements.includes(node)) {
@@ -221,10 +222,6 @@
             // Save 
             this._touchedElements = touched;
             this._changedElements = changed;
-        },
-
-        _nulling() {
-
         },
 
         /**
