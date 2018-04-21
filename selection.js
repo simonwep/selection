@@ -47,7 +47,9 @@
             startThreshold: 0,
             disableTouch: false,
             containers: [],
-            selectables: []
+            selectables: [],
+            startareas: [],
+            boundarys: [document.body]
         };
 
         // Set default options
@@ -78,7 +80,9 @@
             const touch = evt.touches && evt.touches[0];
             const target = (touch || evt).target;
 
-            if (_dispatchFilterEvent(this, 'startFilter', target) === false) {
+            const startAreas = _selectAll(this.options.startareas);
+            if (_dispatchFilterEvent(this, 'startFilter', target) === false ||
+                !startAreas.find((el) => evt.path.includes(el))) {
                 return;
             }
 
@@ -88,6 +92,9 @@
 
             this._containers = _selectAll(this.options.containers);
             this._selectables = _selectAll(this.options.selectables);
+            this._boundarys = _selectAll(this.options.boundarys);
+
+            this._targetBoundary = this._boundarys.find((el) => _intersects(el, target));
 
             this._touchedElements = [];
             this._changedElements = {
@@ -99,7 +106,6 @@
             // Add class to the area element
             areaElement.classList.add(this.options.class);
 
-            this._updatePosition(evt);
             _on(document, 'mousemove', this._delayedTapMove);
             _on(document, 'touchmove', this._delayedTapMove);
 
@@ -128,17 +134,15 @@
         },
 
         _onTapMove(evt) {
-            this._updatePosition(evt);
-            this._updatedTouchingElements();
-            const touched = this._touchedElements;
-            const changed = this._changedElements;
-            _dispatchEvent(this, 'onMove', areaElement, evt, touched, changed);
-        },
-
-        _updatePosition(evt) {
+            const brect = this._targetBoundary.getBoundingClientRect();
             const touch = evt.touches && evt.touches[0];
-            const x2 = (touch || evt).clientX;
-            const y2 = (touch || evt).clientY;
+            let x2 = (touch || evt).clientX;
+            let y2 = (touch || evt).clientY;
+
+            if (x2 < brect.x) x2 = brect.x;
+            if (y2 < brect.y) y2 = brect.y;
+            if (x2 > brect.x + brect.width) x2 = brect.x + brect.width;
+            if (y2 > brect.y + brect.height) y2 = brect.y + brect.height;
 
             const x3 = min(this._lastX, x2);
             const y3 = min(this._lastY, y2);
@@ -151,6 +155,11 @@
                 width: x4 - x3,
                 height: y4 - y3
             });
+
+            this._updatedTouchingElements();
+            const touched = this._touchedElements;
+            const changed = this._changedElements;
+            _dispatchEvent(this, 'onMove', areaElement, evt, touched, changed);
         },
 
         _onTapStop(evt, noevent) {
@@ -162,7 +171,6 @@
             _off(document, 'mouseup', this._onTapStop);
             _off(document, 'touchcancel', this._onTapStop);
             _off(document, 'touchend', this._onTapStop);
-
 
             if (!noevent) {
                 this._updatedTouchingElements();
