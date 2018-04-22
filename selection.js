@@ -21,7 +21,9 @@
     // Constants
     const captureMode = false;
 
-    const abs = Math.abs,
+    const
+        cssPrefixes = ['-moz-', '-ms-', '-o-', '-webkit-'],
+        abs = Math.abs,
         max = Math.max,
         min = Math.min;
 
@@ -296,10 +298,12 @@
             } else {
 
                 if (!(attr in style)) {
-                    attr = `-webkit-${attr}`;
+                    for (let pref of cssPrefixes) {
+                        style[pref + attr] = val + (typeof val === 'string' ? '' : 'px');
+                    }
+                } else {
+                    style[attr] = val + (typeof val === 'string' ? '' : 'px')
                 }
-
-                style[attr] = val + (typeof val === 'string' ? '' : 'px');
             }
         }
     }
