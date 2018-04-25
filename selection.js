@@ -1,4 +1,4 @@
-/**
+/**!
  * Selection
  * @author	Simon Reinisch
  * @license MIT
@@ -82,8 +82,11 @@
             const target = (touch || evt).target;
 
             const startAreas = _selectAll(this.options.startareas);
+            this._boundarys = _selectAll(this.options.boundarys);
+
             if (_dispatchFilterEvent(this, 'startFilter', target) === false ||
-                !startAreas.find((el) => evt.path.includes(el))) {
+                !startAreas.find((el) => evt.path.includes(el)) ||
+                !this._boundarys.find((el) => evt.path.includes(el))) {
                 return;
             }
 
@@ -93,7 +96,6 @@
 
             this._containers = _selectAll(this.options.containers);
             this._selectables = _selectAll(this.options.selectables);
-            this._boundarys = _selectAll(this.options.boundarys);
 
             this._targetBoundary = this._boundarys.find((el) => _intersects(el, target));
 
