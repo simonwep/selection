@@ -1,0 +1,82 @@
+/**
+ * Creator: Simon R.
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    background: #faf9f7;
+}
+
+header {
+    text-align: center;
+    margin-top: 1em;
+    font-family: monospace;
+}
+
+header .main {
+    font-size: 2em;
+}
+
+header .sub {
+    display: block;
+    font-size: 1.2em;
+    margin-top: 0.2em;
+}
+
+main .box-wrap {
+    width: 100%;
+    max-width: 50em;
+    margin: 3em auto;
+    padding: 0 0.3em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Clear fix */
+
+main .box-wrap::after {
+    display: block;
+    content: '';
+    clear: both;
+}
+
+main .boxes div {
+    height: 2em;
+    width: 5em;
+    margin: 0.2em;
+    background: #f5f4f2;
+    box-shadow: 0 0.05em 0.2em 0 rgba(0, 0, 0, 0.1);
+    border-radius: 0.15em;
+    transition: all 0.3s;
+}
+
+main .boxes div.selected {
+    box-shadow: 0 0.05em 0.2em 0 rgba(0, 0, 0, 0.2);
+    transform: translateY(-0.1em);
+}
+
+main .boxes.green div.selected {
+    background: #7febc2;
+}
+
+main .boxes.blue div.selected {
+    background: #7fa0eb;
+}
+
+.selection {
+    background: rgba(0, 0, 255, 0.1);
+    border-radius: 0.1em;
+    border: 0.05em solid rgba(0, 0, 255, 0.2);
+}

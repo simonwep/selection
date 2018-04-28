@@ -1,5 +1,5 @@
 <h1 align="center">
-    ![Logo](https://image.ibb.co/dejTj7/selection_js.png)
+   <img alt="Logo" src="https://image.ibb.co/dejTj7/selection_js.png"/>
 </h1>
 
 <h3 align="center">
@@ -26,7 +26,7 @@
 ## Selection
 Selection.js is an simple, lightweight, and modern library for making visual DOM Selections.
 
-Quick demo: https://simonwep.github.io/Selection
+Quick demo: https://simonwep.github.io/selection
 
 ### Features
 * Supports touch devices
