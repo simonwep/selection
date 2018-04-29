@@ -18,7 +18,7 @@
 		alt="npm version"
 		src="https://img.shields.io/badge/npm-5.8.0-brightgreen.svg"></a>
 	<img alt="Current version"
-		src="https://img.shields.io/badge/version-0.0.1-23AD62.svg">
+		src="https://img.shields.io/badge/version-0.0.2-23AD62.svg">
 	<img alt="No dependencies"
 		src="https://img.shields.io/badge/dependencies-none-57CCE4.svg">
 </p>
