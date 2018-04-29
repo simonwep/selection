@@ -171,3 +171,4 @@ Selection.utils
 * intersects(ela`:HTMLElement`, elb`:HTMLElement`)`:Boolean` _- Check if an HTMLElement intersects another._
 * traverseNode(node`:HTMLElement|Array`, fn`:Function`) _- Traverse through all childnodes._
 * selectAll(selector`:String|Array`)`:Array` _- Returns all HTMLElements which were selected by the selector_
+* eventPath(evt`:DOMEvent`)`:Array` _- Provides compatability for Firefox and Safari for the Chrome Event.path method._

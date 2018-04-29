@@ -85,8 +85,8 @@
             this._boundarys = _selectAll(this.options.boundarys);
 
             if (_dispatchFilterEvent(this, 'startFilter', target) === false ||
-                !startAreas.find((el) => evt.path.includes(el)) ||
-                !this._boundarys.find((el) => evt.path.includes(el))) {
+                !startAreas.find((el) => _eventPath(evt).includes(el)) ||
+                !this._boundarys.find((el) => _eventPath(evt).includes(el))) {
                 return;
             }
 
@@ -376,6 +376,21 @@
         return nodes;
     }
 
+    function _eventPath(evt) {
+        const path = [];
+
+        let target = evt.target;
+        while (target = target.parentElement) {
+            path.push(target);
+        }
+
+        path.push(document);
+        path.push(window);
+
+        return path;
+    }
+
+
     // Export utils
     Selection.utils = {
         on: _on,
@@ -383,7 +398,8 @@
         css: _css,
         intersects: _intersects,
         traverseNode: _traverseNode,
-        selectAll: _selectAll
+        selectAll: _selectAll,
+        eventPath: _eventPath
     };
 
     /**
