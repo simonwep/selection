@@ -4,7 +4,7 @@
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "main": "selection.js",
     "scripts": {
-        "test": ""
+        "build": "babel --presets=minify selection.js --out-file selection.min.js"
     },
     "repository": {
         "type": "git",
@@ -15,14 +15,20 @@
         "selection.min.js"
     ],
     "keywords": [
-    "selection",
-    "selecting",
-    "user-selection"
-     ],
+        "selection",
+        "selecting",
+        "user-selection"
+    ],
     "author": "Simon Reinisch",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/Simonwep/selection/issues"
     },
-    "homepage": "https://github.com/Simonwep/selection#readme"
+    "homepage": "https://github.com/Simonwep/selection#readme",
+    "dependencies": {},
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.26.3",
+        "babel-preset-minify": "^0.4.0"
+    }
 }
