@@ -409,6 +409,6 @@
     Selection.create = (options) => new Selection(options);
 
     // Export
-    Selection.version = '0.0.1';
+    Selection.version = '0.0.2';
     return Selection;
 });
