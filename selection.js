@@ -84,9 +84,10 @@
             const startAreas = _selectAll(this.options.startareas);
             this._boundarys = _selectAll(this.options.boundarys);
 
+            const evtpath = _eventPath(evt);
             if (_dispatchFilterEvent(this, 'startFilter', target) === false ||
-                !startAreas.find((el) => _eventPath(evt).includes(el)) ||
-                !this._boundarys.find((el) => _eventPath(evt).includes(el))) {
+                !startAreas.find((el) => evtpath.includes(el)) ||
+                !this._boundarys.find((el) => evtpath.includes(el))) {
                 return;
             }
 
@@ -97,6 +98,7 @@
             this._containers = _selectAll(this.options.containers);
             this._selectables = _selectAll(this.options.selectables);
 
+            // Save current boundary
             this._targetBoundary = this._boundarys.find((el) => _intersects(el, target));
 
             this._touchedElements = [];
@@ -108,6 +110,7 @@
             // Add class to the area element
             this.areaElement.classList.add(this.options.class);
 
+            // Add listener
             _on(document, 'mousemove', this._delayedTapMove);
             _on(document, 'touchmove', this._delayedTapMove);
 
@@ -142,9 +145,9 @@
             let y2 = (touch || evt).clientY;
 
             if (x2 < brect.x) x2 = brect.x;
-            if (y2 < brect.y) y2 = brect.y;
+            if (y2 < brect.top) y2 = brect.top;
             if (x2 > brect.x + brect.width) x2 = brect.x + brect.width;
-            if (y2 > brect.y + brect.height) y2 = brect.y + brect.height;
+            if (y2 > brect.top + brect.height) y2 = brect.top + brect.height;
 
             const x3 = min(this._lastX, x2);
             const y3 = min(this._lastY, y2);
@@ -314,12 +317,11 @@
         if (!Array.isArray(node))
             node = [node];
 
-        for (let n of node) {
-            traverse(n);
-        }
+        node.forEach(traverse);
 
         function traverse(n) {
-            for (let child of n.children) {
+            const children = Array.from(n.children);
+            for (let child of children) {
                 fn(child);
                 traverse(child, fn);
             }
@@ -329,7 +331,7 @@
     function _intersects(ela, elb) {
         const a = ela.getBoundingClientRect();
         const b = elb.getBoundingClientRect();
-        return a.x + a.width >= b.x && a.x <= b.x + b.width && a.y + a.height >= b.y && a.y <= b.y + b.height;
+        return a.left + a.width >= b.left && a.left <= b.left + b.width && a.top + a.height >= b.top && a.top <= b.top + b.height;
     }
 
     function _dispatchFilterEvent(selection, name, node) {
@@ -377,19 +379,16 @@
     }
 
     function _eventPath(evt) {
-        const path = [];
+        let path;
+        let el = evt.target;
 
-        let target = evt.target;
-        while (target = target.parentElement) {
-            path.push(target);
+        for (path = [evt.target]; el; el = el.parentElement) {
+            path.push(el);
         }
 
-        path.push(document);
-        path.push(window);
-
+        path.push(document, window);
         return path;
     }
-
 
     // Export utils
     Selection.utils = {
@@ -409,6 +408,6 @@
     Selection.create = (options) => new Selection(options);
 
     // Export
-    Selection.version = '0.0.2';
+    Selection.version = '0.0.3';
     return Selection;
 });

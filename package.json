@@ -1,10 +1,10 @@
 {
     "name": "@simonwep/selection-js",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "main": "selection.js",
     "scripts": {
-        "build": "babel --presets=minify selection.js --out-file selection.min.js"
+        "build": "babel selection.js --out-file selection.min.js"
     },
     "repository": {
         "type": "git",
@@ -29,6 +29,7 @@
     "devDependencies": {
         "babel-cli": "^6.26.0",
         "babel-core": "^6.26.3",
-        "babel-preset-minify": "^0.4.0"
+        "babel-preset-babili": "^0.1.4",
+        "babel-preset-env": "^1.6.1"
     }
 }
