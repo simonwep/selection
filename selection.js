@@ -25,7 +25,8 @@
         cssPrefixes = ['-moz-', '-ms-', '-o-', '-webkit-'],
         abs = Math.abs,
         max = Math.max,
-        min = Math.min;
+        min = Math.min,
+        preventDefault = ev => ev.preventDefault();
 
     function Selection(options) {
         this.options = options ? options : {};
@@ -95,8 +96,9 @@
             this._lastX = (touch || evt).clientX;
             this._lastY = (touch || evt).clientY;
 
-            this._containers = _selectAll(this.options.containers);
+            const containers = _selectAll(this.options.containers);
             this._selectables = _selectAll(this.options.selectables);
+            containers.forEach(con => this._selectables.push(...con.getElementsByTagName('*')));
 
             // Save current boundary
             this._targetBoundary = this._boundarys.find((el) => _intersects(el, target));
@@ -106,6 +108,12 @@
                 added: [],
                 removed: []
             };
+
+            // New start position
+            this._updateArea(evt);
+
+            // Disable default select-action (firefox bug-fix)
+            this._selectables.forEach(sel => _on(sel, 'selectstart', preventDefault));
 
             // Add class to the area element
             this.areaElement.classList.add(this.options.class);
@@ -139,6 +147,14 @@
         },
 
         _onTapMove(evt) {
+            this._updateArea(evt);
+            this._updatedTouchingElements();
+            const touched = this._touchedElements;
+            const changed = this._changedElements;
+            _dispatchEvent(this, 'onMove', this.areaElement, evt, touched, changed);
+        },
+
+        _updateArea(evt) {
             const brect = this._targetBoundary.getBoundingClientRect();
             const touch = evt.touches && evt.touches[0];
             let x2 = (touch || evt).clientX;
@@ -160,11 +176,6 @@
                 width: x4 - x3,
                 height: y4 - y3
             });
-
-            this._updatedTouchingElements();
-            const touched = this._touchedElements;
-            const changed = this._changedElements;
-            _dispatchEvent(this, 'onMove', this.areaElement, evt, touched, changed);
         },
 
         _onTapStop(evt, noevent) {
@@ -179,6 +190,10 @@
             _off(document, 'mouseup', this._onTapStop);
             _off(document, 'touchcancel', this._onTapStop);
             _off(document, 'touchend', this._onTapStop);
+
+            // Enable default select-action (firefox bug-fix)
+            // Disable default select-action (firefox bug-fix)
+            this._selectables.forEach(sel => _off(sel, 'selectstart', preventDefault));
 
             if (!noevent) {
                 this._updatedTouchingElements();
@@ -210,9 +225,6 @@
 
                 }
             }).bind(this);
-
-            // Traverse trought the containers
-            _traverseNode(this._containers, check);
 
             // Itreate over the selectable elements
             this._selectables.forEach(check);
@@ -313,21 +325,6 @@
         }
     }
 
-    function _traverseNode(node, fn) {
-        if (!Array.isArray(node))
-            node = [node];
-
-        node.forEach(traverse);
-
-        function traverse(n) {
-            const children = Array.from(n.children);
-            for (let child of children) {
-                fn(child);
-                traverse(child, fn);
-            }
-        }
-    }
-
     function _intersects(ela, elb) {
         const a = ela.getBoundingClientRect();
         const b = elb.getBoundingClientRect();
@@ -396,7 +393,6 @@
         off: _off,
         css: _css,
         intersects: _intersects,
-        traverseNode: _traverseNode,
         selectAll: _selectAll,
         eventPath: _eventPath
     };
