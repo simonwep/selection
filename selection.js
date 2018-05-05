@@ -179,8 +179,6 @@
         },
 
         _onTapStop(evt, noevent) {
-            _css(this.areaElement, 'display', 'none');
-
             _off(document, 'mousemove', this._delayedTapMove);
             _off(document, 'touchmove', this._delayedTapMove);
 
@@ -201,6 +199,8 @@
                 const changed = this._changedElements;
                 _dispatchEvent(this, 'onStop', this.areaElement, evt, touched, changed);
             }
+            
+            _css(this.areaElement, 'display', 'none');
         },
 
         _updatedTouchingElements() {
