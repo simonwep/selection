@@ -2,126 +2,177 @@
 <html lang="en">
 <head>
 
-    <meta charset="UTF-8">
-    <title>Selection.js</title>
+  <meta charset="UTF-8">
+  <title>Selection.js</title>
 
-    <!-- ICONS -->
-    <link href="/selection/gs/favicon.png" rel="icon" />
-    <link href="/selection/gs/favicon.png" rel="apple-touch-icon" />
+  <!-- ICONS -->
+  <link href="/selection/gs/favicon.png" rel="icon" />
+  <link href="/selection/gs/favicon.png" rel="apple-touch-icon" />
 
-    <!-- CSS STYLESHEETS -->
-    <link href="/selection/gs/styles.css" rel="stylesheet" />
+  <!-- CSS STYLESHEETS -->
+  <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+  <link href="/selection/gs/styles.css" rel="stylesheet" />
+  <link href="/selection/gs/prism.css" rel="stylesheet">
 </head>
 
 <body>
 
-    <header>
-        <span class="main">selection.js</span>
-        <span class="sub">Click and drag to select the boxes!</span>
-    </header>
+  <header>
+    selection<span class="js">.js</span>
+  </header>
 
-    <main>
+  <main>
 
-        <section class="box-wrap boxes green">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </section>
+    <section class="demo">
+      <span class="head">Click and move to select the divs!</span>
 
-        <section class="box-wrap boxes blue">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </section>
+      <section class="box-wrap boxes green">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </section>
 
+      <section class="box-wrap boxes blue">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </section>
+    </section>
 
-    </main>
+    <section class="demo-code">
+      <span class="head">Example code to get the result above</span>
 
-    <script src="/selection/selection.min.js"></script>
-    <script src="/selection/gs/code.js"></script>
+      <pre><code class="language-js">const options = {
+
+    // Class for the selection-area
+    class: 'selection',
+    
+    // All elements in this container can be selected
+    containers: ['.box-wrap'],
+
+    // The container is also the boundary in this case
+    boundarys: ['.box-wrap'],
+
+    onMove(evt) {
+
+        // Get the currently selected elements and those
+        // which where removed since the last selection.
+        const selectedElements = evt.selectedElements;
+        const removedElements = evt.changedElements.removed;
+
+        // Add a custom class to the elements which where selected.
+        for (let se of selectedElements) {
+            se.classList.add('selected');
+        }
+
+        // Remove the class from elements which where removed 
+        // since the last selection.
+        for (let rm of removedElements) {
+            rm.classList.remove('selected');
+        }
+    },
+
+    onStop(evt) {
+
+        // Clear selection
+        for (let rm of evt.selectedElements) {
+            rm.classList.remove('selected');
+        }
+    },
+};
+
+Selection.create(options);</code></pre>
+
+    </section>
+
+  </main>
+
+  <script src="/selection/selection.min.js"></script>
+  <script src="/selection/gs/prism.js"></script>
+  <script src="/selection/gs/code.js"></script>
 </body>
 </html>

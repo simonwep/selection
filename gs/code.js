@@ -1,11 +1,8 @@
 const options = {
 
-    // Class which will be appended to selected elements
+    // Class for the selection-area
     class: 'selection',
-
-    // 10px threshold before the selection starts
-    startThreshold: 10,
-
+    
     // All elements in this container can be selected
     containers: ['.box-wrap'],
 
@@ -34,9 +31,7 @@ const options = {
     onStop(evt) {
 
         // Clear selection
-        const elements = [...evt.selectedElements, ...evt.changedElements.removed];
-
-        for (let rm of elements) {
+        for (let rm of evt.selectedElements) {
             rm.classList.remove('selected');
         }
     },

@@ -3,82 +3,106 @@
  */
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
+  margin: 0;
+  padding: 0;
 }
 
 html,
 body {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    background: #faf9f7;
+  background: #faf9f7;
 }
 
 header {
-    text-align: center;
-    margin-top: 1em;
-    font-family: monospace;
+  text-align: center;
+  font-family: 'Pacifico';
+  letter-spacing: 0.2em;
+  font-size: 2.5em;
+  margin: 0.8em 0;
 }
 
-header .main {
-    font-size: 2em;
+header .js {
+  color: #14c3e3;
 }
 
-header .sub {
-    display: block;
-    font-size: 1.2em;
-    margin-top: 0.2em;
+main > section {
+  width: 100%;
+  max-width: 50em;
+  margin: 3em auto;
 }
 
-main .box-wrap {
-    width: 100%;
-    max-width: 50em;
-    margin: 3em auto;
-    padding: 0 0.3em;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+main > section .head {
+  display: block;
+  margin-bottom: 0.4em;
+  font-family: 'Pacifico';
+  font-size: 1.2em;
+  text-align: center;
 }
 
-/* Clear fix */
+/* details */
+
+main section.demo .head {
+  margin-left: 0.7em;
+}
+
+main section.demo .box-wrap {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+main section.demo .box-wrap.green {
+  margin-bottom: 3em;
+}
 
 main .box-wrap::after {
-    display: block;
-    content: '';
-    clear: both;
+  display: block;
+  content: '';
+  clear: both;
 }
 
 main .boxes div {
-    height: 2em;
-    width: 5em;
-    margin: 0.2em;
-    background: #f5f4f2;
-    box-shadow: 0 0.05em 0.2em 0 rgba(0, 0, 0, 0.1);
-    border-radius: 0.15em;
-    transition: all 0.3s;
+  height: 2em;
+  width: 5em;
+  margin: 0.2em;
+  background: #f5f4f2;
+  -webkit-box-shadow: 0 0.05em 0.2em 0 rgba(0, 0, 0, 0.1);
+          box-shadow: 0 0.05em 0.2em 0 rgba(0, 0, 0, 0.1);
+  border-radius: 0.15em;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
 }
 
 main .boxes div.selected {
-    box-shadow: 0 0.05em 0.2em 0 rgba(0, 0, 0, 0.2);
-    transform: translateY(-0.1em);
+  -webkit-box-shadow: 0 0.05em 0.2em 0 rgba(0, 0, 0, 0.2);
+          box-shadow: 0 0.05em 0.2em 0 rgba(0, 0, 0, 0.2);
 }
 
 main .boxes.green div.selected {
-    background: #7febc2;
+  background: #7febc2;
 }
 
 main .boxes.blue div.selected {
-    background: #7fa0eb;
+  background: #7fa0eb;
 }
 
 .selection {
-    background: rgba(0, 0, 255, 0.1);
-    border-radius: 0.1em;
-    border: 0.05em solid rgba(0, 0, 255, 0.2);
+  background: rgba(0, 0, 255, 0.1);
+  border-radius: 0.1em;
+  border: 0.05em solid rgba(0, 0, 255, 0.2);
+}
+
+
+main section.demo-code pre {
+  background: #F4F1EF;
+  border-radius: 0.2em;
 }
