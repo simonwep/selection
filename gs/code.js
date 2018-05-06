@@ -9,7 +9,8 @@ const options = {
     // The container is also the boundary in this case
     boundarys: ['.box-wrap'],
 
-    onStart(evt) {
+    onStart() {
+        // Applies 'user-select: none' to all elements on the page via a stylesheet
         document.body.classList.add('selecting');
     },
 
