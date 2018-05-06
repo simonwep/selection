@@ -2,12 +2,16 @@ const options = {
 
     // Class for the selection-area
     class: 'selection',
-    
+
     // All elements in this container can be selected
     containers: ['.box-wrap'],
 
     // The container is also the boundary in this case
     boundarys: ['.box-wrap'],
+
+    onStart(evt) {
+        document.body.classList.add('selecting');
+    },
 
     onMove(evt) {
 
@@ -21,7 +25,7 @@ const options = {
             se.classList.add('selected');
         }
 
-        // Remove the class from elements which where removed 
+        // Remove the class from elements which where removed
         // since the last selection.
         for (let rm of removedElements) {
             rm.classList.remove('selected');
@@ -34,6 +38,10 @@ const options = {
         for (let rm of evt.selectedElements) {
             rm.classList.remove('selected');
         }
+
+        // Clear text selection
+        (window.getSelection || document.getSelection)().removeAllRanges();
+        document.body.classList.remove('selecting');
     },
 };
 

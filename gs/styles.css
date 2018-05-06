@@ -101,6 +101,12 @@ main .boxes.blue div.selected {
   border: 0.05em solid rgba(0, 0, 255, 0.2);
 }
 
+body.selecting,
+body.selecting * {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
 
 main section.demo-code pre {
   background: #F4F1EF;
