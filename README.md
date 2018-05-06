@@ -14,7 +14,7 @@
 	<a href="http://es6-features.org/"><img
 		alt="Javascript ES6"
 		src="https://img.shields.io/badge/Javascript-ES6-green.svg"></a>
-	<a href="https://www.npmjs.com/"><img 
+	<a href="https://www.npmjs.com/"><img
 		alt="npm version"
 		src="https://img.shields.io/badge/npm-5.8.0-brightgreen.svg"></a>
 	<img alt="Current version"
@@ -31,7 +31,7 @@ Quick demo: https://simonwep.github.io/selection
 ### Features
 * Supports touch devices
 * Simple usage
-* No jQuery 
+* No jQuery
 * Nodejs support
 * Lightweight, 3KB gzipped
 
@@ -40,7 +40,7 @@ Quick demo: https://simonwep.github.io/selection
 `$ npm install @simonwep/selection-js --save`
 
 Or simply include it via `script` tag:
-```javascript 
+```javascript
 <script src="selection.min.js"></script>
 ```
 
@@ -48,7 +48,7 @@ Or simply include it via `script` tag:
 ```javascript
 
 const options = {
-  
+
   // All elemets with the class 'selectable' selectable.
   selectables: ['.selectable']
 };
@@ -56,12 +56,12 @@ const selection = Selection.create(options);
 ```
 It's reccommended to also specify a bounding area for the selection (see 'Options').
 
-*** 
+***
 
 ## Options
 ```javascript
 const selection = new Selection({  
-    
+
     // Class for the selection-area-element
     // Default: 'selection-area'
     class: 'selection',
@@ -73,7 +73,7 @@ const selection = new Selection({
     // Disable the selection functionality for touch devices
     // Default: false
     disableTouch: false,
-    
+
     // Query selectors from elements from which the siblings can be selected
     // Default: Empty array
     containers: [],
@@ -81,15 +81,15 @@ const selection = new Selection({
     // Query selectors from elements which can be selected
     // Default: Empty array
     selectables: [],
-    
+
     // Query selectors for elements from where a selection can be start
     // Default: ['html']
     startareas: [],
-    
+
     // Query selectors for elements which will be used as boundarys for the selection
     // Default: ['html']
     boundarys: [],
-    
+
     // Element selection stardet             
     onStart(evt) {
         evt.selection;
@@ -115,16 +115,16 @@ const selection = new Selection({
         evt.selection; // This selection instance
         evt.eventName; // The event name
         evt.element;   // The element from where the user stardet the selection
-                      
+
         // return false to cancel the selection process
     },
-                 
+
     // Element selection has stardet
     selectionFilter(evt) {
         evt.selection; // This selection instance
         evt.eventName; // The event name
         evt.element;   // The element which is in the current selection
-                      
+
         // return true to keep the element
     },
 });
@@ -169,5 +169,5 @@ Selection.utils
 * css(el`:HTMLElement`, attr`:String`, val`:String`) _- Set a specific style property._
 * css(el`:HTMLElement`, attr`:Object`) _- Set multiple style properties._
 * intersects(ela`:HTMLElement`, elb`:HTMLElement`)`:Boolean` _- Check if an HTMLElement intersects another._
-* selectAll(selector`:String|Array`)`:Array` _- Returns all HTMLElements which were selected by the selector_
-* eventPath(evt`:DOMEvent`)`:Array` _- Provides compatability for Firefox and Safari for the Chrome Event.path method._
+* selectAll(selector`:String|Array`)`:Array` _- Returns all HTMLElements which were selected by the selector._
+* eventPath(evt`:DOMEvent`)`:NodeList` _- Event.composedPath() ponyfill._
