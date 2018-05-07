@@ -199,7 +199,7 @@
                 const changed = this._changedElements;
                 _dispatchEvent(this, 'onStop', this.areaElement, evt, touched, changed);
             }
-            
+
             _css(this.areaElement, 'display', 'none');
         },
 
@@ -238,7 +238,7 @@
                 }
             }
 
-            // Save 
+            // Save
             this._touchedElements = touched;
             this._changedElements = changed;
         },
@@ -376,8 +376,10 @@
     }
 
     function _eventPath(evt) {
-        let path;
-        let el = evt.target;
+        let path = evt.path || (evt.composedPath && evt.composedPath());
+        if (path) return path;
+
+        let el = evt.target.parentElement;
 
         for (path = [evt.target]; el; el = el.parentElement) {
             path.push(el);
