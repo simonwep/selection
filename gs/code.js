@@ -2,7 +2,7 @@ const options = {
 
     // Class for the selection-area
     class: 'selection',
-    
+
     // All elements in this container can be selected
     containers: ['.box-wrap'],
 
@@ -21,7 +21,7 @@ const options = {
             se.classList.add('selected');
         }
 
-        // Remove the class from elements which where removed 
+        // Remove the class from elements which where removed
         // since the last selection.
         for (let rm of removedElements) {
             rm.classList.remove('selected');

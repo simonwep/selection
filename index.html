@@ -16,7 +16,7 @@
 </head>
 
 <body>
-  
+
   <a href="https://github.com/Simonwep/selection" target="_blank">
     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub!">
   </a>
@@ -134,7 +134,7 @@
 
     // Class for the selection-area
     class: 'selection',
-    
+
     // All elements in this container can be selected
     containers: ['.box-wrap'],
 
@@ -153,7 +153,7 @@
             se.classList.add('selected');
         }
 
-        // Remove the class from elements which where removed 
+        // Remove the class from elements which where removed
         // since the last selection.
         for (let rm of removedElements) {
             rm.classList.remove('selected');

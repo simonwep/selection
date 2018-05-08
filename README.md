@@ -54,7 +54,7 @@ const options = {
 };
 const selection = Selection.create(options);
 ```
-It's reccommended to also specify a bounding area for the selection (see 'Options').
+It's recommend to also specify a bounding area for the selection (see 'Options').
 
 ***
 
@@ -170,4 +170,8 @@ Selection.utils
 * css(el`:HTMLElement`, attr`:Object`) _- Set multiple style properties._
 * intersects(ela`:HTMLElement`, elb`:HTMLElement`)`:Boolean` _- Check if an HTMLElement intersects another._
 * selectAll(selector`:String|Array`)`:Array` _- Returns all HTMLElements which were selected by the selector._
-* eventPath(evt`:DOMEvent`)`:NodeList` _- Event.composedPath() ponyfill._
+* eventPath(evt`:DOMEvent`)`:NodeList` _- Event.composedPath() polyfill._
+
+## Todos / Ideas
+* [ ] Keep selection option -> select multiple times.
+* [ ] Select via single-click.
