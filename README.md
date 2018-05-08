@@ -24,7 +24,7 @@
 </p>
 
 ## Selection
-Selection.js is an simple, lightweight, and modern library for making visual DOM Selections.
+Selection.js is a simple, lightweight, and modern library for making visual DOM Selections.
 
 Quick demo: https://simonwep.github.io/selection
 
