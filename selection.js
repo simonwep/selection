@@ -34,7 +34,8 @@
         // Default options
         const defaults = {
             class: 'selection-area',
-            startThreshold: 0,
+            startThreshold: 10,
+            singleClick: true,
             disableTouch: false,
             containers: [],
             selectables: [],
@@ -97,6 +98,7 @@
             // Save start coordinates
             this._lastX = (touch || evt).clientX;
             this._lastY = (touch || evt).clientY;
+            this._singleClick = true; // To detect single-click
 
             // Resolve selectors
             const containers = _selectAll(this.options.containers);
@@ -113,9 +115,6 @@
                 removed: []
             };
 
-            // New start position
-            this._updateArea(evt);
-
             // Add class to the area element
             this.areaElement.classList.add(this.options.class);
 
@@ -129,11 +128,25 @@
             _on(document, 'mouseup', this._onTapStop);
             _on(document, 'touchcancel', this._onTapStop);
             _on(document, 'touchend', this._onTapStop);
+        },
 
-            // Fire event
-            const touched = this._touchedElements.concat(this._selectedStore);
+        _onSingleTap(evt) {
+            const touch = evt.touches && evt.touches[0];
+            const target = (touch || evt).target;
+
+            // Check if the element is seletable
+            if (!this._selectables.includes(target))
+                return;
+
+            // Check if this element
+            this._touchedElements.push(target);
+
+            const touched = this._selectedStore;
             const changed = this._changedElements;
-            _dispatchEvent(this, 'onStart', this.areaElement, evt, touched, changed);
+
+            _dispatchEvent(this, 'onSelect', this.areaElement, evt, touched, changed, {
+                target
+            });
         },
 
         _delayedTapMove(evt) {
@@ -150,6 +163,18 @@
                 _on(document, 'touchmove', this._onTapMove);
 
                 _css(this.areaElement, 'display', 'block');
+
+                // New start position
+                this._updateArea(evt);
+
+                // Fire event
+                const touched = this._touchedElements.concat(this._selectedStore);
+                const changed = this._changedElements;
+                _dispatchEvent(this, 'onStart', this.areaElement, evt, touched, changed);
+
+                // An action is recognized as single-select until
+                // the user performed an mutli-selection
+                this._singleClick = false;
             }
         },
 
@@ -196,10 +221,15 @@
             _off(document, 'touchcancel', this._onTapStop);
             _off(document, 'touchend', this._onTapStop);
 
-            if (!noevent) {
+            if (this._singleClick) {
+                this._onSingleTap(evt);
+
+            } else if (!noevent) {
+
                 this._updatedTouchingElements();
                 const touched = this._touchedElements.concat(this._selectedStore);
                 const changed = this._changedElements;
+
                 _dispatchEvent(this, 'onStop', this.areaElement, evt, touched, changed);
             }
 
@@ -263,6 +293,14 @@
          */
         clearSelection() {
             this._selectedStore = [];
+        },
+
+        /**
+         * Removes an particular element from the selection.
+         */
+        removeFromSelection(el) {
+            _removeElement(this._selectedStore, el);
+            _removeElement(this._touchedElements, el);
         },
 
         /**
@@ -368,10 +406,11 @@
         }
     }
 
-    function _dispatchEvent(selection, name, ae, originalEvt, selected, changed) {
+    function _dispatchEvent(selection, name, ae, originalEvt, selected, changed, additional = {}) {
         const event = selection.options[name];
 
         if (typeof event === 'function') {
+
             const evt = {
                 selection: selection,
                 eventName: name,
@@ -380,6 +419,10 @@
                 changedElements: changed,
                 originalEvent: originalEvt
             };
+
+            for (let val in additional) {
+                evt[val] = additional[val];
+            }
 
             return event.call(selection, evt);
         }
@@ -411,6 +454,13 @@
         return path;
     }
 
+    function _removeElement(arr, el) {
+        const index = arr.indexOf(el);
+        if (~index) {
+            arr.splice(index, 1);
+        }
+    }
+
     // Export utils
     Selection.utils = {
         on: _on,
@@ -418,7 +468,8 @@
         css: _css,
         intersects: _intersects,
         selectAll: _selectAll,
-        eventPath: _eventPath
+        eventPath: _eventPath,
+        removeElement: _removeElement
     };
 
     /**
