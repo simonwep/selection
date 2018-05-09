@@ -197,10 +197,6 @@
             _off(document, 'touchcancel', this._onTapStop);
             _off(document, 'touchend', this._onTapStop);
 
-            // Enable default select-action (firefox bug-fix)
-            // Disable default select-action (firefox bug-fix)
-            this._selectables.forEach(sel => _off(sel, 'selectstart', preventDefault));
-
             if (!noevent) {
                 this._updatedTouchingElements();
                 const touched = this._touchedElements.concat(this._selectedStore);
