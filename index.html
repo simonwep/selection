@@ -10,7 +10,7 @@
   <link href="/selection/gs/favicon.png" rel="apple-touch-icon" />
 
   <!-- CSS STYLESHEETS -->
-  <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:600|Pacifico" rel="stylesheet">
   <link href="/selection/gs/styles.css" rel="stylesheet" />
   <link href="/selection/gs/prism.css" rel="stylesheet">
 </head>
@@ -28,7 +28,13 @@
   <main>
 
     <section class="demo">
-      <span class="head">Click and move to select the divs!</span>
+      <div class="info">
+
+        <p>Click to select the boxes!</p>
+        <p>Click and hold <span class="keyboard-key">left mouse</span> to make a multi-selection!</p>
+        <p>Hold <span class="keyboard-key">ctrl</span> to make multiple selections.</p>
+
+      </div>
 
       <section class="box-wrap boxes green">
         <div></div>
@@ -128,7 +134,7 @@
     </section>
 
     <section class="demo-code">
-      <span class="head">Example code to get the result above</span>
+      <span class="head">Comment tutorial to realize the demo</span>
 
       <pre><code class="language-js">const options = {
 
@@ -141,6 +147,51 @@
     // The container is also the boundary in this case
     boundarys: ['.box-wrap'],
 
+    onSelect(evt) {
+
+        // Check if clicked element is already selected
+        const selected = evt.target.classList.contains('selected');
+
+        // Remove class if the user don't pressed the control key and the
+        // current target is already selected
+        if (!evt.originalEvent.ctrlKey) {
+
+            // Remove class from every element which is selected
+            evt.selectedElements.forEach(s => s.classList.remove('selected'));
+
+            // Clear previous selection
+            this.clearSelection();
+        }
+
+        if (!selected) {
+
+            // Select element
+            evt.target.classList.add('selected');
+            this.keepSelection();
+        } else {
+
+            // Unselect element
+            evt.target.classList.remove('selected');
+            this.removeFromSelection(evt.target);
+        }
+    },
+
+    onStart(evt) {
+
+        // Get elements which has been selected so far
+        const selectedElements = evt.selectedElements;
+
+        // Remove class if the user don't pressed the control key
+        if (!evt.originalEvent.ctrlKey) {
+
+            // Unselect all elements
+            selectedElements.forEach(s => s.classList.remove('selected'));
+
+            // Clear previous selection
+            this.clearSelection();
+        }
+    },
+
     onMove(evt) {
 
         // Get the currently selected elements and those
@@ -149,27 +200,20 @@
         const removedElements = evt.changedElements.removed;
 
         // Add a custom class to the elements which where selected.
-        for (let se of selectedElements) {
-            se.classList.add('selected');
-        }
+        selectedElements.forEach(s => s.classList.add('selected'));
 
         // Remove the class from elements which where removed
-        // since the last selection.
-        for (let rm of removedElements) {
-            rm.classList.remove('selected');
-        }
+        // since the last selection
+        removedElements.forEach(s => s.classList.remove('selected'));
     },
 
     onStop(evt) {
-
-        // Clear selection
-        for (let rm of evt.selectedElements) {
-            rm.classList.remove('selected');
-        }
+        this.keepSelection();
     },
 };
 
-Selection.create(options);</code></pre>
+Selection.create(options);
+</code></pre>
 
     </section>
 

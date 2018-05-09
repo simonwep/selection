@@ -9,6 +9,51 @@ const options = {
     // The container is also the boundary in this case
     boundarys: ['.box-wrap'],
 
+    onSelect(evt) {
+
+        // Check if clicked element is already selected
+        const selected = evt.target.classList.contains('selected');
+
+        // Remove class if the user don't pressed the control key and the
+        // current target is already selected
+        if (!evt.originalEvent.ctrlKey) {
+
+            // Remove class from every element which is selected
+            evt.selectedElements.forEach(s => s.classList.remove('selected'));
+
+            // Clear previous selection
+            this.clearSelection();
+        }
+
+        if (!selected) {
+
+            // Select element
+            evt.target.classList.add('selected');
+            this.keepSelection();
+        } else {
+
+            // Unselect element
+            evt.target.classList.remove('selected');
+            this.removeFromSelection(evt.target);
+        }
+    },
+
+    onStart(evt) {
+
+        // Get elements which has been selected so far
+        const selectedElements = evt.selectedElements;
+
+        // Remove class if the user don't pressed the control key
+        if (!evt.originalEvent.ctrlKey) {
+
+            // Unselect all elements
+            selectedElements.forEach(s => s.classList.remove('selected'));
+
+            // Clear previous selection
+            this.clearSelection();
+        }
+    },
+
     onMove(evt) {
 
         // Get the currently selected elements and those
@@ -17,23 +62,15 @@ const options = {
         const removedElements = evt.changedElements.removed;
 
         // Add a custom class to the elements which where selected.
-        for (let se of selectedElements) {
-            se.classList.add('selected');
-        }
+        selectedElements.forEach(s => s.classList.add('selected'));
 
         // Remove the class from elements which where removed
-        // since the last selection.
-        for (let rm of removedElements) {
-            rm.classList.remove('selected');
-        }
+        // since the last selection
+        removedElements.forEach(s => s.classList.remove('selected'));
     },
 
     onStop(evt) {
-
-        // Clear selection
-        for (let rm of evt.selectedElements) {
-            rm.classList.remove('selected');
-        }
+        this.keepSelection();
     },
 };
 

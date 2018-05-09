@@ -18,7 +18,7 @@
 		alt="npm version"
 		src="https://img.shields.io/badge/npm-5.8.0-brightgreen.svg"></a>
 	<img alt="Current version"
-		src="https://img.shields.io/badge/version-0.0.5-23AD62.svg">
+		src="https://img.shields.io/badge/version-0.0.6-23AD62.svg">
 	<img alt="No dependencies"
 		src="https://img.shields.io/badge/dependencies-none-57CCE4.svg">
 </p>
@@ -46,7 +46,6 @@ Or simply include it via `script` tag:
 
 ## Usage
 ```javascript
-
 const options = {
 
   // All elemets with the class 'selectable' selectable.
@@ -60,37 +59,33 @@ It's recommend to also specify a bounding area for the selection (see 'Options')
 
 ## Options
 ```javascript
-const selection = new Selection({  
+const selection = new Selection({
 
     // Class for the selection-area-element
-    // Default: 'selection-area'
-    class: 'selection',
+    class: 'selection-area',
 
     // px, how many pixels the point should move before starting the selection
-    // Default: 0
     startThreshold: 10,
 
     // Disable the selection functionality for touch devices
-    // Default: false
     disableTouch: false,
 
+    // Enable single-click selection
+    singleClick: true,
+
     // Query selectors from elements from which the siblings can be selected
-    // Default: Empty array
     containers: [],
 
     // Query selectors from elements which can be selected
-    // Default: Empty array
     selectables: [],
 
     // Query selectors for elements from where a selection can be start
-    // Default: ['html']
-    startareas: [],
+    startareas: ['html'],
 
     // Query selectors for elements which will be used as boundarys for the selection
-    // Default: ['html']
-    boundarys: [],
+    boundarys: ['html'],
 
-    // Element selection stardet             
+    // Element selection stardet, see Events for details
     onStart(evt) {
         evt.selection;
         evt.eventName;
@@ -98,6 +93,12 @@ const selection = new Selection({
         evt.originalEvent;
         evt.selectedElements;
         evt.changedElements;
+    },
+
+    // Single-click selection
+    onSelect(evt) {
+       // Same properties as onStart
+       evt.target; // Clicked element
     },
 
     // Element selection move
@@ -137,6 +138,11 @@ const selection = new Selection({
 * selection.disable() _- Disable the functionality to make selections._
 * selection.enable() _- Enable the functionality to make selections._
 
+
+* selection.keepSelection() _- Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections._
+* selection.clearSelection() _- Clear the previous selection (elements which where saved by `keepSelection()`)._
+* selection.removeFromSelection(el`:HTMLElement`) _- Removes a particular element from the current selection._
+
 ## Events
 
 ### start / stop / move event
@@ -149,10 +155,12 @@ const selection = new Selection({
    * added`:Array[HTMLElements]` _- Elements which are added to `selectedElements` since the last interaction (mousemove)._
    * removed`:Array[HTMLElements]`  _- Elements which are removed from `selectedElements` since last interaction (mousemove)._
 
+
 ### Filter event
+Will be called on every selection, can be used to ignore specific elements in the current selection.
  * selection`:Selection` _- Current selection object._
  * eventName`:String` _- The event name._
- * element`:HTMLElement` _- HTMLElement from which the selection starts._
+ * element`:HTMLElement` _- HTMLElement, return false if you didn't want it in the selection._
 
 
 ## Static methods
@@ -171,7 +179,8 @@ Selection.utils
 * intersects(ela`:HTMLElement`, elb`:HTMLElement`)`:Boolean` _- Check if an HTMLElement intersects another._
 * selectAll(selector`:String|Array`)`:Array` _- Returns all HTMLElements which were selected by the selector._
 * eventPath(evt`:DOMEvent`)`:NodeList` _- Event.composedPath() polyfill._
+* removeElement(arr`:Array`, el`:Object`) _- Removes an particular element from an Array._
 
 ## Todos / Ideas
-* [ ] Keep selection option -> select multiple times.
-* [ ] Select via single-click.
+* [x] Keep selection option -> select multiple times.
+* [x] Select via single-click.
