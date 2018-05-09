@@ -28,11 +28,11 @@
         min = Math.min,
         preventDefault = ev => ev.preventDefault();
 
-    function Selection(options) {
-        this.options = options ? options : {};
+    function Selection(options = {}) {
+        this.options = options;
 
         // Default options
-        let defaults = {
+        const defaults = {
             class: 'selection-area',
             startThreshold: 0,
             disableTouch: false,
@@ -42,9 +42,12 @@
             boundarys: ['html']
         };
 
+        // Store for keepSelection
+        this._selectedStore = [];
+
         // Set default options
         for (let name in defaults) {
-            !(name in options) && (options[name] = defaults[name]);
+            !(name in this.options) && (this.options[name] = defaults[name]);
         }
 
         // Bind all private methods
@@ -96,9 +99,11 @@
             this._lastX = (touch || evt).clientX;
             this._lastY = (touch || evt).clientY;
 
+            // Resolve selectors
             const containers = _selectAll(this.options.containers);
             this._selectables = _selectAll(this.options.selectables);
-            containers.forEach(con => this._selectables.push(...con.getElementsByTagName('*')));
+            containers.forEach(con =>
+                this._selectables.push(...con.getElementsByTagName('*')));
 
             // Save current boundary
             this._targetBoundary = this._boundarys.find((el) => _intersects(el, target));
@@ -112,11 +117,11 @@
             // New start position
             this._updateArea(evt);
 
-            // Disable default select-action (firefox bug-fix)
-            this._selectables.forEach(sel => _on(sel, 'selectstart', preventDefault));
-
             // Add class to the area element
             this.areaElement.classList.add(this.options.class);
+
+            // Prevent default selection
+            document.addEventListener('selectstart', preventDefault);
 
             // Add listener
             _on(document, 'mousemove', this._delayedTapMove);
@@ -126,7 +131,10 @@
             _on(document, 'touchcancel', this._onTapStop);
             _on(document, 'touchend', this._onTapStop);
 
-            _dispatchEvent(this, 'onStart', this.areaElement, evt, this._touchedElements, this._changedElements);
+            // Fire event
+            const touched = this._touchedElements.concat(this._selectedStore);
+            const changed = this._changedElements;
+            _dispatchEvent(this, 'onStart', this.areaElement, evt, touched, changed);
         },
 
         _delayedTapMove(evt) {
@@ -149,7 +157,7 @@
         _onTapMove(evt) {
             this._updateArea(evt);
             this._updatedTouchingElements();
-            const touched = this._touchedElements;
+            const touched = this._touchedElements.concat(this._selectedStore);
             const changed = this._changedElements;
             _dispatchEvent(this, 'onMove', this.areaElement, evt, touched, changed);
         },
@@ -195,10 +203,13 @@
 
             if (!noevent) {
                 this._updatedTouchingElements();
-                const touched = this._touchedElements;
+                const touched = this._touchedElements.concat(this._selectedStore);
                 const changed = this._changedElements;
                 _dispatchEvent(this, 'onStop', this.areaElement, evt, touched, changed);
             }
+
+            // Enable default selection
+            document.removeEventListener('selectstart', preventDefault);
 
             _css(this.areaElement, 'display', 'none');
         },
@@ -241,6 +252,22 @@
             // Save
             this._touchedElements = touched;
             this._changedElements = changed;
+        },
+
+        /**
+         * Saves the current selection for the next selecion.
+         * Allows multiple selections.
+         */
+        keepSelection() {
+            const keep = this._touchedElements.filter(x => !this._selectedStore.includes(x));
+            this._selectedStore = keep.concat(this._selectedStore);
+        },
+
+        /**
+         * Clear the elements which where saved by 'keepSelection()'.
+         */
+        clearSelection() {
+            this._selectedStore = [];
         },
 
         /**
