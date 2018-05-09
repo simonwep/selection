@@ -89,8 +89,7 @@
             this._boundarys = _selectAll(this.options.boundarys);
 
             const evtpath = _eventPath(evt);
-            if (_dispatchFilterEvent(this, 'startFilter', target) === false ||
-                !startAreas.find((el) => evtpath.includes(el)) ||
+            if (!startAreas.find((el) => evtpath.includes(el)) ||
                 !this._boundarys.find((el) => evtpath.includes(el))) {
                 return;
             }
