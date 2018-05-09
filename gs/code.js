@@ -9,6 +9,11 @@ const options = {
     // The container is also the boundary in this case
     boundarys: ['.box-wrap'],
 
+    onStart() {
+        // Applies 'user-select: none' to all elements on the page via a stylesheet
+        document.body.classList.add('selecting');
+    },
+
     onMove(evt) {
 
         // Get the currently selected elements and those
@@ -34,6 +39,10 @@ const options = {
         for (let rm of evt.selectedElements) {
             rm.classList.remove('selected');
         }
+
+        // Clear text selection
+        (window.getSelection || document.getSelection)().removeAllRanges();
+        document.body.classList.remove('selecting');
     },
 };
 
