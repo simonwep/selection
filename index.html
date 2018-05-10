@@ -1,23 +1,30 @@
 <!DOCTYPE HTML>
 <html lang="en">
+
 <head>
 
   <meta charset="UTF-8">
   <title>Selection.js</title>
 
   <!-- ICONS -->
-  <link href="/selection/gs/favicon.png" rel="icon" />
-  <link href="/selection/gs/favicon.png" rel="apple-touch-icon" />
+  <link href="/selection/gs/favicon.png"
+        rel="icon" />
+  <link href="/selection/gs/favicon.png"
+        rel="apple-touch-icon" />
 
   <!-- CSS STYLESHEETS -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:600|Pacifico" rel="stylesheet">
-  <link href="/selection/gs/styles.css" rel="stylesheet" />
-  <link href="/selection/gs/prism.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:600|Pacifico"
+        rel="stylesheet">
+  <link href="/selection/gs/styles.css"
+        rel="stylesheet" />
+  <link href="/selection/gs/prism.css"
+        rel="stylesheet">
 </head>
 
 <body>
 
-  <a href="https://github.com/Simonwep/selection" target="_blank">
+  <a href="https://github.com/Simonwep/selection"
+     target="_blank">
     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub!">
   </a>
 
@@ -146,34 +153,14 @@
 
     // The container is also the boundary in this case
     boundarys: ['.box-wrap'],
+    // Or
+    boundaries: ['.box-wrap'],
 
     onSelect(evt) {
 
-        // Check if clicked element is already selected
-        const selected = evt.target.classList.contains('selected');
+         // Get elements which has been selected so far
+         const selectedElements = evt.selectedElements;
 
-        // Remove class if the user don't pressed the control key and the
-        // current target is already selected
-        if (!evt.originalEvent.ctrlKey) {
-
-            // Remove class from every element which is selected
-            evt.selectedElements.forEach(s => s.classList.remove('selected'));
-
-            // Clear previous selection
-            this.clearSelection();
-        }
-
-        if (!selected) {
-
-            // Select element
-            evt.target.classList.add('selected');
-            this.keepSelection();
-        } else {
-
-            // Unselect element
-            evt.target.classList.remove('selected');
-            this.removeFromSelection(evt.target);
-        }
     },
 
     onStart(evt) {
@@ -181,15 +168,6 @@
         // Get elements which has been selected so far
         const selectedElements = evt.selectedElements;
 
-        // Remove class if the user don't pressed the control key
-        if (!evt.originalEvent.ctrlKey) {
-
-            // Unselect all elements
-            selectedElements.forEach(s => s.classList.remove('selected'));
-
-            // Clear previous selection
-            this.clearSelection();
-        }
     },
 
     onMove(evt) {
@@ -199,16 +177,13 @@
         const selectedElements = evt.selectedElements;
         const removedElements = evt.changedElements.removed;
 
-        // Add a custom class to the elements which where selected.
-        selectedElements.forEach(s => s.classList.add('selected'));
-
-        // Remove the class from elements which where removed
-        // since the last selection
-        removedElements.forEach(s => s.classList.remove('selected'));
     },
 
     onStop(evt) {
-        this.keepSelection();
+
+         // Get elements which has been selected so far
+         const selectedElements = evt.selectedElements;
+
     },
 };
 
@@ -223,4 +198,5 @@ Selection.create(options);
   <script src="/selection/gs/prism.js"></script>
   <script src="/selection/gs/code.js"></script>
 </body>
+
 </html>
