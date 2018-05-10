@@ -150,6 +150,32 @@
       const touched = this._selectedStore;
       const changed = this._changedElements;
 
+      // Check if clicked element is already selected
+      const selected = evt.target.classList.contains('selected');
+
+      // Remove class if the user don't pressed the control key and the
+      // current target is already selected
+      if (!evt.originalEvent.ctrlKey) {
+
+        // Remove class from every element which is selected
+        evt.selectedElements.forEach(s => s.classList.remove('selected'));
+
+        // Clear previous selection
+        this.clearSelection();
+      }
+
+      if (!selected) {
+
+        // Select element
+        evt.target.classList.add('selected');
+        this.keepSelection();
+      } else {
+
+        // Unselect element
+        evt.target.classList.remove('selected');
+        this.removeFromSelection(evt.target);
+      }
+
       _dispatchEvent(this, 'onSelect', this.areaElement, evt, touched,
         changed, {
           target
@@ -177,6 +203,17 @@
         // Fire event
         const touched = this._touchedElements.concat(this._selectedStore);
         const changed = this._changedElements;
+
+        // Remove class if the user don't pressed the control key
+        if (!evt.ctrlKey) {
+
+          // Unselect all elements
+          touched.forEach(s => s.classList.remove('selected'));
+
+          // Clear previous selection
+          this.clearSelection();
+        }
+
         _dispatchEvent(this, 'onStart', this.areaElement, evt, touched,
           changed);
 
@@ -191,6 +228,14 @@
       this._updatedTouchingElements();
       const touched = this._touchedElements.concat(this._selectedStore);
       const changed = this._changedElements;
+
+      // Add a custom class to the elements which where selected.
+      touched.forEach(s => s.classList.add('selected'));
+
+      // Remove the class from elements which where removed
+      // since the last selection
+      changed.forEach(s => s.classList.remove('selected'));
+
       _dispatchEvent(this, 'onMove', this.areaElement, evt, touched,
         changed);
     },
@@ -238,6 +283,8 @@
         this._updatedTouchingElements();
         const touched = this._touchedElements.concat(this._selectedStore);
         const changed = this._changedElements;
+
+        this.keepSelection();
 
         _dispatchEvent(this, 'onStop', this.areaElement, evt, touched,
           changed);
