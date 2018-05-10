@@ -7,7 +7,7 @@ const options = {
     containers: ['.box-wrap'],
 
     // The container is also the boundary in this case
-    boundarys: ['.box-wrap'],
+    boundaries: ['.box-wrap'],
 
     onSelect(evt) {
 

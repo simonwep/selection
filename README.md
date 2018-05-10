@@ -82,8 +82,8 @@ const selection = new Selection({
     // Query selectors for elements from where a selection can be start
     startareas: ['html'],
 
-    // Query selectors for elements which will be used as boundarys for the selection
-    boundarys: ['html'],
+    // Query selectors for elements which will be used as boundaries for the selection
+    boundaries: ['html'],
 
     // Element selection stardet, see Events for details
     onStart(evt) {

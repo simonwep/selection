@@ -40,7 +40,7 @@
             containers: [],
             selectables: [],
             startareas: ['html'],
-            boundarys: ['html']
+            boundaries: ['html']
         };
 
         // Store for keepSelection
@@ -87,11 +87,11 @@
             const target = (touch || evt).target;
 
             const startAreas = _selectAll(this.options.startareas);
-            this._boundarys = _selectAll(this.options.boundarys);
+            this._boundaries = _selectAll(this.options.boundaries);
 
             const evtpath = _eventPath(evt);
             if (!startAreas.find((el) => evtpath.includes(el)) ||
-                !this._boundarys.find((el) => evtpath.includes(el))) {
+                !this._boundaries.find((el) => evtpath.includes(el))) {
                 return;
             }
 
@@ -107,7 +107,7 @@
                 this._selectables.push(...con.getElementsByTagName('*')));
 
             // Save current boundary
-            this._targetBoundary = this._boundarys.find((el) => _intersects(el, target));
+            this._targetBoundary = this._boundaries.find((el) => _intersects(el, target));
 
             this._touchedElements = [];
             this._changedElements = {
