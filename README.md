@@ -23,8 +23,6 @@
 		src="https://img.shields.io/badge/dependencies-none-57CCE4.svg">
 </p>
 
-##    Selection
-
 <h2 align="center">
    <img
     width="700px"
