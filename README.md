@@ -35,13 +35,17 @@ Quick demo: https://simonwep.github.io/selection
 * Nodejs support
 * Lightweight, 3KB gzipped
 
-### Install via npm
+### Install
 
-`$ npm install @simonwep/selection-js --save`
+Via npm
+```
+$ npm install @simonwep/selection-js --save
+```
 
-Or simply include it via `script` tag:
+Include via [jsdelivr.net](https://www.jsdelivr.com/)
+
 ```javascript
-<script src="selection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js@0.0.6/selection.min.js"></script>
 ```
 
 ## Usage
