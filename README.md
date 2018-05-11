@@ -23,8 +23,13 @@
 		src="https://img.shields.io/badge/dependencies-none-57CCE4.svg">
 </p>
 
-## Selection
-Selection.js is a simple, lightweight, and modern library for making visual DOM Selections.
+##    Selection
+
+<h2 align="center">
+   <img
+    width="700px"
+    alt="Demo" src="https://user-images.githubusercontent.com/12004383/39947840-4685bc0e-556b-11e8-95cf-068ab6d7e9de.gif"/>
+</h2>
 
 Quick demo: https://simonwep.github.io/selection
 
