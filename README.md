@@ -8,7 +8,7 @@
 </h3>
 
 <p align="center">
-    <a href="https://choosealicense.com/licenses/gpl-3.0/"><img
+    <a href="https://choosealicense.com/licenses/mit/"><img
 		alt="License MIT"
 		src="https://img.shields.io/badge/licence-MIT-blue.svg"></a>
 	<a href="http://es6-features.org/"><img
