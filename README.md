@@ -119,15 +119,6 @@ const selection = new Selection({
     },
 
     // Element selection has stardet
-    startFilter(evt) {
-        evt.selection; // This selection instance
-        evt.eventName; // The event name
-        evt.element;   // The element from where the user stardet the selection
-
-        // return false to cancel the selection process
-    },
-
-    // Element selection has stardet
     selectionFilter(evt) {
         evt.selection; // This selection instance
         evt.eventName; // The event name
