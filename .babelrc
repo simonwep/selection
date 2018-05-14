@@ -1,6 +1,6 @@
 {
     "presets": [
-        "babili",
+        "minify",
         [
             "env", {
                 "targets": {
