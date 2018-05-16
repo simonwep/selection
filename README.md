@@ -15,8 +15,11 @@
 		alt="Javascript ES6"
 		src="https://img.shields.io/badge/Javascript-ES6-green.svg"></a>
 	<a href="https://www.npmjs.com/"><img
-		alt="npm version"
-		src="https://img.shields.io/badge/npm-5.8.0-brightgreen.svg"></a>
+		alt="npm package"
+		src="https://img.shields.io/badge/npm%20package-6.0.1-brightgreen.svg"></a>
+	<a href="https://www.npmjs.com/package/@simonwep/selection-js"><img
+		alt="downloads per week"
+		src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
 	<img alt="Current version"
 		src="https://img.shields.io/badge/version-0.0.7-23AD62.svg">
 	<img alt="No dependencies"
