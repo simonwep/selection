@@ -75,7 +75,9 @@
         _on(document, 'mousedown', this._onTapStart);
 
         if (!this.options.disableTouch) {
-            _on(document, 'touchstart', this._onTapStart);
+            _on(document, 'touchstart', this._onTapStart, {
+                passive: false
+            });
         }
     }
 
@@ -123,11 +125,15 @@
 
             // Add listener
             _on(document, 'mousemove', this._delayedTapMove);
-            _on(document, 'touchmove', this._delayedTapMove);
+            _on(document, 'touchmove', this._delayedTapMove, {
+                passive: false
+            });
 
             _on(document, 'mouseup', this._onTapStop);
             _on(document, 'touchcancel', this._onTapStop);
             _on(document, 'touchend', this._onTapStop);
+
+            evt.preventDefault();
         },
 
         _onSingleTap(evt) {
@@ -341,12 +347,18 @@
         }
     }
 
-    function _on(el, event, fn) {
-        el.addEventListener(event, fn, captureMode);
+    function _on(el, event, fn, options = {}) {
+        el.addEventListener(event, fn, {
+            capture: captureMode,
+            ...options
+        });
     }
 
-    function _off(el, event, fn) {
-        el.removeEventListener(event, fn, captureMode);
+    function _off(el, event, fn, options = {}) {
+        el.removeEventListener(event, fn, {
+            capture: captureMode,
+            ...options
+        });
     }
 
     function _css(el, attr, val) {
