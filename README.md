@@ -21,7 +21,7 @@
 		alt="downloads per week"
 		src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
 	<img alt="Current version"
-		src="https://img.shields.io/badge/version-0.0.7-23AD62.svg">
+		src="https://img.shields.io/badge/version-0.0.8-23AD62.svg">
 	<img alt="No dependencies"
 		src="https://img.shields.io/badge/dependencies-none-57CCE4.svg">
 </p>
@@ -51,7 +51,7 @@ $ npm install @simonwep/selection-js --save
 Include via [jsdelivr.net](https://www.jsdelivr.com/)
 
 ```javascript
-<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js@0.0.7/selection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js@0.0.8/selection.min.js"></script>
 ```
 
 ## Usage
@@ -171,8 +171,8 @@ Selection
 
 Selection.utils
 
-* on(el`:HTMLElement`, event`:String`, fn`:Function`) _- Attach an event handler function._
-* off(el`:HTMLElement`, event`:String`, fn`:Function`) _- Remove an event handler._
+* on(el`:HTMLElement`, event`:String`, fn`:Function`[, options `:Object`]) _- Attach an event handler function._
+* off(el`:HTMLElement`, event`:String`, fn`:Function`[, options `:Object`]) _- Remove an event handler._
 * css(el`:HTMLElement`)`:Object` _- Get all css properties from this element._
 * css(el`:HTMLElement`, attr`:String`)`:Mixed` _- Get the value from a style property._
 * css(el`:HTMLElement`, attr`:String`, val`:String`) _- Set a specific style property._
