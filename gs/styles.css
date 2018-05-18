@@ -2,6 +2,16 @@
  * Creator: Simon R.
  */
 
+::-webkit-scrollbar {
+    width: 0.5em;
+    background-color: #FAF9F7;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #afafaf;
+    border-radius: 0.2em;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -22,20 +32,25 @@ header {
     font-family: 'Pacifico';
     letter-spacing: 0.2em;
     font-size: 2.5em;
-    margin: 0.8em 0;
+    padding: 1.2em 0 0.5em 0;
 }
 
-header .js {
+header h1 {
+    font-size: 1em;
+    font-weight: 200;
+}
+
+header h1 .js {
     color: #14c3e3;
 }
 
-main > section {
+main .sec {
     width: 100%;
     max-width: 50em;
     margin: 3em auto;
 }
 
-main > section .head {
+main .sec .head {
     display: block;
     margin-bottom: 0.4em;
     font-size: 1.2em;
@@ -128,8 +143,8 @@ main section.demo-code pre {
     border: 1px solid rgba(0, 0, 0, 0.6);
     border-radius: 0.15em;
     -webkit-box-shadow: inset 0 -0.15em 0 0 rgba(0, 0, 0, 0.3);
-            box-shadow: inset 0 -0.15em 0 0 rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 -0.15em 0 0 rgba(0, 0, 0, 0.3);
     -webkit-transform: translateY(-0.15em);
-        -ms-transform: translateY(-0.15em);
-            transform: translateY(-0.15em);
+    -ms-transform: translateY(-0.15em);
+    transform: translateY(-0.15em);
 }
