@@ -13,7 +13,7 @@ const options = {
 
         // Check if clicked element is already selected
         const selected = evt.target.classList.contains('selected');
-        
+
         // Remove class if the user don't pressed the control key or ⌘ key and the
         // current target is already selected
         if (!evt.originalEvent.ctrlKey && !evt.originalEvent.metaKey) {
