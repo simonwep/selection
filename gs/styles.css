@@ -148,6 +148,11 @@ main section.demo-code pre {
 
 @media only screen and (max-width: 1000px) {
 
+    #fork-me {
+        height: 6em;
+        width: 6em;
+    }
+
     header {
         padding: 1em 0 0 0;
     }
