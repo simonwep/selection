@@ -69,9 +69,9 @@ const options = {
         removedElements.forEach(s => s.classList.remove('selected'));
     },
 
-    onStop(evt) {
+    onStop() {
         this.keepSelection();
-    },
+    }
 };
 
 Selection.create(options);

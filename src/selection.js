@@ -1,6 +1,6 @@
 /**!
  * Selection
- * @author	Simon Reinisch
+ * @author    Simon Reinisch
  * @license MIT
  */
 
@@ -345,7 +345,7 @@
         enable() {
             _on(document, 'mousedown', this._onTapStart);
         }
-    }
+    };
 
     function _on(el, event, fn, options = {}) {
         el.addEventListener(event, fn, {
@@ -391,7 +391,7 @@
                         style[pref + attr] = val + (typeof val === 'string' ? '' : 'px');
                     }
                 } else {
-                    style[attr] = val + (typeof val === 'string' ? '' : 'px')
+                    style[attr] = val + (typeof val === 'string' ? '' : 'px');
                 }
             }
         }

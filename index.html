@@ -7,13 +7,13 @@
     <title>Selection.js</title>
 
     <!-- ICONS -->
-    <link href="gs/favicon.png" rel="icon" />
-    <link href="gs/favicon.png" rel="apple-touch-icon" />
+    <link href="gh-page/favicon.png" rel="icon" />
+    <link href="gh-page/favicon.png" rel="apple-touch-icon" />
 
     <!-- CSS STYLESHEETS -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:600|Pacifico" rel="stylesheet">
-    <link href="gs/styles.css" rel="stylesheet" />
-    <link href="gs/prism.css" rel="stylesheet">
+    <link href="gh-page/css/styles.css" rel="stylesheet" />
+    <link href="gh-page/css/prism.css" rel="stylesheet">
 </head>
 
 <body>
@@ -202,7 +202,7 @@
         removedElements.forEach(s => s.classList.remove('selected'));
     },
 
-    onStop(evt) {
+    onStop() {
         this.keepSelection();
     },
 };
@@ -213,8 +213,8 @@ Selection.create(options);</code></pre>
 
     </main>
 
-    <script src="selection.min.js"></script>
-    <script src="gs/prism.js"></script>
-    <script src="gs/code.js"></script>
+    <script src="dist/selection.min.js"></script>
+    <script src="gh-page/js/prism.js"></script>
+    <script src="gh-page/js/code.js"></script>
 </body>
 </html>
