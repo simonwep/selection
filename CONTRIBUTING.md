@@ -11,7 +11,7 @@
 ### Pull Request
 
  1. Before a Pull request run `npm run build`.
- 2. Pull requests only into [master](https://github.com/RubaXa/Sortable/tree/master/)-branch.
+ 2. Pull requests only into [master](https://github.com/Simonwep/selection/tree/master)-branch.
 
 ***
 
