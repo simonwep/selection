@@ -1,3 +1,5 @@
+const UglifyJs = require('uglifyjs-webpack-plugin');
+
 module.exports = {
 
     entry: './src/selection.js',
@@ -19,6 +21,18 @@ module.exports = {
                 test: /\.js/,
                 loader: 'babel-loader'
             }
+        ]
+    },
+    
+    optimization: {
+        minimizer: [
+            new UglifyJs({
+                uglifyOptions: {
+                     output: {
+                        comments: false
+                    }
+                }
+            })
         ]
     }
 };
