@@ -3,7 +3,7 @@
 ### Issue
 
  1. Try [master](https://github.com/Simonwep/selection/tree/master)-branch, perhaps the problem has been solved.
- 2. [Use the search](https://github.com/Simonwep/selection/search?type=Issues), maybe there is already have a answer;.
+ 2. [Use the search](https://github.com/Simonwep/selection/search?type=Issues), maybe there is already an answer.
  3. If not found, [create an issue](https://github.com/Simonwep/selection/issues/new), please dont forget to carefully describe it how to reproduce it / pay attention to the issue-template.
 
 ***

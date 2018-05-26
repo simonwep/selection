@@ -109,7 +109,7 @@
                 this._selectables.push(...con.getElementsByTagName('*')));
 
             // Save current boundary
-            this._targetBoundary = this._boundaries.find((el) => _intersects(el, target));
+            this._targetBoundary = this._boundaries.find((el) => _intersects(el, target)).getBoundingClientRect();
 
             this._touchedElements = [];
             this._changedElements = {
@@ -193,14 +193,14 @@
         },
 
         _updateArea(evt) {
-            const brect = this._targetBoundary.getBoundingClientRect();
+            const brect = this._targetBoundary;
             const touch = evt.touches && evt.touches[0];
             let x2 = (touch || evt).clientX;
             let y2 = (touch || evt).clientY;
 
-            if (x2 < brect.x) x2 = brect.x;
+            if (x2 < brect.left) x2 = brect.left;
             if (y2 < brect.top) y2 = brect.top;
-            if (x2 > brect.x + brect.width) x2 = brect.x + brect.width;
+            if (x2 > brect.left + brect.width) x2 = brect.left + brect.width;
             if (y2 > brect.top + brect.height) y2 = brect.top + brect.height;
 
             const x3 = min(this._lastX, x2);
@@ -253,8 +253,11 @@
             };
 
             const check = ((node) => {
+
+                // Fire filter event
                 if (_dispatchFilterEvent(this, 'selectionFilter', node) !== false) {
 
+                    // Check if area intersects element
                     if (_intersects(this.areaElement, node)) {
 
                         // Check if the element wasn't present in the last selection.
