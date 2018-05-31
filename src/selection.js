@@ -5,6 +5,7 @@
  * @license MIT
  */
 
+// import utils and event dispatcher
 import * as event from './events';
 import * as _ from './utils';
 
@@ -39,20 +40,14 @@ function Selection() {
     // Store for keepSelection
     this._selectedStore = [];
 
-
     // Create area element
-    this.areaElement = (() => {
-        const ae = document.createElement('div');
-        document.body.appendChild(ae);
-
-        _.css(ae, {
-            top: 0,
-            left: 0,
-            position: 'fixed'
-        });
-
-        return ae;
-    })();
+    this.areaElement = document.createElement('div');
+    document.body.appendChild(this.areaElement);
+    _.css(this.areaElement, {
+        top: 0,
+        left: 0,
+        position: 'fixed'
+    });
 
     // Bind events
     _.on(document, 'mousedown', this._onTapStart);
@@ -143,6 +138,7 @@ Selection.prototype = {
         const x = (touch || evt).clientX;
         const y = (touch || evt).clientY;
 
+        // Check pixel threshold
         if (abs((x + y) - (this._lastX + this._lastY)) >= this.options.startThreshold) {
 
             _.off(document, 'mousemove', this._delayedTapMove);
@@ -235,36 +231,28 @@ Selection.prototype = {
             removed: []
         };
 
-        const check = ((node) => {
-
-            // Fire filter event
-            if (event.dispatchFilterEvent(this, 'selectionFilter', node) !== false) {
-
-                // Check if area intersects element
-                if (_.intersects(this.areaElement, node)) {
-
-                    // Check if the element wasn't present in the last selection.
-                    if (!this._touchedElements.includes(node)) {
-                        changed.added.push(node);
-                    }
-
-                    touched.push(node);
-                }
-
-            }
-        }).bind(this);
-
         // Itreate over the selectable elements
-        this._selectables.forEach(check);
+        this._selectables.forEach(node => {
 
-        // Check which elements where removed since lase selection
-        const touchedElements = this._touchedElements;
-        for (let i = touchedElements.length - 1; i >= 0; i--) {
-            let el = touchedElements[i];
-            if (!touched.includes(el)) {
-                changed.removed.push(el);
+                // Fire filter event
+                if (event.dispatchFilterEvent(this, 'selectionFilter', node) !== false) {
+
+                    // Check if area intersects element
+                    if (_.intersects(this.areaElement, node)) {
+
+                        // Check if the element wasn't present in the last selection.
+                        if (!this._touchedElements.includes(node)) {
+                            changed.added.push(node);
+                        }
+
+                        touched.push(node);
+                    }
+                }
             }
-        }
+        );
+
+        // Check which elements where removed since last selection
+        changed.removed = this._touchedElements.filter(el => !touched.includes(el));
 
         // Save
         this._touchedElements = touched;
@@ -298,7 +286,7 @@ Selection.prototype = {
 
     /**
      * Cancel the current selection process.
-     * @param   {boolean} true to fire the onStop listener after cancel
+     * @param  {boolean} true to fire the onStop listener after cancel.
      */
     cancel(keepEvent) {
         this._onTapStop(null, !keepEvent);
