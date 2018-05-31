@@ -8,16 +8,19 @@
 </h3>
 
 <p align="center">
-    <a href="https://choosealicense.com/licenses/mit/"><img
+  <a href="https://choosealicense.com/licenses/mit/"><img
 		alt="License MIT"
 		src="https://img.shields.io/badge/licence-MIT-blue.svg"></a>
-    <a href="https://webpack.js.org/"><img
-		alt="Webpack"
-		src="https://img.shields.io/badge/Webpack-4-blue.svg"></a>
+  <a href="https://webpack.js.org/"><img
+    alt="Webpack"
+    src="https://img.shields.io/badge/Webpack-4-blue.svg"></a>
 	<img alt="No dependencies"
 		src="https://img.shields.io/badge/dependencies-none-3387e0.svg">
+	<a href="https://travis-ci.org/Simonwep/selection"><img
+    alt="Build Status"
+    src="https://travis-ci.org/Simonwep/selection.svg?branch=master"></a>
 	<a href="https://www.npmjs.com/"><img
-		alt="npm package"
+	  alt="npm package"
 		src="https://img.shields.io/badge/npm-6.0.1-brightgreen.svg"></a>
 	<a href="https://www.npmjs.com/package/@simonwep/selection-js"><img
 		alt="downloads per week"

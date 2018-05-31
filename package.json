@@ -33,8 +33,8 @@
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
         "babel-preset-env": "^1.7.0",
         "uglifyjs-webpack-plugin": "^1.2.5",
-        "webpack": "^4.8.3",
-        "webpack-cli": "^2.1.3",
+        "webpack": "^4.10.2",
+        "webpack-cli": "^2.1.4",
         "webpack-dev-server": "^3.1.4"
     }
 }
