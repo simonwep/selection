@@ -26,7 +26,7 @@
 		alt="downloads per week"
 		src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
 	<img alt="Current version"
-		src="https://img.shields.io/badge/version-0.0.9-23AD62.svg">
+		src="https://img.shields.io/badge/version-0.0.10-23AD62.svg">
 </p>
 
 <h2 align="center">
@@ -54,7 +54,7 @@ $ npm install @simonwep/selection-js --save
 Include via [jsdelivr.net](https://www.jsdelivr.com/)
 
 ```javascript
-<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js@0.0.9/selection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js@0.0.10/selection.min.js"></script>
 ```
 
 ## Usage
