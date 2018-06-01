@@ -8,11 +8,14 @@ module.exports = {
         path: __dirname + '/dist',
         publicPath: 'dist/',
         filename: 'selection.min.js',
-        library: 'Selection'
+        library: 'Selection',
+        libraryTarget: 'umd'
     },
 
     devServer: {
-        contentBase: __dirname + '/'
+        contentBase: __dirname + '/',
+        host: '0.0.0.0',
+        port: 8080
     },
 
     module: {
@@ -23,7 +26,7 @@ module.exports = {
             }
         ]
     },
-    
+
     optimization: {
         minimizer: [
             new UglifyJs({

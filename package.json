@@ -1,11 +1,11 @@
 {
     "name": "@simonwep/selection-js",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
-    "main": "src/selection.js",
+    "main": "dist\selection.min.js",
     "scripts": {
         "build": "webpack --mode production",
-        "dev": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode development"
+        "dev": "webpack-dev-server --mode development"
     },
     "repository": {
         "type": "git",

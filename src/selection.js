@@ -14,7 +14,7 @@ const abs = Math.abs,
     min = Math.min,
     preventDefault = ev => ev.preventDefault();
 
-function Selection() {
+function Selection(options = {}) {
 
     // Default options
     const defaults = {
@@ -340,7 +340,7 @@ Selection.utils = {
 Selection.create = (options) => new Selection(options);
 
 // Set version
-Selection.version = '0.0.10';
+Selection.version = '0.0.11';
 
 // Export API
 module.exports = Selection;
