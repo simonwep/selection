@@ -54,7 +54,7 @@ $ npm install @simonwep/selection-js --save
 Include via [jsdelivr.net](https://www.jsdelivr.com/)
 
 ```javascript
-<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js@0.0.10/selection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js@0.0.10/dist/selection.min.js"></script>
 ```
 
 ## Usage
