@@ -3,35 +3,66 @@
  */
 
 // Constants
-const captureMode = false;
 const cssPrefixes = ['-moz-', '-ms-', '-o-', '-webkit-'];
 
 /**
- * Attach a event listener to a DOM-Element.
- * @param el The DOM-Element.
- * @param event The event name.
- * @param fn Callback function.
- * @param options Optional options.
+ * Add event(s) to element(s).
+ * @param elements DOM-Elements
+ * @param events Event names
+ * @param fn Callback
+ * @param options Optional options
+ * @return IArguments passed arguments
  */
-export function on(el, event, fn, options = {}) {
-    el.addEventListener(event, fn, {
-        capture: captureMode,
-        ...options
-    });
+export function on(elements, events, fn, options = {}) {
+    eventListener(elements, events, fn, options, 'addEventListener');
+    return arguments;
 }
 
 /**
- * Remove a event listener from a DOM-Element.
- * @param el The DOM-Element.
- * @param event The event name.
- * @param fn Callback function.
- * @param options Optional options.
+ * Remove event(s) from element(s).
+ * @param elements DOM-Elements
+ * @param events Event names
+ * @param fn Callback
+ * @param options Optional options
+ * @return IArguments passed arguments
  */
-export function off(el, event, fn, options = {}) {
-    el.removeEventListener(event, fn, {
-        capture: captureMode,
-        ...options
-    });
+export function off(elements, events, fn, options = {}) {
+    eventListener(elements, events, fn, options, 'removeEventListener');
+    return arguments;
+}
+
+function eventListener(elements, events, fn, options = {}, method) {
+
+    // Normalize array
+    if (HTMLCollection.prototype.isPrototypeOf(elements) ||
+        NodeList.prototype.isPrototypeOf(elements)) {
+        elements = Array.from(elements);
+    } else if (!Array.isArray(elements)) {
+        elements = [elements];
+    }
+
+    if (!Array.isArray(events)) {
+        events = [events];
+    }
+
+    for (let element of elements) {
+        for (let event of events) {
+            element[method](event, fn, {capture: false, ...options});
+        }
+    }
+}
+
+/**
+ * Binds all functions, wich starts with an underscord, of a es6 class to the class itself.
+ * @param context The context
+ */
+export function bindClassUnderscoreFunctions(context) {
+    const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(context));
+    for (let fn of methods) {
+        if (fn.charAt(0) === '_' && typeof context[fn] === 'function') {
+            context[fn] = context[fn].bind(context);
+        }
+    }
 }
 
 /**
@@ -133,4 +164,21 @@ export function removeElement(arr, el) {
     if (~index) {
         arr.splice(index, 1);
     }
+}
+
+/**
+ * Creates a new HTMLElement and, optionally, add it to another element.
+ * @param tag
+ * @param parent Optional parent element
+ * @return {HTMLElement} The new HTMLElement
+ *
+ */
+export function createElement(tag, parent) {
+    const element = document.createElement(tag);
+
+    if (parent instanceof HTMLElement) {
+        parent.appendChild(element);
+    }
+
+    return element;
 }

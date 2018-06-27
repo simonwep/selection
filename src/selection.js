@@ -12,55 +12,48 @@ import * as _ from './utils';
 const abs = Math.abs,
     max = Math.max,
     min = Math.min,
-    preventDefault = ev => ev.preventDefault();
+    preventDefault = e => e.preventDefault();
 
-function Selection(options = {}) {
+class Selection {
 
-    // Default options
-    const defaults = {
-        class: 'selection-area',
-        startThreshold: 10,
-        singleClick: true,
-        disableTouch: false,
-        containers: [],
-        selectables: [],
-        startareas: ['html'],
-        boundaries: ['html']
-    };
+    constructor(options = {}) {
 
-    this.options = Object.assign(defaults, options);
+        // Assign default options
+        this.options = Object.assign({
+            class: 'selection-area',
+            startThreshold: 10,
+            singleClick: true,
+            disableTouch: false,
+            containers: [],
+            selectables: [],
+            startareas: ['html'],
+            boundaries: ['html']
+        }, options);
 
-    // Bind all private methods
-    for (let fn in this) {
-        if (fn.charAt(0) === '_' && typeof this[fn] === 'function') {
-            this[fn] = this[fn].bind(this);
+        // Bind functions
+        _.bindClassUnderscoreFunctions(this);
+
+        // Store for keepSelection
+        this._selectedStore = [];
+
+        // Create area element
+        this.areaElement = _.createElement('div', document.body);
+        _.css(this.areaElement, {
+            top: 0,
+            left: 0,
+            position: 'fixed'
+        });
+
+        // Bind events
+        _.on(document, 'mousedown', this._onTapStart);
+
+        // Check if touch is disabled
+        if (!this.options.disableTouch) {
+            _.on(document, 'touchstart', this._onTapStart, {
+                passive: false
+            });
         }
     }
-
-    // Store for keepSelection
-    this._selectedStore = [];
-
-    // Create area element
-    this.areaElement = document.createElement('div');
-    document.body.appendChild(this.areaElement);
-    _.css(this.areaElement, {
-        top: 0,
-        left: 0,
-        position: 'fixed'
-    });
-
-    // Bind events
-    _.on(document, 'mousedown', this._onTapStart);
-
-    if (!this.options.disableTouch) {
-        _.on(document, 'touchstart', this._onTapStart, {
-            passive: false
-        });
-    }
-}
-
-Selection.prototype = {
-    constructor: Selection,
 
     _onTapStart(evt) {
         const touch = evt.touches && evt.touches[0];
@@ -83,12 +76,10 @@ Selection.prototype = {
         // Resolve selectors
         const containers = _.selectAll(this.options.containers);
         this._selectables = _.selectAll(this.options.selectables);
-        containers.forEach(con =>
-            this._selectables.push(...con.getElementsByTagName('*')));
+        containers.forEach(con => this._selectables.push(...con.getElementsByTagName('*')));
 
         // Save current boundary
         this._targetBoundary = this._boundaries.find((el) => _.intersects(el, target)).getBoundingClientRect();
-
         this._touchedElements = [];
         this._changedElements = {
             added: [],
@@ -98,8 +89,8 @@ Selection.prototype = {
         // Add class to the area element
         this.areaElement.classList.add(this.options.class);
 
-        // Prevent default selection
-        document.addEventListener('selectstart', preventDefault);
+        // Prevent default select event
+        _.on(document, 'selectstart', preventDefault);
 
         // Add listener
         _.on(document, 'mousemove', this._delayedTapMove);
@@ -107,12 +98,9 @@ Selection.prototype = {
             passive: false
         });
 
-        _.on(document, 'mouseup', this._onTapStop);
-        _.on(document, 'touchcancel', this._onTapStop);
-        _.on(document, 'touchend', this._onTapStop);
-
+        _.on(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
         evt.preventDefault();
-    },
+    }
 
     _onSingleTap(evt) {
         const touch = evt.touches && evt.touches[0];
@@ -131,7 +119,7 @@ Selection.prototype = {
         event.dispatchEvent(this, 'onSelect', this.areaElement, evt, touched, changed, {
             target
         });
-    },
+    }
 
     _delayedTapMove(evt) {
         const touch = evt.touches && evt.touches[0];
@@ -141,12 +129,8 @@ Selection.prototype = {
         // Check pixel threshold
         if (abs((x + y) - (this._lastX + this._lastY)) >= this.options.startThreshold) {
 
-            _.off(document, 'mousemove', this._delayedTapMove);
-            _.off(document, 'touchmove', this._delayedTapMove);
-
-            _.on(document, 'mousemove', this._onTapMove);
-            _.on(document, 'touchmove', this._onTapMove);
-
+            _.off(document, ['mousemove', 'touchmove'], this._delayedTapMove);
+            _.on(document, ['mousemove', 'touchmove'], this._onTapMove);
             _.css(this.areaElement, 'display', 'block');
 
             // New start position
@@ -161,7 +145,7 @@ Selection.prototype = {
             // the user performed an mutli-selection
             this._singleClick = false;
         }
-    },
+    }
 
     _onTapMove(evt) {
         this._updateArea(evt);
@@ -169,7 +153,7 @@ Selection.prototype = {
         const touched = this._touchedElements.concat(this._selectedStore);
         const changed = this._changedElements;
         event.dispatchEvent(this, 'onMove', this.areaElement, evt, touched, changed);
-    },
+    }
 
     _updateArea(evt) {
         const brect = this._targetBoundary;
@@ -193,22 +177,15 @@ Selection.prototype = {
             width: x4 - x3,
             height: y4 - y3
         });
-    },
+    }
 
     _onTapStop(evt, noevent) {
-        _.off(document, 'mousemove', this._delayedTapMove);
-        _.off(document, 'touchmove', this._delayedTapMove);
-
-        _.off(document, 'mousemove', this._onTapMove);
-        _.off(document, 'touchmove', this._onTapMove);
-
-        _.off(document, 'mouseup', this._onTapStop);
-        _.off(document, 'touchcancel', this._onTapStop);
-        _.off(document, 'touchend', this._onTapStop);
+        _.off(document, ['mousemove', 'touchmove'], this._delayedTapMove);
+        _.off(document, ['touchmove', 'mousemove'], this._onTapMove);
+        _.off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
 
         if (this._singleClick) {
             this._onSingleTap(evt);
-
         } else if (!noevent) {
 
             this._updatedTouchingElements();
@@ -218,11 +195,10 @@ Selection.prototype = {
             event.dispatchEvent(this, 'onStop', this.areaElement, evt, touched, changed);
         }
 
-        // Enable default selection
-        document.removeEventListener('selectstart', preventDefault);
-
+        // Enable default select event
+        _.off(document, 'selectstart', preventDefault);
         _.css(this.areaElement, 'display', 'none');
-    },
+    }
 
     _updatedTouchingElements() {
         const touched = [];
@@ -257,7 +233,7 @@ Selection.prototype = {
         // Save
         this._touchedElements = touched;
         this._changedElements = changed;
-    },
+    }
 
     /**
      * Saves the current selection for the next selecion.
@@ -266,14 +242,14 @@ Selection.prototype = {
     keepSelection() {
         const keep = this._touchedElements.filter(x => !this._selectedStore.includes(x));
         this._selectedStore = keep.concat(this._selectedStore);
-    },
+    }
 
     /**
      * Clear the elements which where saved by 'keepSelection()'.
      */
     clearSelection() {
         this._selectedStore = [];
-    },
+    }
 
     /**
      * Removes an particular element from the selection.
@@ -281,7 +257,7 @@ Selection.prototype = {
     removeFromSelection(el) {
         _.removeElement(this._selectedStore, el);
         _.removeElement(this._touchedElements, el);
-    },
+    }
 
 
     /**
@@ -290,7 +266,7 @@ Selection.prototype = {
      */
     cancel(keepEvent) {
         this._onTapStop(null, !keepEvent);
-    },
+    }
 
     /**
      * Set or get an option.
@@ -300,19 +276,15 @@ Selection.prototype = {
      */
     option(name, value) {
         const options = this.options;
-
-        if (value === void 0)
-            return options[name];
-
-        return options[name] = value;
-    },
+        return value === void 0 ? options[name] : (options[name] = value);
+    }
 
     /**
      * Disable the selection functinality.
      */
     disable() {
         _.off(document, 'mousedown', this._onTapStart);
-    },
+    }
 
     /**
      * Disable the selection functinality.
@@ -320,7 +292,7 @@ Selection.prototype = {
     enable() {
         _.on(document, 'mousedown', this._onTapStart);
     }
-};
+}
 
 // Export utils
 Selection.utils = {
