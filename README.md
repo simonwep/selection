@@ -184,7 +184,3 @@ Selection.utils
 * selectAll(selector`:String|Array`)`:Array` _- Returns all HTMLElements which were selected by the selector._
 * eventPath(evt`:DOMEvent`)`:NodeList` _- Event.composedPath() polyfill._
 * removeElement(arr`:Array`, el`:Object`) _- Removes an particular element from an Array._
-
-## Todos / Ideas
-* [x] Keep selection option -> select multiple times.
-* [x] Select via single-click.
