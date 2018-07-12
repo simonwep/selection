@@ -16,6 +16,9 @@
         src="https://img.shields.io/badge/Webpack-4-blue.svg"></a>
     <img alt="No dependencies"
         src="https://img.shields.io/badge/dependencies-none-3387e0.svg">
+    <a href="https://www.patreon.com/simonwep"><img
+        alt="Support me"
+        src="https://img.shields.io/badge/patreon-support-57D3E4.svg"></a>
     <a href="https://travis-ci.org/Simonwep/selection"><img
         alt="Build Status"
         src="https://travis-ci.org/Simonwep/selection.svg?branch=master"></a>
