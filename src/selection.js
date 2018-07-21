@@ -9,10 +9,8 @@
 import * as event from './events';
 import * as _ from './utils';
 
-const abs = Math.abs,
-    max = Math.max,
-    min = Math.min,
-    preventDefault = e => e.preventDefault();
+const {abs, max, min} = Math;
+const preventDefault = e => e.preventDefault();
 
 class Selection {
 
@@ -107,8 +105,7 @@ class Selection {
         const target = (touch || evt).target;
 
         // Check if the element is seletable
-        if (!this._selectables.includes(target))
-            return;
+        if (!this._selectables.includes(target)) return;
 
         // Check if this element
         this._touchedElements.push(target);
@@ -202,10 +199,7 @@ class Selection {
 
     _updatedTouchingElements() {
         const touched = [];
-        const changed = {
-            added: [],
-            removed: []
-        };
+        const changed = {added: [], removed: []};
 
         // Itreate over the selectable elements
         this._selectables.forEach(node => {
@@ -275,8 +269,8 @@ class Selection {
      * @return  {*}      the new value
      */
     option(name, value) {
-        const options = this.options;
-        return value === void 0 ? options[name] : (options[name] = value);
+        const {options} = this;
+        return value == null ? options[name] : (options[name] = value);
     }
 
     /**
@@ -309,7 +303,7 @@ Selection.utils = {
  * Create selection instance
  * @param {Object} [options]
  */
-Selection.create = (options) => new Selection(options);
+Selection.create = options => new Selection(options);
 
 // Set version
 Selection.version = '0.1.0';
