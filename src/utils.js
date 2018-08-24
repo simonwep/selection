@@ -83,8 +83,9 @@ export function css(el, attr, val) {
 
     } else if (val == null) {
 
-        if (document.defaultView && document.defaultView.getComputedStyle) {
-            val = document.defaultView.getComputedStyle(el, null);
+        const dw = document.defaultView;
+        if (dw && dw.getComputedStyle) {
+            val = dw.getComputedStyle(el, null);
         } else if (el.currentStyle) {
             val = el.currentStyle;
         }

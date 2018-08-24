@@ -10,6 +10,7 @@ import * as event from './events';
 import * as _ from './utils';
 
 const {abs, max, min} = Math;
+const doc = document;
 const preventDefault = e => e.preventDefault();
 
 class Selection {
@@ -39,7 +40,7 @@ class Selection {
         this._selectedStore = [];
 
         // Create area element
-        this.areaElement = _.createElement('div', document.body);
+        this.areaElement = _.createElement('div', doc.body);
         _.css(this.areaElement, {
             top: 0,
             left: 0,
@@ -47,11 +48,11 @@ class Selection {
         });
 
         // Bind events
-        _.on(document, 'mousedown', this._onTapStart);
+        _.on(doc, 'mousedown', this._onTapStart);
 
         // Check if touch is disabled
         if (!this.options.disableTouch) {
-            _.on(document, 'touchstart', this._onTapStart, {
+            _.on(doc, 'touchstart', this._onTapStart, {
                 passive: false
             });
         }
@@ -92,15 +93,15 @@ class Selection {
         this.areaElement.classList.add(this.options.class);
 
         // Prevent default select event
-        _.on(document, 'selectstart', preventDefault);
+        _.on(doc, 'selectstart', preventDefault);
 
         // Add listener
-        _.on(document, 'mousemove', this._delayedTapMove);
-        _.on(document, 'touchmove', this._delayedTapMove, {
+        _.on(doc, 'mousemove', this._delayedTapMove);
+        _.on(doc, 'touchmove', this._delayedTapMove, {
             passive: false
         });
 
-        _.on(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
+        _.on(doc, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
         evt.preventDefault();
     }
 
@@ -108,12 +109,10 @@ class Selection {
         const touch = evt.touches && evt.touches[0];
         const target = (touch || evt).target;
 
-        // Check if the element is seletable
+        // Check if the element is selectable
         if (!this._selectables.includes(target)) return;
 
-        // Check if this element
         this._touchedElements.push(target);
-
         const touched = this._selectedStore;
         const changed = this._changedElements;
 
@@ -130,8 +129,8 @@ class Selection {
         // Check pixel threshold
         if (abs((x + y) - (this._lastX + this._lastY)) >= this.options.startThreshold) {
 
-            _.off(document, ['mousemove', 'touchmove'], this._delayedTapMove);
-            _.on(document, ['mousemove', 'touchmove'], this._onTapMove);
+            _.off(doc, ['mousemove', 'touchmove'], this._delayedTapMove);
+            _.on(doc, ['mousemove', 'touchmove'], this._onTapMove);
             _.css(this.areaElement, 'display', 'block');
 
             // New start position
@@ -181,9 +180,9 @@ class Selection {
     }
 
     _onTapStop(evt, noevent) {
-        _.off(document, ['mousemove', 'touchmove'], this._delayedTapMove);
-        _.off(document, ['touchmove', 'mousemove'], this._onTapMove);
-        _.off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
+        _.off(doc, ['mousemove', 'touchmove'], this._delayedTapMove);
+        _.off(doc, ['touchmove', 'mousemove'], this._onTapMove);
+        _.off(doc, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
 
         if (this._singleClick) {
             this._onSingleTap(evt);
@@ -196,7 +195,7 @@ class Selection {
         }
 
         // Enable default select event
-        _.off(document, 'selectstart', preventDefault);
+        _.off(doc, 'selectstart', preventDefault);
         _.css(this.areaElement, 'display', 'none');
     }
 
@@ -205,24 +204,24 @@ class Selection {
         const changed = {added: [], removed: []};
 
         // Itreate over the selectable elements
-        this._selectables.forEach(node => {
+        for (let i = 0, n = this._selectables.length; i < n; i++) {
+            const node = this._selectables[i];
 
-                // Check if area intersects element
-                if (_.intersects(this.areaElement, node, this.options.mode)) {
+            // Check if area intersects element
+            if (_.intersects(this.areaElement, node, this.options.mode)) {
 
-                    // Fire filter event
-                    if (event.dispatchFilterEvent(this, 'selectionFilter', node) !== false) {
+                // Fire filter event
+                if (event.dispatchFilterEvent(this, 'selectionFilter', node) !== false) {
 
-                        // Check if the element wasn't present in the last selection.
-                        if (!this._touchedElements.includes(node)) {
-                            changed.added.push(node);
-                        }
-
-                        touched.push(node);
+                    // Check if the element wasn't present in the last selection.
+                    if (!this._touchedElements.includes(node)) {
+                        changed.added.push(node);
                     }
+
+                    touched.push(node);
                 }
             }
-        );
+        }
 
         // Check which elements where removed since last selection
         changed.removed = this._touchedElements.filter(el => !touched.includes(el));
@@ -280,14 +279,14 @@ class Selection {
      * Disable the selection functinality.
      */
     disable() {
-        _.off(document, 'mousedown', this._onTapStart);
+        _.off(doc, 'mousedown', this._onTapStart);
     }
 
     /**
      * Disable the selection functinality.
      */
     enable() {
-        _.on(document, 'mousedown', this._onTapStart);
+        _.on(doc, 'mousedown', this._onTapStart);
     }
 }
 
