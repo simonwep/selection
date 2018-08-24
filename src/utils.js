@@ -73,7 +73,7 @@ const unitify = (val, unit = 'px') =>
 export function css(el, attr, val) {
     const style = el && el.style;
     if (!style) return;
-    
+
     if (typeof attr === 'object') {
 
         for (const prop in attr) {
@@ -106,12 +106,32 @@ export function css(el, attr, val) {
  * Check if two DOM-Elements intersects each other.
  * @param ela First DOM-Element.
  * @param elb Second DOM-Element.
+ * @param mode Options are center, cover or touch.
  * @returns {boolean} If both elements intersects each other.
  */
-export function intersects(ela, elb) {
+export function intersects(ela, elb, mode = 'touch') {
     const a = ela.getBoundingClientRect();
     const b = elb.getBoundingClientRect();
-    return a.left + a.width >= b.left && a.left <= b.left + b.width && a.top + a.height >= b.top && a.top <= b.top + b.height;
+
+    if (mode === 'center') {
+        const bxc = b.left + b.width / 2;
+        const byc = b.top + b.height / 2;
+
+        return bxc >= a.left
+            && bxc <= a.left + a.width
+            && byc >= a.top
+            && byc <= a.top + a.height;
+    } else if (mode === 'cover') {
+        return b.left >= a.left
+            && b.top >= a.top
+            && b.left + b.width <= a.left + a.width
+            && b.top + b.height <= a.top + a.height;
+    } else if (mode === 'touch') {
+        return a.left + a.width >= b.left
+            && a.left <= b.left + b.width
+            && a.top + a.height >= b.top
+            && a.top <= b.top + b.height;
+    }
 }
 
 /**

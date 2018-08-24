@@ -19,11 +19,15 @@ class Selection {
         // Assign default options
         this.options = Object.assign({
             class: 'selection-area',
+
+            mode: 'touch',
             startThreshold: 10,
             singleClick: true,
             disableTouch: false,
+
             containers: [],
             selectables: [],
+
             startareas: ['html'],
             boundaries: ['html']
         }, options);
@@ -61,8 +65,8 @@ class Selection {
         this._boundaries = _.selectAll(this.options.boundaries);
 
         const evtpath = _.eventPath(evt);
-        if (!startAreas.find((el) => evtpath.includes(el)) ||
-            !this._boundaries.find((el) => evtpath.includes(el))) {
+        if (!startAreas.find(el => evtpath.includes(el)) ||
+            !this._boundaries.find(el => evtpath.includes(el))) {
             return;
         }
 
@@ -77,7 +81,7 @@ class Selection {
         containers.forEach(con => this._selectables.push(...con.getElementsByTagName('*')));
 
         // Save current boundary
-        this._targetBoundary = this._boundaries.find((el) => _.intersects(el, target)).getBoundingClientRect();
+        this._targetBoundary = this._boundaries.find(el => _.intersects(el, target)).getBoundingClientRect();
         this._touchedElements = [];
         this._changedElements = {
             added: [],
@@ -188,7 +192,6 @@ class Selection {
             this._updatedTouchingElements();
             const touched = this._touchedElements.concat(this._selectedStore);
             const changed = this._changedElements;
-
             event.dispatchEvent(this, 'onStop', this.areaElement, evt, touched, changed);
         }
 
@@ -204,11 +207,11 @@ class Selection {
         // Itreate over the selectable elements
         this._selectables.forEach(node => {
 
-                // Fire filter event
-                if (event.dispatchFilterEvent(this, 'selectionFilter', node) !== false) {
+                // Check if area intersects element
+                if (_.intersects(this.areaElement, node, this.options.mode)) {
 
-                    // Check if area intersects element
-                    if (_.intersects(this.areaElement, node)) {
+                    // Fire filter event
+                    if (event.dispatchFilterEvent(this, 'selectionFilter', node) !== false) {
 
                         // Check if the element wasn't present in the last selection.
                         if (!this._touchedElements.includes(node)) {
