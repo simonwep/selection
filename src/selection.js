@@ -227,7 +227,6 @@ function Selection(options = {}) {
             that._changedElements = changed;
         },
 
-
         _dispatchFilterEvent(eventName, element) {
             const event = that.options[eventName];
 
@@ -253,7 +252,6 @@ function Selection(options = {}) {
                 });
             }
         },
-
 
         /**
          * Saves the current selection for the next selecion.
@@ -338,7 +336,7 @@ Selection.utils = {
 Selection.create = options => new Selection(options);
 
 // Set version
-Selection.version = '0.1.1';
+Selection.version = '0.1.2';
 
 // Export API
 module.exports = Selection;

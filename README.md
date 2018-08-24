@@ -29,7 +29,7 @@
           alt="downloads per week"
         src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
     <img alt="Current version"
-        src="https://img.shields.io/badge/version-0.1.1-23AD62.svg">
+        src="https://img.shields.io/badge/version-0.1.2-23AD62.svg">
 </p>
 
 <h2 align="center">
@@ -45,7 +45,7 @@ Quick demo: https://simonwep.github.io/selection
 * Simple usage
 * No jQuery
 * Nodejs support
-* Lightweight, 4KB gzipped
+* Lightweight, 3kB gzipped
 
 ### Install
 
@@ -85,6 +85,11 @@ const selection = new Selection({
 
     // Disable the selection functionality for touch devices
     disableTouch: false,
+
+    // On which point an element should be selected.
+    // Available modes are cover (cover the entire element), center (touch the center) or
+    // the default mode is touch (just touching it).
+    mode: 'touch',
 
     // Enable single-click selection
     singleClick: true,
