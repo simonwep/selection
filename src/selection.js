@@ -5,20 +5,17 @@
  * @license MIT
  */
 
-// import utils and event dispatcher
-import * as event from './events';
 import * as _ from './utils';
 
 const {abs, max, min} = Math;
 const doc = document;
 const preventDefault = e => e.preventDefault();
 
-class Selection {
+function Selection(options = {}) {
 
-    constructor(options = {}) {
+    const that = {
 
-        // Assign default options
-        this.options = Object.assign({
+        options: Object.assign({
             class: 'selection-area',
 
             mode: 'touch',
@@ -31,263 +28,296 @@ class Selection {
 
             startareas: ['html'],
             boundaries: ['html']
-        }, options);
-
-        // Bind functions
-        _.bindClassUnderscoreFunctions(this);
+        }, options),
 
         // Store for keepSelection
-        this._selectedStore = [];
+        _selectedStore: [],
 
         // Create area element
-        this.areaElement = _.createElement('div', doc.body);
-        _.css(this.areaElement, {
-            top: 0,
-            left: 0,
-            position: 'fixed'
-        });
+        _areaElement: _.createElement('div', doc.body),
 
-        // Bind events
-        _.on(doc, 'mousedown', this._onTapStart);
+        _init() {
+            _.css(that._areaElement, {
+                top: 0,
+                left: 0,
+                position: 'fixed'
+            });
 
-        // Check if touch is disabled
-        if (!this.options.disableTouch) {
-            _.on(doc, 'touchstart', this._onTapStart, {
+            // Bind events
+            _.on(doc, 'mousedown', that._onTapStart);
+
+            // Check if touch is disabled
+            if (!that.options.disableTouch) {
+                _.on(doc, 'touchstart', that._onTapStart, {
+                    passive: false
+                });
+            }
+        },
+
+        _onTapStart(evt) {
+            const touch = evt.touches && evt.touches[0];
+            const target = (touch || evt).target;
+
+            const startAreas = _.selectAll(that.options.startareas);
+            that._boundaries = _.selectAll(that.options.boundaries);
+
+            const evtpath = _.eventPath(evt);
+            if (!startAreas.find(el => evtpath.includes(el)) ||
+                !that._boundaries.find(el => evtpath.includes(el))) {
+                return;
+            }
+
+            // Save start coordinates
+            that._lastX = (touch || evt).clientX;
+            that._lastY = (touch || evt).clientY;
+            that._singleClick = true; // To detect single-click
+
+            // Resolve selectors
+            const containers = _.selectAll(that.options.containers);
+            that._selectables = _.selectAll(that.options.selectables);
+            containers.forEach(con => that._selectables.push(...con.getElementsByTagName('*')));
+
+            // Save current boundary
+            that._targetBoundary = that._boundaries.find(el => _.intersects(el, target)).getBoundingClientRect();
+            that._touchedElements = [];
+            that._changedElements = {
+                added: [],
+                removed: []
+            };
+
+            // Add class to the area element
+            that._areaElement.classList.add(that.options.class);
+
+            // Prevent default select event
+            _.on(doc, 'selectstart', preventDefault);
+
+            // Add listener
+            _.on(doc, 'mousemove', that._delayedTapMove);
+            _.on(doc, 'touchmove', that._delayedTapMove, {
                 passive: false
             });
-        }
-    }
 
-    _onTapStart(evt) {
-        const touch = evt.touches && evt.touches[0];
-        const target = (touch || evt).target;
+            _.on(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
+            evt.preventDefault();
+        },
 
-        const startAreas = _.selectAll(this.options.startareas);
-        this._boundaries = _.selectAll(this.options.boundaries);
+        _onSingleTap(evt) {
+            const touch = evt.touches && evt.touches[0];
+            const target = (touch || evt).target;
 
-        const evtpath = _.eventPath(evt);
-        if (!startAreas.find(el => evtpath.includes(el)) ||
-            !this._boundaries.find(el => evtpath.includes(el))) {
-            return;
-        }
+            // Check if the element is selectable
+            if (!that._selectables.includes(target)) return;
 
-        // Save start coordinates
-        this._lastX = (touch || evt).clientX;
-        this._lastY = (touch || evt).clientY;
-        this._singleClick = true; // To detect single-click
+            that._touchedElements.push(target);
+            const touched = that._selectedStore;
+            const changed = that._changedElements;
 
-        // Resolve selectors
-        const containers = _.selectAll(this.options.containers);
-        this._selectables = _.selectAll(this.options.selectables);
-        containers.forEach(con => this._selectables.push(...con.getElementsByTagName('*')));
+            that._dispatchEvent('onSelect', that._areaElement, evt, touched, changed, {
+                target
+            });
+        },
 
-        // Save current boundary
-        this._targetBoundary = this._boundaries.find(el => _.intersects(el, target)).getBoundingClientRect();
-        this._touchedElements = [];
-        this._changedElements = {
-            added: [],
-            removed: []
-        };
+        _delayedTapMove(evt) {
+            const touch = evt.touches && evt.touches[0];
+            const x = (touch || evt).clientX;
+            const y = (touch || evt).clientY;
 
-        // Add class to the area element
-        this.areaElement.classList.add(this.options.class);
+            // Check pixel threshold
+            if (abs((x + y) - (that._lastX + that._lastY)) >= that.options.startThreshold) {
 
-        // Prevent default select event
-        _.on(doc, 'selectstart', preventDefault);
+                _.off(doc, ['mousemove', 'touchmove'], that._delayedTapMove);
+                _.on(doc, ['mousemove', 'touchmove'], that._onTapMove);
+                _.css(that._areaElement, 'display', 'block');
 
-        // Add listener
-        _.on(doc, 'mousemove', this._delayedTapMove);
-        _.on(doc, 'touchmove', this._delayedTapMove, {
-            passive: false
-        });
+                // New start position
+                that._updateArea(evt);
 
-        _.on(doc, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
-        evt.preventDefault();
-    }
+                // Fire event
+                const touched = that._touchedElements.concat(that._selectedStore);
+                const changed = that._changedElements;
+                that._dispatchEvent('onStart', that._areaElement, evt, touched, changed);
 
-    _onSingleTap(evt) {
-        const touch = evt.touches && evt.touches[0];
-        const target = (touch || evt).target;
+                // An action is recognized as single-select until
+                // the user performed an mutli-selection
+                that._singleClick = false;
+            }
+        },
 
-        // Check if the element is selectable
-        if (!this._selectables.includes(target)) return;
+        _onTapMove(evt) {
+            that._updateArea(evt);
+            that._updatedTouchingElements();
+            const touched = that._touchedElements.concat(that._selectedStore);
+            const changed = that._changedElements;
+            that._dispatchEvent('onMove', that._areaElement, evt, touched, changed);
+        },
 
-        this._touchedElements.push(target);
-        const touched = this._selectedStore;
-        const changed = this._changedElements;
+        _updateArea(evt) {
+            const brect = that._targetBoundary;
+            const touch = evt.touches && evt.touches[0];
+            let x2 = (touch || evt).clientX;
+            let y2 = (touch || evt).clientY;
 
-        event.dispatchEvent(this, 'onSelect', this.areaElement, evt, touched, changed, {
-            target
-        });
-    }
+            if (x2 < brect.left) x2 = brect.left;
+            if (y2 < brect.top) y2 = brect.top;
+            if (x2 > brect.left + brect.width) x2 = brect.left + brect.width;
+            if (y2 > brect.top + brect.height) y2 = brect.top + brect.height;
 
-    _delayedTapMove(evt) {
-        const touch = evt.touches && evt.touches[0];
-        const x = (touch || evt).clientX;
-        const y = (touch || evt).clientY;
+            const x3 = min(that._lastX, x2);
+            const y3 = min(that._lastY, y2);
+            const x4 = max(that._lastX, x2);
+            const y4 = max(that._lastY, y2);
 
-        // Check pixel threshold
-        if (abs((x + y) - (this._lastX + this._lastY)) >= this.options.startThreshold) {
+            _.css(that._areaElement, {
+                top: y3,
+                left: x3,
+                width: x4 - x3,
+                height: y4 - y3
+            });
+        },
 
-            _.off(doc, ['mousemove', 'touchmove'], this._delayedTapMove);
-            _.on(doc, ['mousemove', 'touchmove'], this._onTapMove);
-            _.css(this.areaElement, 'display', 'block');
+        _onTapStop(evt, noevent) {
+            _.off(doc, ['mousemove', 'touchmove'], that._delayedTapMove);
+            _.off(doc, ['touchmove', 'mousemove'], that._onTapMove);
+            _.off(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
 
-            // New start position
-            this._updateArea(evt);
+            if (that._singleClick) {
+                that._onSingleTap(evt);
+            } else if (!noevent) {
 
-            // Fire event
-            const touched = this._touchedElements.concat(this._selectedStore);
-            const changed = this._changedElements;
-            event.dispatchEvent(this, 'onStart', this.areaElement, evt, touched, changed);
+                that._updatedTouchingElements();
+                const touched = that._touchedElements.concat(that._selectedStore);
+                const changed = that._changedElements;
+                that._dispatchEvent('onStop', that._areaElement, evt, touched, changed);
+            }
 
-            // An action is recognized as single-select until
-            // the user performed an mutli-selection
-            this._singleClick = false;
-        }
-    }
+            // Enable default select event
+            _.off(doc, 'selectstart', preventDefault);
+            _.css(that._areaElement, 'display', 'none');
+        },
 
-    _onTapMove(evt) {
-        this._updateArea(evt);
-        this._updatedTouchingElements();
-        const touched = this._touchedElements.concat(this._selectedStore);
-        const changed = this._changedElements;
-        event.dispatchEvent(this, 'onMove', this.areaElement, evt, touched, changed);
-    }
+        _updatedTouchingElements() {
+            const touched = [];
+            const changed = {added: [], removed: []};
 
-    _updateArea(evt) {
-        const brect = this._targetBoundary;
-        const touch = evt.touches && evt.touches[0];
-        let x2 = (touch || evt).clientX;
-        let y2 = (touch || evt).clientY;
+            // Itreate over the selectable elements
+            for (let i = 0, n = that._selectables.length; i < n; i++) {
+                const node = that._selectables[i];
 
-        if (x2 < brect.left) x2 = brect.left;
-        if (y2 < brect.top) y2 = brect.top;
-        if (x2 > brect.left + brect.width) x2 = brect.left + brect.width;
-        if (y2 > brect.top + brect.height) y2 = brect.top + brect.height;
+                // Check if area intersects element
+                if (_.intersects(that._areaElement, node, that.options.mode)) {
 
-        const x3 = min(this._lastX, x2);
-        const y3 = min(this._lastY, y2);
-        const x4 = max(this._lastX, x2);
-        const y4 = max(this._lastY, y2);
+                    // Fire filter event
+                    if (that._dispatchFilterEvent('selectionFilter', node) !== false) {
 
-        _.css(this.areaElement, {
-            top: y3,
-            left: x3,
-            width: x4 - x3,
-            height: y4 - y3
-        });
-    }
+                        // Check if the element wasn't present in the last selection.
+                        if (!that._touchedElements.includes(node)) {
+                            changed.added.push(node);
+                        }
 
-    _onTapStop(evt, noevent) {
-        _.off(doc, ['mousemove', 'touchmove'], this._delayedTapMove);
-        _.off(doc, ['touchmove', 'mousemove'], this._onTapMove);
-        _.off(doc, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
-
-        if (this._singleClick) {
-            this._onSingleTap(evt);
-        } else if (!noevent) {
-
-            this._updatedTouchingElements();
-            const touched = this._touchedElements.concat(this._selectedStore);
-            const changed = this._changedElements;
-            event.dispatchEvent(this, 'onStop', this.areaElement, evt, touched, changed);
-        }
-
-        // Enable default select event
-        _.off(doc, 'selectstart', preventDefault);
-        _.css(this.areaElement, 'display', 'none');
-    }
-
-    _updatedTouchingElements() {
-        const touched = [];
-        const changed = {added: [], removed: []};
-
-        // Itreate over the selectable elements
-        for (let i = 0, n = this._selectables.length; i < n; i++) {
-            const node = this._selectables[i];
-
-            // Check if area intersects element
-            if (_.intersects(this.areaElement, node, this.options.mode)) {
-
-                // Fire filter event
-                if (event.dispatchFilterEvent(this, 'selectionFilter', node) !== false) {
-
-                    // Check if the element wasn't present in the last selection.
-                    if (!this._touchedElements.includes(node)) {
-                        changed.added.push(node);
+                        touched.push(node);
                     }
-
-                    touched.push(node);
                 }
             }
+
+            // Check which elements where removed since last selection
+            changed.removed = that._touchedElements.filter(el => !touched.includes(el));
+
+            // Save
+            that._touchedElements = touched;
+            that._changedElements = changed;
+        },
+
+
+        _dispatchFilterEvent(eventName, element) {
+            const event = that.options[eventName];
+
+            // Validate function
+            if (typeof event === 'function') {
+                return event.call(that, {selection: that, eventName, element});
+            }
+        },
+
+        _dispatchEvent(eventName, areaElement, originalEvent, selectedElements, changedElements, additional) {
+            const event = that.options[eventName];
+
+            // Validate function
+            if (typeof event === 'function') {
+                return event.call(that, {
+                    selection: that,
+                    eventName,
+                    areaElement,
+                    selectedElements,
+                    changedElements,
+                    originalEvent,
+                    ...additional
+                });
+            }
+        },
+
+
+        /**
+         * Saves the current selection for the next selecion.
+         * Allows multiple selections.
+         */
+        keepSelection() {
+            const keep = that._touchedElements.filter(x => !that._selectedStore.includes(x));
+            that._selectedStore = keep.concat(that._selectedStore);
+        },
+
+        /**
+         * Clear the elements which where saved by 'keepSelection()'.
+         */
+        clearSelection() {
+            that._selectedStore = [];
+        },
+
+        /**
+         * Removes an particular element from the selection.
+         */
+        removeFromSelection(el) {
+            _.removeElement(that._selectedStore, el);
+            _.removeElement(that._touchedElements, el);
+        },
+
+
+        /**
+         * Cancel the current selection process.
+         * @param  {boolean} true to fire the onStop listener after cancel.
+         */
+        cancel(keepEvent) {
+            that._onTapStop(null, !keepEvent);
+        },
+
+        /**
+         * Set or get an option.
+         * @param   {string} name
+         * @param   {*}      value
+         * @return  {*}      the new value
+         */
+        option(name, value) {
+            const {options} = that;
+            return value == null ? options[name] : (options[name] = value);
+        },
+
+        /**
+         * Disable the selection functinality.
+         */
+        disable() {
+            _.off(doc, 'mousedown', that._onTapStart);
+        },
+
+        /**
+         * Disable the selection functinality.
+         */
+        enable() {
+            _.on(doc, 'mousedown', that._onTapStart);
         }
+    };
 
-        // Check which elements where removed since last selection
-        changed.removed = this._touchedElements.filter(el => !touched.includes(el));
+    // Initialize
+    that._init();
 
-        // Save
-        this._touchedElements = touched;
-        this._changedElements = changed;
-    }
-
-    /**
-     * Saves the current selection for the next selecion.
-     * Allows multiple selections.
-     */
-    keepSelection() {
-        const keep = this._touchedElements.filter(x => !this._selectedStore.includes(x));
-        this._selectedStore = keep.concat(this._selectedStore);
-    }
-
-    /**
-     * Clear the elements which where saved by 'keepSelection()'.
-     */
-    clearSelection() {
-        this._selectedStore = [];
-    }
-
-    /**
-     * Removes an particular element from the selection.
-     */
-    removeFromSelection(el) {
-        _.removeElement(this._selectedStore, el);
-        _.removeElement(this._touchedElements, el);
-    }
-
-
-    /**
-     * Cancel the current selection process.
-     * @param  {boolean} true to fire the onStop listener after cancel.
-     */
-    cancel(keepEvent) {
-        this._onTapStop(null, !keepEvent);
-    }
-
-    /**
-     * Set or get an option.
-     * @param   {string} name
-     * @param   {*}      value
-     * @return  {*}      the new value
-     */
-    option(name, value) {
-        const {options} = this;
-        return value == null ? options[name] : (options[name] = value);
-    }
-
-    /**
-     * Disable the selection functinality.
-     */
-    disable() {
-        _.off(doc, 'mousedown', this._onTapStart);
-    }
-
-    /**
-     * Disable the selection functinality.
-     */
-    enable() {
-        _.on(doc, 'mousedown', this._onTapStart);
-    }
+    return that;
 }
 
 // Export utils

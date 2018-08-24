@@ -1,10 +1,3 @@
-/**
- * Utils module for DOM-Actions.
- */
-
-// Constants
-const cssPrefixes = 'moz ms o webkit'.split(' ');
-
 function eventListener(method, elements, events, fn, options = {}) {
 
     // Normalize array
@@ -45,21 +38,7 @@ export const on = eventListener.bind(null, 'addEventListener');
  */
 export const off = eventListener.bind(null, 'removeEventListener');
 
-/**
- * Binds all functions, wich starts with an underscord, of a es6 class to the class itself.
- * @param context The context
- */
-export function bindClassUnderscoreFunctions(context) {
-    const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(context));
-    for (const fn of methods) {
-        if (fn.charAt(0) === '_' && typeof context[fn] === 'function') {
-            context[fn] = context[fn].bind(context);
-        }
-    }
-}
-
-const unitify = (val, unit = 'px') =>
-    typeof val === 'number' ? val + unit : '' + val;
+const unitify = (val, unit = 'px') => typeof val === 'number' ? val + unit : '' + val;
 
 /**
  * Add css to a DOM-Element or returns the current
@@ -92,14 +71,7 @@ export function css(el, attr, val) {
 
         return attr == null ? val : val[attr];
     } else {
-
-        if (!(attr in style)) {
-            for (const pref of cssPrefixes) {
-                style[pref + attr] = unitify(val);
-            }
-        } else {
-            style[attr] = unitify(val);
-        }
+        style[attr] = unitify(val);
     }
 }
 
@@ -119,19 +91,19 @@ export function intersects(ela, elb, mode = 'touch') {
         const byc = b.top + b.height / 2;
 
         return bxc >= a.left
-            && bxc <= a.left + a.width
+            && bxc <= a.right
             && byc >= a.top
-            && byc <= a.top + a.height;
+            && byc <= a.bottom;
     } else if (mode === 'cover') {
         return b.left >= a.left
             && b.top >= a.top
-            && b.left + b.width <= a.left + a.width
-            && b.top + b.height <= a.top + a.height;
+            && b.right <= a.right
+            && b.bottom <= a.bottom;
     } else if (mode === 'touch') {
-        return a.left + a.width >= b.left
-            && a.left <= b.left + b.width
-            && a.top + a.height >= b.top
-            && a.top <= b.top + b.height;
+        return a.right >= b.left
+            && a.left <= b.right
+            && a.bottom >= b.top
+            && a.top <= b.bottom;
     }
 }
 
