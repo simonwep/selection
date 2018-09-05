@@ -23,6 +23,8 @@ function Selection(options = {}) {
             singleClick: true,
             disableTouch: false,
 
+            validateStart: () => true,
+
             containers: [],
             selectables: [],
 
@@ -55,6 +57,12 @@ function Selection(options = {}) {
         },
 
         _onTapStart(evt) {
+
+            // Check mouse middleware
+            if (!that.options.validateStart(evt)) {
+                return;
+            }
+
             const touch = evt.touches && evt.touches[0];
             const target = (touch || evt).target;
 
