@@ -75,6 +75,7 @@ function Selection(options = {}) {
             const startAreas = _.selectAll(that.options.startareas);
             that._boundaries = _.selectAll(that.options.boundaries);
 
+            // Check if area starts in one of the start areas / boundaries
             const evtpath = _.eventPath(evt);
             if (!startAreas.find(el => evtpath.includes(el)) ||
                 !that._boundaries.find(el => evtpath.includes(el))) {
@@ -122,10 +123,7 @@ function Selection(options = {}) {
             if (!that._selectables.includes(target)) return;
 
             that._touchedElements.push(target);
-            const touched = that._selectedStore;
-            const changed = that._changedElements;
-
-            that._dispatchEvent('onSelect', that._areaElement, evt, touched, changed, {
+            that._dispatchEvent('onSelect', evt, {
                 target
             });
         },
@@ -144,9 +142,7 @@ function Selection(options = {}) {
                 that._updateArea(evt);
 
                 // Fire event
-                const touched = that._touchedElements.concat(that._selectedStore);
-                const changed = that._changedElements;
-                that._dispatchEvent('onStart', that._areaElement, evt, touched, changed);
+                that._dispatchEvent('onStart', evt);
 
                 // An action is recognized as single-select until
                 // the user performed an mutli-selection
@@ -157,9 +153,7 @@ function Selection(options = {}) {
         _onTapMove(evt) {
             that._updateArea(evt);
             that._updatedTouchingElements();
-            const touched = that._touchedElements.concat(that._selectedStore);
-            const changed = that._changedElements;
-            that._dispatchEvent('onMove', that._areaElement, evt, touched, changed);
+            that._dispatchEvent('onMove', evt);
         },
 
         _updateArea(evt) {
@@ -195,9 +189,7 @@ function Selection(options = {}) {
                 that._onSingleTap(evt);
             } else if (!noevent) {
                 that._updatedTouchingElements();
-                const touched = that._touchedElements.concat(that._selectedStore);
-                const changed = that._changedElements;
-                that._dispatchEvent('onStop', that._areaElement, evt, touched, changed);
+                that._dispatchEvent('onStop', evt);
             }
 
             // Enable default select event
@@ -246,17 +238,17 @@ function Selection(options = {}) {
             }
         },
 
-        _dispatchEvent(eventName, areaElement, originalEvent, selectedElements, changedElements, additional) {
+        _dispatchEvent(eventName, originalEvent, additional) {
             const event = that.options[eventName];
 
             // Validate function
             if (typeof event === 'function') {
                 return event.call(that, {
                     selection: that,
+                    areaElement: that._areaElement,
+                    selectedElements: that._touchedElements.concat(that._selectedStore),
+                    changedElements: that._changedElements,
                     eventName,
-                    areaElement,
-                    selectedElements,
-                    changedElements,
                     originalEvent,
                     ...additional
                 });
@@ -285,6 +277,13 @@ function Selection(options = {}) {
         removeFromSelection(el) {
             _.removeElement(that._selectedStore, el);
             _.removeElement(that._touchedElements, el);
+        },
+
+        /**
+         * @returns {Array} Selected elements
+         */
+        getSelection() {
+            return that._selectedStore;
         },
 
         /**
