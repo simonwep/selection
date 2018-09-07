@@ -29,7 +29,7 @@
           alt="downloads per week"
         src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
     <img alt="Current version"
-        src="https://img.shields.io/badge/version-0.1.2-23AD62.svg">
+        src="https://img.shields.io/badge/version-0.1.3-23AD62.svg">
 </p>
 
 <h2 align="center">
@@ -57,7 +57,7 @@ $ npm install @simonwep/selection-js --save
 Include via [jsdelivr.net](https://www.jsdelivr.com/)
 
 ```javascript
-<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js@0.0.11/dist/selection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js/dist/selection.min.js"></script>
 ```
 
 ## Usage
@@ -105,6 +105,15 @@ const selection = new Selection({
 
     // Query selectors for elements which will be used as boundaries for the selection
     boundaries: ['html'],
+    
+    // Will be called before the selection starts (mouse / touchdown). Can be used
+    // to specify which action / mousebutton are needed to start the selection.
+    validateStart(evt) {
+        evt; // MouseEvent or TouchEvent
+      
+        // Return true to start the selection, false to cancel it.
+        return true; 
+    },
 
     // Element selection stardet, see Events for details
     onStart(evt) {
@@ -153,6 +162,7 @@ const selection = new Selection({
 
 * selection.keepSelection() _- Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections._
 * selection.clearSelection() _- Clear the previous selection (elements which where saved by `keepSelection()`)._
+* selection.getSelection() _- Returns currently selected elements as Array._
 * selection.removeFromSelection(el`:HTMLElement`) _- Removes a particular element from the current selection._
 
 ## Events

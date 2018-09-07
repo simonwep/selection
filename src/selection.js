@@ -344,7 +344,7 @@ Selection.utils = {
 Selection.create = options => new Selection(options);
 
 // Set version
-Selection.version = '0.1.2';
+Selection.version = '0.1.3';
 
 // Export API
 module.exports = Selection;

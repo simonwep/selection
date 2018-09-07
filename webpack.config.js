@@ -27,15 +27,18 @@ module.exports = {
         ]
     },
 
-    optimization: {
-        minimizer: [
-            new UglifyJs({
-                uglifyOptions: {
-                     output: {
-                        comments: false
+    plugins: [
+        new UglifyJs({
+            uglifyOptions: {
+                output: {
+                    comments: false
+                },
+                mangle: {
+                    properties: {
+                        regex: /^_/
                     }
                 }
-            })
-        ]
-    }
+            }
+        })
+    ]
 };

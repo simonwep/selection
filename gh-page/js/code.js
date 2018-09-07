@@ -1,4 +1,4 @@
-const options = {
+const selection = Selection.create({
 
     // Class for the selection-area
     class: 'selection',
@@ -72,6 +72,4 @@ const options = {
     onStop() {
         this.keepSelection();
     }
-};
-
-Selection.create(options);
+});

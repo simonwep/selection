@@ -131,7 +131,7 @@
         <section class="sec demo-code">
             <span class="head">Comment tutorial to realize the demo</span>
 
-            <pre><code class="language-js">const options = {
+            <pre><code class="language-js">const selection = Selection.create({
 
     // Class for the selection-area
     class: 'selection',
@@ -204,10 +204,8 @@
 
     onStop() {
         this.keepSelection();
-    },
-};
-
-Selection.create(options);</code></pre>
+    }
+});</code></pre>
 
         </section>
 
