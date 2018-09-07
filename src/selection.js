@@ -5,8 +5,10 @@
  * @license MIT
  */
 
+// Import utils
 import * as _ from './utils';
 
+// Some var shorting for better compression and readability
 const {abs, max, min} = Math;
 const doc = document;
 const preventDefault = e => e.preventDefault();
@@ -36,9 +38,14 @@ function Selection(options = {}) {
         _selectedStore: [],
 
         // Create area element
-        _areaElement: _.createElement('div', doc.body),
+        _areaElement: doc.createElement('div'),
 
         _init() {
+
+            // Append area to body
+            doc.body.appendChild(that._areaElement);
+
+            // Apply basic styles to the area element
             _.css(that._areaElement, {
                 top: 0,
                 left: 0,
@@ -57,15 +64,14 @@ function Selection(options = {}) {
         },
 
         _onTapStart(evt) {
+            const {x, y, target} = _.simplifyEvent(evt);
 
             // Check mouse middleware
             if (!that.options.validateStart(evt)) {
                 return;
             }
 
-            const touch = evt.touches && evt.touches[0];
-            const target = (touch || evt).target;
-
+            // Find start-areas and boundaries
             const startAreas = _.selectAll(that.options.startareas);
             that._boundaries = _.selectAll(that.options.boundaries);
 
@@ -76,8 +82,8 @@ function Selection(options = {}) {
             }
 
             // Save start coordinates
-            that._lastX = (touch || evt).clientX;
-            that._lastY = (touch || evt).clientY;
+            that._lastX = x;
+            that._lastY = y;
             that._singleClick = true; // To detect single-click
 
             // Resolve selectors
@@ -110,8 +116,7 @@ function Selection(options = {}) {
         },
 
         _onSingleTap(evt) {
-            const touch = evt.touches && evt.touches[0];
-            const target = (touch || evt).target;
+            const {target} = _.simplifyEvent(evt);
 
             // Check if the element is selectable
             if (!that._selectables.includes(target)) return;
@@ -126,9 +131,7 @@ function Selection(options = {}) {
         },
 
         _delayedTapMove(evt) {
-            const touch = evt.touches && evt.touches[0];
-            const x = (touch || evt).clientX;
-            const y = (touch || evt).clientY;
+            const {x, y} = _.simplifyEvent(evt);
 
             // Check pixel threshold
             if (abs((x + y) - (that._lastX + that._lastY)) >= that.options.startThreshold) {
@@ -161,19 +164,17 @@ function Selection(options = {}) {
 
         _updateArea(evt) {
             const brect = that._targetBoundary;
-            const touch = evt.touches && evt.touches[0];
-            let x2 = (touch || evt).clientX;
-            let y2 = (touch || evt).clientY;
+            let {x, y} = _.simplifyEvent(evt);
 
-            if (x2 < brect.left) x2 = brect.left;
-            if (y2 < brect.top) y2 = brect.top;
-            if (x2 > brect.left + brect.width) x2 = brect.left + brect.width;
-            if (y2 > brect.top + brect.height) y2 = brect.top + brect.height;
+            if (x < brect.left) x = brect.left;
+            if (y < brect.top) y = brect.top;
+            if (x > brect.left + brect.width) x = brect.left + brect.width;
+            if (y > brect.top + brect.height) y = brect.top + brect.height;
 
-            const x3 = min(that._lastX, x2);
-            const y3 = min(that._lastY, y2);
-            const x4 = max(that._lastX, x2);
-            const y4 = max(that._lastY, y2);
+            const x3 = min(that._lastX, x);
+            const y3 = min(that._lastY, y);
+            const x4 = max(that._lastX, x);
+            const y4 = max(that._lastY, y);
 
             _.css(that._areaElement, {
                 top: y3,
@@ -184,6 +185,8 @@ function Selection(options = {}) {
         },
 
         _onTapStop(evt, noevent) {
+
+            // Remove event handlers
             _.off(doc, ['mousemove', 'touchmove'], that._delayedTapMove);
             _.off(doc, ['touchmove', 'mousemove'], that._onTapMove);
             _.off(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
@@ -191,7 +194,6 @@ function Selection(options = {}) {
             if (that._singleClick) {
                 that._onSingleTap(evt);
             } else if (!noevent) {
-
                 that._updatedTouchingElements();
                 const touched = that._touchedElements.concat(that._selectedStore);
                 const changed = that._changedElements;
@@ -284,7 +286,6 @@ function Selection(options = {}) {
             _.removeElement(that._selectedStore, el);
             _.removeElement(that._touchedElements, el);
         },
-
 
         /**
          * Cancel the current selection process.

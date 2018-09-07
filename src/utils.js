@@ -56,8 +56,7 @@ export function css(el, attr, val) {
     if (typeof attr === 'object') {
 
         for (const prop in attr) {
-            const val = attr[prop];
-            style[prop] = unitify(val);
+            style[prop] = unitify(attr[prop]);
         }
 
     } else if (val == null) {
@@ -148,19 +147,12 @@ export function removeElement(arr, el) {
     if (~index) arr.splice(index, 1);
 }
 
-/**
- * Creates a new HTMLElement and, optionally, add it to another element.
- * @param tag
- * @param parent Optional parent element
- * @return {HTMLElement} The new HTMLElement
- *
- */
-export function createElement(tag, parent) {
-    const element = document.createElement(tag);
-
-    if (parent instanceof Element) {
-        parent.appendChild(element);
-    }
-
-    return element;
+export function simplifyEvent(evt) {
+    const tap = (evt.touches && evt.touches[0] || evt);
+    return {
+        tap,
+        x: tap.clientX,
+        y: tap.clientY,
+        target: tap.target
+    };
 }
