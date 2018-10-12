@@ -52,12 +52,14 @@ function Selection(options = {}) {
                 position: 'fixed'
             });
 
-            // Bind events
-            _.on(doc, 'mousedown', that._onTapStart);
+            that.enable();
+        },
 
-            // Check if touch is disabled
+        _bindStartEvents(type) {
+            _[type](doc, 'mousedown', that._onTapStart);
+
             if (!that.options.disableTouch) {
-                _.on(doc, 'touchstart', that._onTapStart, {
+                _[type](doc, 'touchstart', that._onTapStart, {
                     passive: false
                 });
             }
@@ -117,10 +119,16 @@ function Selection(options = {}) {
         },
 
         _onSingleTap(evt) {
-            const {target} = _.simplifyEvent(evt);
+            let {target} = _.simplifyEvent(evt);
 
-            // Check if the element is selectable
-            if (!that._selectables.includes(target)) return;
+            // Traferse dom upwards to check if target is selectable
+            while (!that._selectables.includes(target)) {
+                if (target.parentElement) {
+                    target = target.parentElement;
+                } else {
+                    return;
+                }
+            }
 
             that._touchedElements.push(target);
             that._dispatchEvent('onSelect', evt, {
@@ -145,7 +153,7 @@ function Selection(options = {}) {
                 that._dispatchEvent('onStart', evt);
 
                 // An action is recognized as single-select until
-                // the user performed an mutli-selection
+                // the user performed a mutli-selection
                 that._singleClick = false;
             }
         },
@@ -185,7 +193,7 @@ function Selection(options = {}) {
             _.off(doc, ['touchmove', 'mousemove'], that._onTapMove);
             _.off(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
 
-            if (that._singleClick) {
+            if (that._singleClick && that.options.singleClick) {
                 that._onSingleTap(evt);
             } else if (!noevent) {
                 that._updatedTouchingElements();
@@ -309,14 +317,14 @@ function Selection(options = {}) {
          * Disable the selection functinality.
          */
         disable() {
-            _.off(doc, 'mousedown', that._onTapStart);
+            that._bindStartEvents('off');
         },
 
         /**
          * Disable the selection functinality.
          */
         enable() {
-            _.on(doc, 'mousedown', that._onTapStart);
+            that._bindStartEvents('on');
         }
     };
 
