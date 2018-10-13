@@ -321,6 +321,14 @@ function Selection(options = {}) {
         },
 
         /**
+         * Unbinds all events and removes the area-element
+         */
+        destroy() {
+            that.disable();
+            doc.body.removeChild(that._areaElement);
+        },
+
+        /**
          * Disable the selection functinality.
          */
         enable() {
