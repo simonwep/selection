@@ -29,7 +29,7 @@
           alt="downloads per week"
         src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
     <img alt="Current version"
-        src="https://img.shields.io/badge/version-0.1.3-23AD62.svg">
+        src="https://img.shields.io/badge/version-0.1.4-23AD62.svg">
 </p>
 
 <h2 align="center">
@@ -105,14 +105,14 @@ const selection = new Selection({
 
     // Query selectors for elements which will be used as boundaries for the selection
     boundaries: ['html'],
-    
+
     // Will be called before the selection starts (mouse / touchdown). Can be used
     // to specify which action / mousebutton are needed to start the selection.
     validateStart(evt) {
         evt; // MouseEvent or TouchEvent
-      
+
         // Return true to start the selection, false to cancel it.
-        return true; 
+        return true;
     },
 
     // Element selection stardet, see Events for details
@@ -158,7 +158,7 @@ const selection = new Selection({
 * selection.option(name`:String`, value`:Mixed`) _- Set a new option value._
 * selection.disable() _- Disable the functionality to make selections._
 * selection.enable() _- Enable the functionality to make selections._
-
+* selection.destroy() _- Unbinds all events and removes the area-element._
 
 * selection.keepSelection() _- Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections._
 * selection.clearSelection() _- Clear the previous selection (elements which where saved by `keepSelection()`)._
