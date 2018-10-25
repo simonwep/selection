@@ -1,4 +1,5 @@
 const UglifyJs = require('uglifyjs-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
 
@@ -15,7 +16,7 @@ module.exports = {
     devServer: {
         contentBase: __dirname + '/',
         host: '0.0.0.0',
-        port: 8088
+        port: 3001
     },
 
     module: {
@@ -28,17 +29,8 @@ module.exports = {
     },
 
     plugins: [
-        new UglifyJs({
-            uglifyOptions: {
-                output: {
-                    comments: false
-                },
-                mangle: {
-                    properties: {
-                        regex: /^_/
-                    }
-                }
-            }
+        new webpack.SourceMapDevToolPlugin({
+            filename: 'selection.min.js.map'
         })
     ]
 };

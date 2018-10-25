@@ -92,7 +92,7 @@ function Selection(options = {}) {
             // Resolve selectors
             const containers = _.selectAll(that.options.containers);
             that._selectables = _.selectAll(that.options.selectables);
-            containers.forEach(con => that._selectables.push(...con.getElementsByTagName('*')));
+            containers.forEach(con => that._selectables.push(...con.querySelectorAll('*')));
 
             // Save current boundary
             that._targetBoundary = that._boundaries.find(el => _.intersects(el, target)).getBoundingClientRect();
