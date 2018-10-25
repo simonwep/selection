@@ -230,7 +230,11 @@ function Selection(options = {}) {
             }
 
             // Check which elements where removed since last selection
-            changed.removed = that._touchedElements.filter(el => !touched.includes(el));
+            for (let i = 0, n = that._touchedElements.length, el; el = that._touchedElements[i], i < n; i++) {
+                if (!touched.includes(el)) {
+                    changed.removed.push(el);
+                }
+            }
 
             // Save
             that._touchedElements = touched;
@@ -268,8 +272,11 @@ function Selection(options = {}) {
          * Allows multiple selections.
          */
         keepSelection() {
-            const keep = that._touchedElements.filter(x => !that._selectedStore.includes(x));
-            that._selectedStore = keep.concat(that._selectedStore);
+            for (let i = 0, n = that._touchedElements.length, el; el = that._touchedElements[i], i < n; i++) {
+                if (!that._selectedStore.includes(el)) {
+                    that._selectedStore.push(el);
+                }
+            }
         },
 
         /**
