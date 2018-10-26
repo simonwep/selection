@@ -76,14 +76,12 @@ export function css(el, attr, val) {
 
 /**
  * Check if two DOM-Elements intersects each other.
- * @param ela First DOM-Element.
- * @param elb Second DOM-Element.
+ * @param a BoundingClientRect of the first element.
+ * @param b BoundingClientRect of the second element.
  * @param mode Options are center, cover or touch.
  * @returns {boolean} If both elements intersects each other.
  */
-export function intersects(ela, elb, mode = 'touch') {
-    const a = ela.getBoundingClientRect();
-    const b = elb.getBoundingClientRect();
+export function intersects(a, b, mode = 'touch') {
 
     if (mode === 'center') {
         const bxc = b.left + b.width / 2;
