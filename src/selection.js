@@ -186,10 +186,6 @@ function Selection(options = {}) {
                 });
             }
 
-            // Pre-calculate boundingClientRects
-            that._selectablesBoundingClientRects = that._selectables.map(v => v.getBoundingClientRect());
-
-
             // Add class to the area element
             that._areaElement.classList.add(that.options.class);
 
@@ -235,7 +231,7 @@ function Selection(options = {}) {
                 _.css(that._areaElement, 'display', 'block');
 
                 // New start position
-                that._updateArea(evt);
+                that._onTapMove(evt);
 
                 // Fire event
                 that._dispatchEvent('onStart', evt);
@@ -247,18 +243,6 @@ function Selection(options = {}) {
         },
 
         _onTapMove(evt) {
-            that._updateArea(evt);
-            that._updatedTouchingElements();
-            that._dispatchEvent('onMove', evt);
-        },
-
-        _manualScroll(evt) {
-            that._scrollSpeed += that.options.scrollSpeedDivider * (evt.wheelDelta * -1);
-            that._updateArea(evt);
-            evt.preventDefault();
-        },
-
-        _updateArea(evt) {
             const {x, y} = _.simplifyEvent(evt);
             that._areaX2 = x;
             that._areaY2 = y;
@@ -272,34 +256,32 @@ function Selection(options = {}) {
                 // Continous scrolling
                 requestAnimationFrame(function scroll() {
 
-                    if (that._scrollSpeed !== null) {
-
-                        /**
-                         * If the value exeeds the scrollable area it will
-                         * be set to the max / min value. So change only
-                         */
-                        const initial = scon.scrollTop;
-
-                        // Reduce velocity, use ceil to scroll at least 1px per frame
-                        scon.scrollTop += Math.ceil(that._scrollSpeed / that.options.scrollSpeedDivider);
-                        that._areaY1 -= scon.scrollTop - initial;
-
-                        /**
-                         * We changed the start coordinates ->  redraw the selectiona area
-                         * We changed the dimensions of the area element -> re-calc selected elements
-                         * The selected elements array has been changed -> fire event
-                         */
-                        that._redrawArea();
-                        that._updatedTouchingElements();
-                        that._dispatchEvent('onMove', evt);
-
-                        // Keep scrolling even if the user stops to move his pointer
-                        requestAnimationFrame(scroll);
-                    } else {
-
-                        // Scroll speed isn't set or
-                        that._scrollActive = false;
+                    // Scrolling is not anymore required
+                    if (that._scrollSpeed === null) {
+                        return (that._scrollActive = false);
                     }
+
+                    /**
+                     * If the value exeeds the scrollable area it will
+                     * be set to the max / min value. So change only
+                     */
+                    const initial = scon.scrollTop;
+
+                    // Reduce velocity, use ceil to scroll at least 1px per frame
+                    scon.scrollTop += Math.ceil(that._scrollSpeed / that.options.scrollSpeedDivider);
+                    that._areaY1 -= scon.scrollTop - initial;
+
+                    /**
+                     * We changed the start coordinates ->  redraw the selectiona area
+                     * We changed the dimensions of the area element -> re-calc selected elements
+                     * The selected elements array has been changed -> fire event
+                     */
+                    that._redrawArea();
+                    that._updatedTouchingElements();
+                    that._dispatchEvent('onMove', evt);
+
+                    // Keep scrolling even if the user stops to move his pointer
+                    requestAnimationFrame(scroll);
                 });
             } else {
 
@@ -309,7 +291,17 @@ function Selection(options = {}) {
                  * anonymized scroll function.
                  */
                 that._redrawArea();
+                that._updatedTouchingElements();
+                that._dispatchEvent('onMove', evt);
             }
+        },
+
+        _manualScroll(evt) {
+            that._scrollSpeed += that.options.scrollSpeedDivider * (evt.wheelDelta * -1);
+            that._onTapMove(evt);
+
+            // Prevent defaul scrolling behaviour, eg. page scrolling
+            evt.preventDefault();
         },
 
         _redrawArea() {
@@ -380,8 +372,7 @@ function Selection(options = {}) {
             const areaRect = that._areaElement.getBoundingClientRect();
 
             // Itreate over the selectable elements
-            for (let i = 0, n = selectables.length; i < n; i++) {
-                const node = selectables[i];
+            for (let i = 0, n = selectables.length, node; node = selectables[i], i < n; i++) {
 
                 // Check if area intersects element
                 if (_.intersects(areaRect, node.getBoundingClientRect(), mode)) {
