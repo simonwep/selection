@@ -29,7 +29,7 @@
           alt="downloads per week"
         src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
     <img alt="Current version"
-        src="https://img.shields.io/badge/version-0.1.4-23AD62.svg">
+        src="https://img.shields.io/badge/version-0.1.5-23AD62.svg">
 </p>
 
 <h2 align="center">
@@ -105,6 +105,10 @@ const selection = new Selection({
 
     // Query selectors for elements which will be used as boundaries for the selection
     boundaries: ['html'],
+    
+    // On scrollable areas the number on px per frame is devided by this amount.
+    // Default is 10 to provide a enjoyable scroll experience.
+    scrollSpeedDivider: 10,
 
     // Will be called before the selection starts (mouse / touchdown). Can be used
     // to specify which action / mousebutton are needed to start the selection.
