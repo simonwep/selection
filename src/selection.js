@@ -205,7 +205,7 @@ function Selection(options = {}) {
         _onSingleTap(evt) {
             let {target} = _.simplifyEvent(evt);
 
-            // Traferse dom upwards to check if target is selectable
+            // Traverse dom upwards to check if target is selectable
             while (!that._selectables.includes(target)) {
                 if (target.parentElement) {
                     target = target.parentElement;
@@ -464,9 +464,9 @@ function Selection(options = {}) {
 
         /**
          * Cancel the current selection process.
-         * @param  {boolean} true to fire the onStop listener after cancel.
+         * @param keepEvent {boolean} true to fire the onStop listener after cancel.
          */
-        cancel(keepEvent) {
+        cancel(keepEvent = false) {
             that._onTapStop(null, !keepEvent);
         },
 

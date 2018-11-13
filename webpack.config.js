@@ -1,4 +1,3 @@
-const UglifyJs = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = {
