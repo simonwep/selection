@@ -32,7 +32,7 @@
 
             <div class="info">
                 <p>Click to select the boxes!</p>
-                <p>Click and hold <span class="keyboard-key">left mouse</span> to make a multi-selection!</p>
+                <p>Click and drag <span class="keyboard-key">left mouse</span> to make a multi-selection!</p>
                 <p>Hold <span class="keyboard-key">ctrl</span> or <span class="keyboard-key">cmd</span> to make multiple selections.</p>
             </div>
 
@@ -383,7 +383,7 @@
         </section>
 
         <section class="sec demo-code">
-            <span class="head">Comment tutorial to realize the demo</span>
+            <span class="head">Commented code tutorial to understand the demo</span>
 
             <pre><code class="language-js">const selection = Selection.create({
 
@@ -401,11 +401,11 @@
         // Check if clicked element is already selected
         const selected = evt.target.classList.contains('selected');
 
-        // Remove class if the user don't pressed the control key or ⌘ key and the
+        // Remove class if the user isn't pressing the control key or ⌘ key and the
         // current target is already selected
         if (!evt.originalEvent.ctrlKey && !evt.originalEvent.metaKey) {
 
-            // Remove class from every element which is selected
+            // Remove class from every element that is selected
             evt.selectedElements.forEach(s => s.classList.remove('selected'));
 
             // Clear previous selection
@@ -427,10 +427,10 @@
 
     onStart(evt) {
 
-        // Get elements which has been selected so far
+        // Get elements that have been selected so far
         const selectedElements = evt.selectedElements;
 
-        // Remove class if the user don't pressed the control key or ⌘ key
+        // Remove class if the user isn't pressing the control key or ⌘ key
         if (!evt.originalEvent.ctrlKey && !evt.originalEvent.metaKey) {
 
             // Unselect all elements
@@ -444,14 +444,14 @@
     onMove(evt) {
 
         // Get the currently selected elements and those
-        // which where removed since the last selection.
+        // that where removed since the last selection.
         const selectedElements = evt.selectedElements;
         const removedElements = evt.changedElements.removed;
 
-        // Add a custom class to the elements which where selected.
+        // Add a custom class to the elements that where selected.
         selectedElements.forEach(s => s.classList.add('selected'));
 
-        // Remove the class from elements which where removed
+        // Remove the class from elements that where removed
         // since the last selection
         removedElements.forEach(s => s.classList.remove('selected'));
     },
