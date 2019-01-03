@@ -347,7 +347,7 @@ function Selection(options = {}) {
 
             if (that._singleClick && that.options.singleClick) {
                 that._onSingleTap(evt);
-            } else if (!noevent) {
+            } else if (!that._singleClick && !noevent) {
                 that._updatedTouchingElements();
                 that._dispatchEvent('onStop', evt);
             }
