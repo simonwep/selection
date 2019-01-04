@@ -168,6 +168,7 @@ const selection = new Selection({
 * selection.clearSelection() _- Clear the previous selection (elements which where saved by `keepSelection()`)._
 * selection.getSelection() _- Returns currently selected elements as Array._
 * selection.removeFromSelection(el`:HTMLElement`) _- Removes a particular element from the current selection._
+* selection.resolveSelectables() _- Need to be called if during a selection elements have been added_
 
 ## Events
 

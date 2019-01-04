@@ -111,10 +111,7 @@ function Selection(options = {}) {
 
             that._singleClick = true; // To detect single-click
 
-            // Resolve selectors
-            const containers = _.selectAll(that.options.containers);
-            that._selectables = _.selectAll(that.options.selectables);
-            containers.forEach(con => that._selectables.push(...con.querySelectorAll('*')));
+            that.resolveSelectables();
 
             // Check in which container the user currently acts
             that._targetContainer = that._boundaries.find(el =>
@@ -429,6 +426,20 @@ function Selection(options = {}) {
         },
 
         /**
+         * Can be used if during a selection elements have been added.
+         * Will update everything which can be selected.
+         */
+        resolveSelectables() {
+
+            // Resolve selectors
+            that._selectables = _.selectAll(that.options.selectables);
+            const containers = _.selectAll(that.options.containers);
+            for (let i = 0, n = containers.length; i < n; i++) {
+                that._selectables.push(...containers[i].querySelectorAll('*'));
+            }
+        },
+
+        /**
          * Saves the current selection for the next selecion.
          * Allows multiple selections.
          */
@@ -531,4 +542,4 @@ Selection.create = options => new Selection(options);
 Selection.version = '0.2.0';
 
 // Export API
-module.exports = Selection;
+export default Selection;

@@ -9,6 +9,7 @@ module.exports = {
         publicPath: 'dist/',
         filename: 'selection.min.js',
         library: 'Selection',
+        libraryExport: 'default',
         libraryTarget: 'umd'
     },
 
