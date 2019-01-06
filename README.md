@@ -44,7 +44,7 @@ Quick demo: https://simonwep.github.io/selection
 * Supports touch devices
 * Simple usage
 * No jQuery
-* Nodejs support
+* Scroll support
 * Lightweight, 3kB gzipped
 
 ### Install
@@ -163,6 +163,7 @@ const selection = new Selection({
 * selection.disable() _- Disable the functionality to make selections._
 * selection.enable() _- Enable the functionality to make selections._
 * selection.destroy() _- Unbinds all events and removes the area-element._
+* selection.cancel() _- Cancels the current selection process._
 
 * selection.keepSelection() _- Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections._
 * selection.clearSelection() _- Clear the previous selection (elements which where saved by `keepSelection()`)._
@@ -171,8 +172,7 @@ const selection = new Selection({
 * selection.resolveSelectables() _- Need to be called if during a selection elements have been added_
 
 ## Events
-
-### start / stop / move event
+Event properties of start, stop and move event.
  * selection`:Selection` _- Current selection object._
  * eventName`:String` _- The event name._
  * areaElement`:HTMLElement` _- The selection element._
