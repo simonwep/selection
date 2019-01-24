@@ -32,11 +32,11 @@
         src="https://img.shields.io/badge/version-0.2.0-23AD62.svg">
 </p>
 
-<h2 align="center">
+<h3 align="center">
    <img
     width="700px"
     alt="Demo" src="https://user-images.githubusercontent.com/12004383/39947840-4685bc0e-556b-11e8-95cf-068ab6d7e9de.gif"/>
-</h2>
+</h3>
 
 <h3 align="center">
   <a href="https://simonwep.github.io/selection/">Fully Featured demo</a>
