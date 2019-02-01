@@ -107,6 +107,9 @@ const selection = new Selection({
 
     // Query selectors for elements which will be used as boundaries for the selection
     boundaries: ['html'],
+
+    // Query selector or dom node to set up container for selection-area-element
+    selectionAreaContainer: 'body',
     
     // On scrollable areas the number on px per frame is devided by this amount.
     // Default is 10 to provide a enjoyable scroll experience.
