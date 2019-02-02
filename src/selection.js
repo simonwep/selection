@@ -33,7 +33,9 @@ function Selection(options = {}) {
             scrollSpeedDivider: 10,
 
             startareas: ['html'],
-            boundaries: ['html']
+            boundaries: ['html'],
+
+            selectionAreaContainer: 'body'
         }, options),
 
         // Store for keepSelection
@@ -47,12 +49,19 @@ function Selection(options = {}) {
         _scrollAvailable: true,
         _scrollSpeed: null,
         _scrollActive: false,
+        _selectionAreaContainer: null,
 
         _init() {
 
-            // Append area to body
+            // Append area to container
+            if (_.isElement(that.options.selectionAreaContainer)) {
+                that._selectionAreaContainer = that.options.selectionAreaContainer;
+            } else {
+                that._selectionAreaContainer = doc.querySelector(that.options.selectionAreaContainer);
+            }
+
             that._clippingElement.appendChild(that._areaElement);
-            doc.body.appendChild(that._clippingElement);
+            that._selectionAreaContainer.appendChild(that._clippingElement);
 
             // Apply basic styles to the area element
             _.css(that._areaElement, {
@@ -504,7 +513,7 @@ function Selection(options = {}) {
          */
         destroy() {
             that.disable();
-            doc.body.removeChild(that._clippingElement);
+            that._selectionAreaContainer.removeChild(that._clippingElement);
         },
 
         /**

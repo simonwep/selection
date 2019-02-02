@@ -154,3 +154,14 @@ export function simplifyEvent(evt) {
         target: tap.target
     };
 }
+
+/**
+ * Checks if value is likely a DOM element.
+ */
+export function isElement(value) {
+    return (
+        typeof HTMLElement === "object"
+            ? value instanceof HTMLElement
+            : typeof value === "object" && value !== null && value.nodeType === 1 && typeof value.nodeName === "string"
+    );
+}
