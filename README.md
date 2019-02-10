@@ -150,14 +150,13 @@ const selection = new Selection({
        // Same properties as onStart
     },
 
-    // Element selection has stardet
+    // Filter single element
     selectionFilter(evt) {
-        evt.selection; // This selection instance
-        evt.eventName; // The event name
-        evt.element;   // The element which is in the current selection
-
-        // return true to keep the element
-    },
+       evt.selection; // This selection instance
+       evt.eventName; // The event name
+       evt.element;   // The element which is in the current selection
+       // return true to keep the element in the current selection
+    }
 });
 
 ```
