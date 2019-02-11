@@ -309,7 +309,8 @@ function Selection(options = {}) {
         },
 
         _manualScroll(evt) {
-            that._scrollSpeed.y += that.options.scrollSpeedDivider * (evt.wheelDelta * -1);
+            that._scrollSpeed.y += that.options.scrollSpeedDivider * (evt.wheelDeltaY * -1);
+            that._scrollSpeed.x += that.options.scrollSpeedDivider * (evt.wheelDeltaX * -1);
             that._onTapMove(evt);
 
             // Prevent defaul scrolling behaviour, eg. page scrolling
