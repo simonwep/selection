@@ -317,25 +317,26 @@ function Selection(options = {}) {
         },
 
         _redrawArea() {
+            const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = that._targetContainer;
             const brect = that._targetBoundary;
             let x = that._areaX2;
             let y = that._areaY2;
 
             if (x < brect.left) {
-                that._scrollSpeed.x = -Math.abs(brect.left - x);
+                that._scrollSpeed.x = scrollLeft ? -Math.abs(brect.left - x) : null;
                 x = brect.left;
             } else if (x > brect.left + brect.width) {
-                that._scrollSpeed.x = Math.abs(brect.left + brect.width - x);
+                that._scrollSpeed.x = scrollWidth - scrollLeft - clientWidth ? Math.abs(brect.left + brect.width - x) : null;
                 x = brect.left + brect.width;
             } else {
                 that._scrollSpeed.x = null;
             }
 
             if (y < brect.top) {
-                that._scrollSpeed.y = -Math.abs(brect.top - y);
+                that._scrollSpeed.y = scrollTop ? -Math.abs(brect.top - y) : null;
                 y = brect.top;
             } else if (y > brect.top + brect.height) {
-                that._scrollSpeed.y = Math.abs(brect.top + brect.height - y);
+                that._scrollSpeed.y = scrollHeight - scrollTop - clientHeight ? Math.abs(brect.top + brect.height - y) : null;
                 y = brect.top + brect.height;
             } else {
                 that._scrollSpeed.y = null;
