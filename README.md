@@ -46,7 +46,7 @@
 * Supports touch devices
 * Simple usage
 * No jQuery
-* Scroll support
+* Vertical and horizontal scroll support
 * Lightweight, 3kB gzipped
 
 ### Install
@@ -58,7 +58,7 @@ $ npm install @simonwep/selection-js --save
 
 Include via [jsdelivr.net](https://www.jsdelivr.com/)
 
-```javascript
+```html
 <script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js/dist/selection.min.js"></script>
 ```
 

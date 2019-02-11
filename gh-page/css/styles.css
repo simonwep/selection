@@ -84,8 +84,18 @@ main section.demo .box-wrap.blue {
 }
 
 main section.demo .box-wrap.red {
+    display: grid;
+    grid-template-columns: repeat(28, 1fr);
+    grid-gap: 0.4em;
+    align-items: flex-start;
+    justify-content: flex-start;
     max-height: 25em;
     overflow: auto;
+    padding: 0.5em;
+}
+
+main section.demo .box-wrap.red > div {
+    margin: 0;
 }
 
 main .box-wrap::after {

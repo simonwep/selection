@@ -47,8 +47,9 @@ function Selection(options = {}) {
 
         // Is getting set on movement. Varied.
         _scrollAvailable: true,
-        _scrollSpeed: null,
-        _scrollActive: false,
+        _scrollSpeed: {x: null, y: null},
+
+        // Selection-area parent
         _selectionAreaContainer: null,
 
         _init() {
@@ -136,7 +137,8 @@ function Selection(options = {}) {
             };
 
             // Find container and check if it's scrollable
-            if (round(that._targetContainer.scrollHeight) !== round(that._targetBoundary.height)) {
+            if (round(that._targetContainer.scrollHeight) !== round(that._targetBoundary.height) ||
+                round(that._targetContainer.scrollWidth) !== round(that._targetBoundary.width)) {
 
                 // Indenticates if the user is currently in a scrollable area
                 that._scrollAvailable = true;
@@ -253,29 +255,33 @@ function Selection(options = {}) {
             that._areaX2 = x;
             that._areaY2 = y;
 
-            if (that._scrollAvailable && !that._scrollActive && that._scrollSpeed !== null) {
+            if (that._scrollAvailable && (that._scrollSpeed.y !== null || that._scrollSpeed.x !== null)) {
                 const scon = that._targetContainer;
-
-                // Prevent multiple requestAnimationFrame callbacks
-                that._scrollActive = true;
 
                 // Continous scrolling
                 requestAnimationFrame(function scroll() {
 
                     // Scrolling is not anymore required
-                    if (that._scrollSpeed === null) {
-                        return (that._scrollActive = false);
+                    if (that._scrollSpeed.y === null && that._scrollSpeed.x === null) {
+                        return;
                     }
 
                     /**
                      * If the value exeeds the scrollable area it will
                      * be set to the max / min value. So change only
                      */
-                    const initial = scon.scrollTop;
+                    const {scrollTop, scrollLeft} = scon;
 
-                    // Reduce velocity, use ceil to scroll at least 1px per frame
-                    scon.scrollTop += Math.ceil(that._scrollSpeed / that.options.scrollSpeedDivider);
-                    that._areaY1 -= scon.scrollTop - initial;
+                    // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
+                    if (that._scrollSpeed.y !== null) {
+                        scon.scrollTop += Math.ceil(that._scrollSpeed.y / that.options.scrollSpeedDivider);
+                        that._areaY1 -= scon.scrollTop - scrollTop;
+                    }
+
+                    if (that._scrollSpeed.x !== null) {
+                        scon.scrollLeft += Math.ceil(that._scrollSpeed.x / that.options.scrollSpeedDivider);
+                        that._areaX1 -= scon.scrollLeft - scrollLeft;
+                    }
 
                     /**
                      * We changed the start coordinates ->  redraw the selectiona area
@@ -303,7 +309,7 @@ function Selection(options = {}) {
         },
 
         _manualScroll(evt) {
-            that._scrollSpeed += that.options.scrollSpeedDivider * (evt.wheelDelta * -1);
+            that._scrollSpeed.y += that.options.scrollSpeedDivider * (evt.wheelDelta * -1);
             that._onTapMove(evt);
 
             // Prevent defaul scrolling behaviour, eg. page scrolling
@@ -316,19 +322,23 @@ function Selection(options = {}) {
             let y = that._areaY2;
 
             if (x < brect.left) {
+                that._scrollSpeed.x = -Math.abs(brect.left - x);
                 x = brect.left;
             } else if (x > brect.left + brect.width) {
+                that._scrollSpeed.x = Math.abs(brect.left + brect.width - x);
                 x = brect.left + brect.width;
+            } else {
+                that._scrollSpeed.x = null;
             }
 
             if (y < brect.top) {
-                that._scrollSpeed = -Math.abs(brect.top - y);
+                that._scrollSpeed.y = -Math.abs(brect.top - y);
                 y = brect.top;
             } else if (y > brect.top + brect.height) {
-                that._scrollSpeed = Math.abs(brect.top + brect.height - y);
+                that._scrollSpeed.y = Math.abs(brect.top + brect.height - y);
                 y = brect.top + brect.height;
             } else {
-                that._scrollSpeed = null;
+                that._scrollSpeed.y = null;
             }
 
             const x3 = min(that._areaX1, x);
@@ -359,7 +369,7 @@ function Selection(options = {}) {
             }
 
             // Reset scroll speed
-            that._scrollSpeed = null;
+            that._scrollSpeed = {x: null, y: null};
 
             // Unbind mouse scrolling listener
             _.off(window, 'wheel', that._manualScroll);
