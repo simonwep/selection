@@ -28,7 +28,6 @@
         "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
         "@babel/preset-env": "^7.1.6",
         "babel-loader": "^8.0.4",
-        "babel-plugin-transform-object-rest-spread": "^6.26.0",
         "eslint": "^5.10.0",
         "eslint-loader": "^2.1.1",
         "webpack": "^4.26.0",
