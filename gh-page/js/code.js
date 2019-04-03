@@ -4,7 +4,7 @@ const selection = Selection.create({
     class: 'selection',
 
     // All elements in this container can be selected
-    containers: ['.box-wrap'],
+    selectables: ['.box-wrap > div'],
 
     // The container is also the boundary in this case
     boundaries: ['.box-wrap'],

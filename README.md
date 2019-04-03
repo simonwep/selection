@@ -96,9 +96,6 @@ const selection = new Selection({
     // Enable single-click selection
     singleClick: true,
 
-    // Query selectors from elements from which the siblings can be selected
-    containers: [],
-
     // Query selectors from elements which can be selected
     selectables: [],
 

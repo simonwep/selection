@@ -27,7 +27,6 @@ function Selection(options = {}) {
 
             validateStart: () => true,
 
-            containers: [],
             selectables: [],
 
             scrollSpeedDivider: 10,
@@ -454,10 +453,6 @@ function Selection(options = {}) {
 
             // Resolve selectors
             that._selectables = _.selectAll(that.options.selectables);
-            const containers = _.selectAll(that.options.containers);
-            for (let i = 0, n = containers.length; i < n; i++) {
-                that._selectables.push(...containers[i].querySelectorAll('*'));
-            }
         },
 
         /**
