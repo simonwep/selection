@@ -65,6 +65,7 @@ function Selection(options = {}) {
 
             // Apply basic styles to the area element
             _.css(that._areaElement, {
+                'will-change': 'top, left, bottom, right, width, height',
                 top: 0,
                 left: 0,
                 position: 'fixed'
