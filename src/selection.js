@@ -121,12 +121,17 @@ function Selection(options = {}) {
 
             that._singleClick = true; // To detect single-click
 
-            that.resolveSelectables();
 
             // Check in which container the user currently acts
             that._targetContainer = that._boundaries.find(el =>
                 _.intersects(el.getBoundingClientRect(), targetBoundingClientRect)
             );
+
+            if (!that._targetContainer) {
+                return;
+            }
+
+            that.resolveSelectables();
 
             // Just saving the boundaries of this container for later
             that._targetBoundary = that._targetContainer.getBoundingClientRect();
