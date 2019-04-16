@@ -65,7 +65,7 @@ function Selection(options = {}) {
 
             // Apply basic styles to the area element
             _.css(that._areaElement, {
-                'will-change': 'top, left, bottom, right, width, height',
+                willChange: 'top, left, bottom, right, width, height',
                 top: 0,
                 left: 0,
                 position: 'fixed'
@@ -75,7 +75,8 @@ function Selection(options = {}) {
                 overflow: 'hidden',
                 position: 'fixed',
                 transform: 'translate3d(0, 0, 0)', // https://stackoverflow.com/a/38268846
-                'pointer-events': 'none'
+                pointerEvents: 'none',
+                zIndex: 1
             });
 
             that.enable();
@@ -120,7 +121,6 @@ function Selection(options = {}) {
             that._areaY2 = 0;
 
             that._singleClick = true; // To detect single-click
-
 
             // Check in which container the user currently acts
             that._targetContainer = that._boundaries.find(el =>
@@ -177,8 +177,8 @@ function Selection(options = {}) {
                  * the positions via a negative margin.
                  */
                 _.css(that._areaElement, {
-                    'margin-top': -that._targetBoundary.top,
-                    'margin-left': -that._targetBoundary.left
+                    marginTop: -that._targetBoundary.top,
+                    marginLeft: -that._targetBoundary.left
                 });
             } else {
                 that._scrollAvailable = false;
