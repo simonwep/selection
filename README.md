@@ -29,7 +29,7 @@
           alt="downloads per week"
         src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
     <img alt="Current version"
-        src="https://img.shields.io/badge/version-0.2.1-23AD62.svg">
+        src="https://img.shields.io/badge/version-0.2.2-23AD62.svg">
 </p>
 
 <h3 align="center">
