@@ -1,3 +1,4 @@
+const {version} = require('./package');
 const webpack = require('webpack');
 
 module.exports = {
@@ -34,6 +35,10 @@ module.exports = {
     plugins: [
         new webpack.SourceMapDevToolPlugin({
             filename: 'selection.min.js.map'
+        }),
+
+        new webpack.BannerPlugin({
+            banner: `Selectionjs ${version} MIT | https://github.com/Simonwep/selection`
         })
     ]
 };
