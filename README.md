@@ -167,8 +167,8 @@ const selection = new Selection({
 * selection.cancel() _- Cancels the current selection process._
 
 * selection.keepSelection() _- Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections._
-* selection.clearSelection() _- Clear the previous selection (elements which where saved by `keepSelection()`)._
-* selection.getSelection() _- Returns currently selected elements as Array._
+* selection.clearSelection() _- Clear the previous selection (elements which were saved by `keepSelection()`)._
+* selection.getSelection() _- Returns currently selected elements as an Array._
 * selection.removeFromSelection(el`:HTMLElement`) _- Removes a particular element from the current selection._
 * selection.resolveSelectables() _- Need to be called if during a selection elements have been added_
 
