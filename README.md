@@ -66,12 +66,12 @@ Include via [jsdelivr.net](https://www.jsdelivr.com/)
 ```javascript
 const options = {
 
-  // All elemets with the class 'selectable' selectable.
+  // All elements with the class 'selectable' selectable.
   selectables: ['.selectable']
 };
 const selection = Selection.create(options);
 ```
-It's recommend to also specify a bounding area for the selection (see 'Options').
+It's recommended to also specify a bounding area for the selection (see 'Options').
 
 ***
 
