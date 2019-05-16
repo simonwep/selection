@@ -149,7 +149,7 @@ function Selection(options = {}) {
                 that._scrollAvailable = true;
 
                 // Detect mouse scrolling
-                _.on(window, 'wheel', that._manualScroll);
+                _.on(window, 'wheel', that._manualScroll, {passive: false});
 
                 /**
                  * The selection-area will also cover other element which are
