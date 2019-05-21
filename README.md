@@ -11,9 +11,6 @@
     <a href="https://choosealicense.com/licenses/mit/"><img
         alt="License MIT"
         src="https://img.shields.io/badge/licence-MIT-blue.svg"></a>
-    <a href="https://webpack.js.org/"><img
-        alt="Webpack"
-        src="https://img.shields.io/badge/Webpack-4-blue.svg"></a>
     <img alt="No dependencies"
         src="https://img.shields.io/badge/dependencies-none-3387e0.svg">
     <a href="https://www.patreon.com/simonwep"><img
@@ -24,9 +21,12 @@
         src="https://travis-ci.org/Simonwep/selection.svg?branch=master"></a>
     <a href="https://www.npmjs.com/"><img
         alt="npm package"
-        src="https://img.shields.io/badge/npm-6.0.1-brightgreen.svg"></a>
+        src="https://img.shields.io/badge/npm-6.0.1-brightgreen.svg"></a>  
+    <a href="https://www.jsdelivr.com/package/npm/@simonwep/selection-js"><img
+        alt="jsdelivr hits"
+        src="https://data.jsdelivr.com/v1/package/npm/@simonwep/selection-js/badge"></a>
     <a href="https://www.npmjs.com/package/@simonwep/selection-js"><img
-          alt="downloads per week"
+        alt="downloads per week"
         src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
     <img alt="Current version"
         src="https://img.shields.io/badge/version-0.2.2-23AD62.svg">
