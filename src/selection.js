@@ -1,9 +1,3 @@
-/**
- * Selection, library to realize visual DOM-Selection like on your Desktop.
- *
- * @author  Simon Reinisch
- * @license MIT
- */
 
 // Import utils
 import * as _ from './utils';

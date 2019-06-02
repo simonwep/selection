@@ -16,18 +16,17 @@
     <a href="https://www.patreon.com/simonwep"><img
         alt="Support me"
         src="https://img.shields.io/badge/patreon-support-57D3E4.svg"></a>
+    <a href="https://www.jsdelivr.com/package/npm/@simonwep/selection-js"><img
+        alt="jsdelivr hits"
+        src="https://data.jsdelivr.com/v1/package/npm/@simonwep/selection-js/badge?style=rounded"></a>
     <a href="https://travis-ci.org/Simonwep/selection"><img
         alt="Build Status"
         src="https://travis-ci.org/Simonwep/selection.svg?branch=master"></a>
-    <a href="https://www.npmjs.com/"><img
-        alt="npm package"
-        src="https://img.shields.io/badge/npm-6.0.1-brightgreen.svg"></a>  
-    <a href="https://www.jsdelivr.com/package/npm/@simonwep/selection-js"><img
-        alt="jsdelivr hits"
-        src="https://data.jsdelivr.com/v1/package/npm/@simonwep/selection-js/badge"></a>
     <a href="https://www.npmjs.com/package/@simonwep/selection-js"><img
         alt="downloads per week"
         src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
+    <img alt="gzip size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=gzip">
+    <img alt="brotli size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=brotli">
     <img alt="Current version"
         src="https://img.shields.io/badge/version-0.2.3-23AD62.svg">
 </p>
@@ -47,7 +46,6 @@
 * Simple usage
 * No jQuery
 * Vertical and horizontal scroll support
-* Lightweight, 3kB gzipped
 
 ### Install
 
