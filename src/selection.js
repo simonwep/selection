@@ -50,14 +50,7 @@ function Selection(options = {}) {
         _selectionAreaContainer: null,
 
         _init() {
-
-            // Append area to container
-            if (_.isElement(that.options.selectionAreaContainer)) {
-                that._selectionAreaContainer = that.options.selectionAreaContainer;
-            } else {
-                that._selectionAreaContainer = doc.querySelector(that.options.selectionAreaContainer);
-            }
-
+            that._selectionAreaContainer = _.selectAll(that.options.selectionAreaContainer)[0];
             that._clippingElement.appendChild(that._areaElement);
             that._selectionAreaContainer.appendChild(that._clippingElement);
 
