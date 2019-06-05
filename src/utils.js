@@ -110,11 +110,19 @@ export function intersects(a, b, mode = 'touch') {
  * @returns {Array} Array of DOM-Nodes.
  */
 export function selectAll(selector) {
-    if (!Array.isArray(selector)) selector = [selector];
+    if (!Array.isArray(selector)) {
+        selector = [selector];
+    }
 
     const nodes = [];
-    for (const sel of selector) {
-        nodes.push(...document.querySelectorAll(sel));
+    for (let i = 0, l = selector.length; i < l; i++) {
+        const item = selector[i];
+
+        if (typeof item === 'string') {
+            nodes.push(...document.querySelectorAll(item));
+        } else if (item instanceof HTMLElement) {
+            nodes.push(item);
+        }
     }
 
     return nodes;
@@ -160,8 +168,8 @@ export function simplifyEvent(evt) {
  */
 export function isElement(value) {
     return (
-        typeof HTMLElement === "object"
+        typeof HTMLElement === 'object'
             ? value instanceof HTMLElement
-            : typeof value === "object" && value !== null && value.nodeType === 1 && typeof value.nodeName === "string"
+            : typeof value === 'object' && value !== null && value.nodeType === 1 && typeof value.nodeName === 'string'
     );
 }

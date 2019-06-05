@@ -1,4 +1,3 @@
-
 // Import utils
 import * as _ from './utils';
 
@@ -33,6 +32,11 @@ function Selection(options = {}) {
 
         // Store for keepSelection
         _selectedStore: [],
+        _touchedElements: [], // Currently touched elements
+        _changedElements: {
+            added: [],  // Added elements since last selection
+            removed: [] // Removed elements since last selection
+        },
 
         // Create area element
         _areaElement: doc.createElement('div'),
@@ -428,7 +432,7 @@ function Selection(options = {}) {
             }
         },
 
-        _dispatchEvent(eventName, originalEvent, additional) {
+        _dispatchEvent(eventName, originalEvent, additional = {}) {
             const event = that.options[eventName];
 
             // Validate function
@@ -528,6 +532,23 @@ function Selection(options = {}) {
          */
         enable() {
             that._bindStartEvents('on');
+        },
+
+        /**
+         * Manually select elements
+         * @param query - CSS Query, can be an array of queries
+         */
+        select(query) {
+            const {_touchedElements, _selectedStore} = that;
+            const elements = _.selectAll(query).filter(el =>
+                !_touchedElements.includes(el) &&
+                !_selectedStore.includes(el)
+            );
+
+            that._changedElements.added = elements;
+            that._selectedStore.push(...elements);
+            that._dispatchEvent('onMove', null);
+            return that;
         }
     };
 
