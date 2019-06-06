@@ -569,7 +569,7 @@ Selection.utils = {
 Selection.create = options => new Selection(options);
 
 // Set version
-Selection.version = '0.2.3';
+Selection.version = '0.2.4';
 
 // Export API
 export default Selection;

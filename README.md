@@ -28,7 +28,7 @@
     <img alt="gzip size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=gzip">
     <img alt="brotli size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=brotli">
     <img alt="Current version"
-        src="https://img.shields.io/badge/version-0.2.3-23AD62.svg">
+        src="https://img.shields.io/badge/version-0.2.4-23AD62.svg">
 </p>
 
 <h3 align="center">
