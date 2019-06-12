@@ -59,7 +59,7 @@ export function css(el, attr, val) {
             style[prop] = unitify(attr[prop]);
         }
 
-    } else if (val == null) {
+    } else if (val === null) {
 
         const dw = document.defaultView;
         if (dw && dw.getComputedStyle) {
@@ -68,7 +68,7 @@ export function css(el, attr, val) {
             val = el.currentStyle;
         }
 
-        return attr == null ? val : val[attr];
+        return attr === null ? val : val[attr];
     } else {
         style[attr] = unitify(val);
     }
@@ -81,26 +81,29 @@ export function css(el, attr, val) {
  * @param mode Options are center, cover or touch.
  * @returns {boolean} If both elements intersects each other.
  */
-export function intersects(a, b, mode = 'touch') {
+export function intersects(a, b, mode) {
+    switch (mode || 'touch') {
+        case 'center': {
+            const bxc = b.left + b.width / 2;
+            const byc = b.top + b.height / 2;
 
-    if (mode === 'center') {
-        const bxc = b.left + b.width / 2;
-        const byc = b.top + b.height / 2;
-
-        return bxc >= a.left
-            && bxc <= a.right
-            && byc >= a.top
-            && byc <= a.bottom;
-    } else if (mode === 'cover') {
-        return b.left >= a.left
-            && b.top >= a.top
-            && b.right <= a.right
-            && b.bottom <= a.bottom;
-    } else if (mode === 'touch') {
-        return a.right >= b.left
-            && a.left <= b.right
-            && a.bottom >= b.top
-            && a.top <= b.bottom;
+            return bxc >= a.left
+                && bxc <= a.right
+                && byc >= a.top
+                && byc <= a.bottom;
+        }
+        case 'cover': {
+            return b.left >= a.left
+                && b.top >= a.top
+                && b.right <= a.right
+                && b.bottom <= a.bottom;
+        }
+        case 'touch': {
+            return a.right >= b.left
+                && a.left <= b.right
+                && a.bottom >= b.top
+                && a.top <= b.bottom;
+        }
     }
 }
 

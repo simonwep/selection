@@ -1,5 +1,4 @@
-// Import utils
-import * as _ from './utils';
+import {on, off, css, selectAll, eventPath, intersects, simplifyEvent, removeElement} from './utils';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round} = Math;
@@ -50,19 +49,19 @@ function Selection(options = {}) {
         _selectionAreaContainer: null,
 
         _init() {
-            that._selectionAreaContainer = _.selectAll(that.options.selectionAreaContainer)[0];
+            that._selectionAreaContainer = selectAll(that.options.selectionAreaContainer)[0];
             that._clippingElement.appendChild(that._areaElement);
             that._selectionAreaContainer.appendChild(that._clippingElement);
 
             // Apply basic styles to the area element
-            _.css(that._areaElement, {
+            css(that._areaElement, {
                 willChange: 'top, left, bottom, right, width, height',
                 top: 0,
                 left: 0,
                 position: 'fixed'
             });
 
-            _.css(that._clippingElement, {
+            css(that._clippingElement, {
                 overflow: 'hidden',
                 position: 'fixed',
                 transform: 'translate3d(0, 0, 0)', // https://stackoverflow.com/a/38268846
@@ -74,17 +73,18 @@ function Selection(options = {}) {
         },
 
         _bindStartEvents(type) {
-            _[type](doc, 'mousedown', that._onTapStart);
+            const fn = type === 'on' ? on : off;
+            fn(doc, 'mousedown', that._onTapStart);
 
             if (!that.options.disableTouch) {
-                _[type](doc, 'touchstart', that._onTapStart, {
+                fn(doc, 'touchstart', that._onTapStart, {
                     passive: false
                 });
             }
         },
 
         _onTapStart(evt) {
-            const {x, y, target} = _.simplifyEvent(evt);
+            const {x, y, target} = simplifyEvent(evt);
             const targetBoundingClientRect = target.getBoundingClientRect();
 
             // Check mouse middleware
@@ -93,11 +93,11 @@ function Selection(options = {}) {
             }
 
             // Find start-areas and boundaries
-            const startAreas = _.selectAll(that.options.startareas);
-            that._boundaries = _.selectAll(that.options.boundaries);
+            const startAreas = selectAll(that.options.startareas);
+            that._boundaries = selectAll(that.options.boundaries);
 
             // Check if area starts in one of the start areas / boundaries
-            const evtpath = _.eventPath(evt);
+            const evtpath = eventPath(evt);
             if (!startAreas.find(el => evtpath.includes(el)) ||
                 !that._boundaries.find(el => evtpath.includes(el))) {
                 return;
@@ -115,7 +115,7 @@ function Selection(options = {}) {
 
             // Check in which container the user currently acts
             that._targetContainer = that._boundaries.find(el =>
-                _.intersects(el.getBoundingClientRect(), targetBoundingClientRect)
+                intersects(el.getBoundingClientRect(), targetBoundingClientRect)
             );
 
             if (!that._targetContainer) {
@@ -125,7 +125,7 @@ function Selection(options = {}) {
             that.resolveSelectables();
 
             // Just saving the boundaries of this container for later
-            that._targetBoundary = that._targetContainer.getBoundingClientRect();
+            const tb = that._targetBoundary = that._targetContainer.getBoundingClientRect();
             that._touchedElements = [];
             that._changedElements = {
                 added: [],
@@ -133,14 +133,14 @@ function Selection(options = {}) {
             };
 
             // Find container and check if it's scrollable
-            if (round(that._targetContainer.scrollHeight) !== round(that._targetBoundary.height) ||
-                round(that._targetContainer.scrollWidth) !== round(that._targetBoundary.width)) {
+            if (round(that._targetContainer.scrollHeight) !== round(tb.height) ||
+                round(that._targetContainer.scrollWidth) !== round(tb.width)) {
 
                 // Indenticates if the user is currently in a scrollable area
                 that._scrollAvailable = true;
 
                 // Detect mouse scrolling
-                _.on(window, 'wheel', that._manualScroll, {passive: false});
+                on(window, 'wheel', that._manualScroll, {passive: false});
 
                 /**
                  * The selection-area will also cover other element which are
@@ -155,11 +155,11 @@ function Selection(options = {}) {
                  * which has exact the same dimensions as the scrollable elemeent.
                  * Now if the area exeeds these boundaries it will be cropped.
                  */
-                _.css(that._clippingElement, {
-                    top: that._targetBoundary.top,
-                    left: that._targetBoundary.left,
-                    width: that._targetBoundary.width,
-                    height: that._targetBoundary.height
+                css(that._clippingElement, {
+                    top: tb.top,
+                    left: tb.left,
+                    width: tb.width,
+                    height: tb.height
                 });
 
                 /**
@@ -167,9 +167,9 @@ function Selection(options = {}) {
                  * but when this is moved or transformed we need to correct
                  * the positions via a negative margin.
                  */
-                _.css(that._areaElement, {
-                    marginTop: -that._targetBoundary.top,
-                    marginLeft: -that._targetBoundary.left
+                css(that._areaElement, {
+                    marginTop: -tb.top,
+                    marginLeft: -tb.left
                 });
             } else {
                 that._scrollAvailable = false;
@@ -177,14 +177,14 @@ function Selection(options = {}) {
                 /**
                  * Reset margin and clipping element dimensions.
                  */
-                _.css(that._clippingElement, {
+                css(that._clippingElement, {
                     top: 0,
                     left: 0,
                     width: '100%',
                     height: '100%'
                 });
 
-                _.css(that._areaElement, {
+                css(that._areaElement, {
                     'margin-top': 0,
                     'margin-left': 0
                 });
@@ -194,20 +194,20 @@ function Selection(options = {}) {
             that._areaElement.classList.add(that.options.class);
 
             // Prevent default select event
-            _.on(doc, 'selectstart', preventDefault);
+            on(doc, 'selectstart', preventDefault);
 
             // Add listener
-            _.on(doc, 'mousemove', that._delayedTapMove);
-            _.on(doc, 'touchmove', that._delayedTapMove, {
+            on(doc, 'mousemove', that._delayedTapMove);
+            on(doc, 'touchmove', that._delayedTapMove, {
                 passive: false
             });
 
-            _.on(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
+            on(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
             evt.preventDefault();
         },
 
         _onSingleTap(evt) {
-            let {target} = _.simplifyEvent(evt);
+            let {target} = simplifyEvent(evt);
 
             // Traverse dom upwards to check if target is selectable
             while (!that._selectables.includes(target)) {
@@ -225,14 +225,14 @@ function Selection(options = {}) {
         },
 
         _delayedTapMove(evt) {
-            const {x, y} = _.simplifyEvent(evt);
+            const {x, y} = simplifyEvent(evt);
 
             // Check pixel threshold
             if (abs((x + y) - (that._areaX1 + that._areaY1)) >= that.options.startThreshold) {
 
-                _.off(doc, ['mousemove', 'touchmove'], that._delayedTapMove);
-                _.on(doc, ['mousemove', 'touchmove'], that._onTapMove);
-                _.css(that._areaElement, 'display', 'block');
+                off(doc, ['mousemove', 'touchmove'], that._delayedTapMove);
+                on(doc, ['mousemove', 'touchmove'], that._onTapMove);
+                css(that._areaElement, 'display', 'block');
 
                 // New start position
                 that._onTapMove(evt);
@@ -247,18 +247,19 @@ function Selection(options = {}) {
         },
 
         _onTapMove(evt) {
-            const {x, y} = _.simplifyEvent(evt);
+            const {x, y} = simplifyEvent(evt);
+            const scon = that._targetContainer;
+            const ss = that._scrollSpeed;
             that._areaX2 = x;
             that._areaY2 = y;
 
-            if (that._scrollAvailable && (that._scrollSpeed.y !== null || that._scrollSpeed.x !== null)) {
-                const scon = that._targetContainer;
+            if (that._scrollAvailable && (ss.y !== null || ss.x !== null)) {
 
                 // Continous scrolling
                 requestAnimationFrame(function scroll() {
 
                     // Scrolling is not anymore required
-                    if (that._scrollSpeed.y === null && that._scrollSpeed.x === null) {
+                    if (ss.y === null && ss.x === null) {
                         return;
                     }
 
@@ -269,13 +270,13 @@ function Selection(options = {}) {
                     const {scrollTop, scrollLeft} = scon;
 
                     // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
-                    if (that._scrollSpeed.y !== null) {
-                        scon.scrollTop += Math.ceil(that._scrollSpeed.y / that.options.scrollSpeedDivider);
+                    if (ss.y !== null) {
+                        scon.scrollTop += Math.ceil(ss.y / that.options.scrollSpeedDivider);
                         that._areaY1 -= scon.scrollTop - scrollTop;
                     }
 
-                    if (that._scrollSpeed.x !== null) {
-                        scon.scrollLeft += Math.ceil(that._scrollSpeed.x / that.options.scrollSpeedDivider);
+                    if (ss.x !== null) {
+                        scon.scrollLeft += Math.ceil(ss.x / that.options.scrollSpeedDivider);
                         that._areaX1 -= scon.scrollLeft - scrollLeft;
                     }
 
@@ -305,8 +306,9 @@ function Selection(options = {}) {
         },
 
         _manualScroll(evt) {
-            that._scrollSpeed.y += that.options.scrollSpeedDivider * (evt.wheelDeltaY * -1);
-            that._scrollSpeed.x += that.options.scrollSpeedDivider * (evt.wheelDeltaX * -1);
+            const {scrollSpeedDivider} = that.options;
+            that._scrollSpeed.y += scrollSpeedDivider * (evt.wheelDeltaY * -1);
+            that._scrollSpeed.x += scrollSpeedDivider * (evt.wheelDeltaX * -1);
             that._onTapMove(evt);
 
             // Prevent defaul scrolling behaviour, eg. page scrolling
@@ -316,27 +318,28 @@ function Selection(options = {}) {
         _redrawArea() {
             const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = that._targetContainer;
             const brect = that._targetBoundary;
+            const ss = that._scrollSpeed;
             let x = that._areaX2;
             let y = that._areaY2;
 
             if (x < brect.left) {
-                that._scrollSpeed.x = scrollLeft ? -Math.abs(brect.left - x) : null;
+                ss.x = scrollLeft ? -Math.abs(brect.left - x) : null;
                 x = brect.left;
             } else if (x > brect.left + brect.width) {
-                that._scrollSpeed.x = scrollWidth - scrollLeft - clientWidth ? Math.abs(brect.left + brect.width - x) : null;
+                ss.x = scrollWidth - scrollLeft - clientWidth ? Math.abs(brect.left + brect.width - x) : null;
                 x = brect.left + brect.width;
             } else {
-                that._scrollSpeed.x = null;
+                ss.x = null;
             }
 
             if (y < brect.top) {
-                that._scrollSpeed.y = scrollTop ? -Math.abs(brect.top - y) : null;
+                ss.y = scrollTop ? -Math.abs(brect.top - y) : null;
                 y = brect.top;
             } else if (y > brect.top + brect.height) {
-                that._scrollSpeed.y = scrollHeight - scrollTop - clientHeight ? Math.abs(brect.top + brect.height - y) : null;
+                ss.y = scrollHeight - scrollTop - clientHeight ? Math.abs(brect.top + brect.height - y) : null;
                 y = brect.top + brect.height;
             } else {
-                that._scrollSpeed.y = null;
+                ss.y = null;
             }
 
             const x3 = min(that._areaX1, x);
@@ -344,20 +347,20 @@ function Selection(options = {}) {
             const x4 = max(that._areaX1, x);
             const y4 = max(that._areaY1, y);
 
-            _.css(that._areaElement, {
-                top: y3,
-                left: x3,
-                width: x4 - x3,
-                height: y4 - y3
+            Object.assign(that._areaElement.style, {
+                top: `${y3}px`,
+                left: `${x3}px`,
+                width: `${x4 - x3}px`,
+                height: `${y4 - y3}px`
             });
         },
 
         _onTapStop(evt, noevent) {
 
             // Remove event handlers
-            _.off(doc, ['mousemove', 'touchmove'], that._delayedTapMove);
-            _.off(doc, ['touchmove', 'mousemove'], that._onTapMove);
-            _.off(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
+            off(doc, ['mousemove', 'touchmove'], that._delayedTapMove);
+            off(doc, ['touchmove', 'mousemove'], that._onTapMove);
+            off(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
 
             if (that._singleClick && that.options.singleClick) {
                 that._onSingleTap(evt);
@@ -370,59 +373,62 @@ function Selection(options = {}) {
             that._scrollSpeed = {x: null, y: null};
 
             // Unbind mouse scrolling listener
-            _.off(window, 'wheel', that._manualScroll);
+            off(window, 'wheel', that._manualScroll);
 
             // Enable default select event
-            _.off(doc, 'selectstart', preventDefault);
-            _.css(that._areaElement, 'display', 'none');
+            off(doc, 'selectstart', preventDefault);
+            css(that._areaElement, 'display', 'none');
         },
 
         _updatedTouchingElements() {
-            const touched = [];
-            const changed = {added: [], removed: []};
+            const {_touchedElements, _selectables, _areaElement, options} = that;
 
-            const mode = that.options.mode;
-            const selectables = that._selectables;
-            const areaRect = that._areaElement.getBoundingClientRect();
+            // Filter event
+            const filterEvent = options.selectionFilter && options.selectionFilter.bind(that);
+            const filterEventOk = typeof filterEvent === 'function';
+
+            const {mode} = options;
+            const areaRect = _areaElement.getBoundingClientRect();
+
+            // Update
+            const touched = [];
+            const added = [];
+            const removed = [];
 
             // Itreate over the selectable elements
-            for (let i = 0, n = selectables.length, node; node = selectables[i], i < n; i++) {
+            for (let i = 0, n = _selectables.length, node; node = _selectables[i], i < n; i++) {
 
                 // Check if area intersects element
-                if (_.intersects(areaRect, node.getBoundingClientRect(), mode)) {
+                if (intersects(areaRect, node.getBoundingClientRect(), mode)) {
 
                     // Fire filter event
-                    if (that._dispatchFilterEvent('selectionFilter', node) !== false) {
+                    if (filterEventOk &&
+                        !filterEvent.call(that, {
+                            selection: that,
+                            eventName: 'selectionFilter',
+                            element: node
+                        })
+                    ) continue;
 
-                        // Check if the element wasn't present in the last selection.
-                        if (!that._touchedElements.includes(node)) {
-                            changed.added.push(node);
-                        }
-
-                        touched.push(node);
+                    // Check if the element wasn't present in the last selection.
+                    if (!_touchedElements.includes(node)) {
+                        added.push(node);
                     }
+
+                    touched.push(node);
                 }
             }
 
             // Check which elements where removed since last selection
-            for (let i = 0, n = that._touchedElements.length, el; el = that._touchedElements[i], i < n; i++) {
+            for (let i = 0, n = _touchedElements.length, el; el = _touchedElements[i], i < n; i++) {
                 if (!touched.includes(el)) {
-                    changed.removed.push(el);
+                    removed.push(el);
                 }
             }
 
             // Save
             that._touchedElements = touched;
-            that._changedElements = changed;
-        },
-
-        _dispatchFilterEvent(eventName, element) {
-            const event = that.options[eventName];
-
-            // Validate function
-            if (typeof event === 'function') {
-                return event.call(that, {selection: that, eventName, element});
-            }
+            that._changedElements = {added, removed};
         },
 
         _dispatchEvent(eventName, originalEvent, additional = {}) {
@@ -449,7 +455,7 @@ function Selection(options = {}) {
         resolveSelectables() {
 
             // Resolve selectors
-            that._selectables = _.selectAll(that.options.selectables);
+            that._selectables = selectAll(that.options.selectables);
         },
 
         /**
@@ -475,8 +481,8 @@ function Selection(options = {}) {
          * Removes an particular element from the selection.
          */
         removeFromSelection(el) {
-            _.removeElement(that._selectedStore, el);
-            _.removeElement(that._touchedElements, el);
+            removeElement(that._selectedStore, el);
+            removeElement(that._touchedElements, el);
         },
 
         /**
@@ -502,7 +508,7 @@ function Selection(options = {}) {
          */
         option(name, value) {
             const {options} = that;
-            return value == null ? options[name] : (options[name] = value);
+            return value === null ? options[name] : (options[name] = value);
         },
 
         /**
@@ -533,7 +539,7 @@ function Selection(options = {}) {
          */
         select(query) {
             const {_touchedElements, _selectedStore} = that;
-            const elements = _.selectAll(query).filter(el =>
+            const elements = selectAll(query).filter(el =>
                 !_touchedElements.includes(el) &&
                 !_selectedStore.includes(el)
             );
@@ -553,13 +559,13 @@ function Selection(options = {}) {
 
 // Export utils
 Selection.utils = {
-    on: _.on,
-    off: _.off,
-    css: _.css,
-    intersects: _.intersects,
-    selectAll: _.selectAll,
-    eventPath: _.eventPath,
-    removeElement: _.removeElement
+    on: on,
+    off: off,
+    css: css,
+    intersects: intersects,
+    selectAll: selectAll,
+    eventPath: eventPath,
+    removeElement: removeElement
 };
 
 /**
