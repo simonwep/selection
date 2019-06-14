@@ -24,14 +24,12 @@ body {
 }
 
 body {
-    background: #faf9f7;
-    font-family: 'Pacifico';
+    background: #f1f8ff;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 header {
     text-align: center;
-    font-family: 'Pacifico';
-    letter-spacing: 0.2em;
     font-size: 2.5em;
     padding: 1.2em 0 0.5em 0;
 }
@@ -39,13 +37,14 @@ header {
 header h1 {
     font-size: 1em;
     font-weight: 200;
+    color: #42445a;
 }
 
 header h1 .js {
-    color: #14c3e3;
+    color: #35d6f9;
 }
 
-main .sec {
+main {
     width: 100%;
     max-width: 50em;
     margin: 3em auto;
@@ -64,17 +63,14 @@ main section.demo .info {
     text-align: center;
     margin: 1em 0 2em 0;
     line-height: 2em;
-    letter-spacing: 0.1em;
+    color: #42445a;
 }
 
 main section.demo .box-wrap {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
     justify-content: center;
 }
 
@@ -108,12 +104,8 @@ main .boxes div {
     height: 3em;
     width: 3em;
     margin: 0.2em;
-    background: #f5f4f2;
-    -webkit-box-shadow: 0 0.05em 0.2em 0 rgba(0, 0, 0, 0.1);
-    box-shadow: 0 0.05em 0.2em 0 rgba(0, 0, 0, 0.1);
+    background: rgba(66, 68, 90, 0.075);
     border-radius: 0.15em;
-    -webkit-transition: all 0.3s;
-    -o-transition: all 0.3s;
     transition: all 0.3s;
     cursor: pointer;
 }
@@ -136,12 +128,6 @@ main .boxes.red div.selected {
     border: 0.05em solid rgba(0, 0, 255, 0.2);
 }
 
-main section.demo-code pre {
-    background: #f4f1ef;
-    border-radius: 0.2em;
-    font-size: 0.8em;
-}
-
 main section.demo .info p {
     display: flex;
     align-items: center;
@@ -150,7 +136,7 @@ main section.demo .info p {
 
 .keyboard-key {
     display: inline-block;
-    font-family: 'Open Sans';
+    font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
     text-transform: uppercase;
     color: #7c7f91;
@@ -159,10 +145,23 @@ main section.demo .info p {
     letter-spacing: -0.05em;
     padding: 0.2em 0.4em 0.2em 0.4em;
     margin: 0 0.5em;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+    border: 1px solid #42445a;
+    border-bottom: 2px solid #42445a;
     border-radius: 2px;
 }
+
+.gist {
+    margin-top: 5em;
+}
+
+.js-file-line-container,
+.gist-file,
+.gist-data,
+.gist-meta {
+    background: transparent !important;
+    border: none !important;
+}
+
 
 @media only screen and (max-width: 1000px) {
 
@@ -181,11 +180,5 @@ main section.demo .info p {
 
     main section.demo .info {
         font-size: 0.8em;
-    }
-
-    main section.demo-code pre {
-        font-size: 0.6em;
-        margin: 0 1em;
-        overflow: scroll;
     }
 }
