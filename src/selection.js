@@ -211,17 +211,34 @@ function Selection(options = {}) {
 
             // Traverse dom upwards to check if target is selectable
             while (!that._selectables.includes(target)) {
-                if (target.parentElement) {
-                    target = target.parentElement;
-                } else {
+                if (!target.parentElement) {
                     return;
                 }
+
+                target = target.parentElement;
             }
 
-            that._touchedElements.push(target);
-            that._dispatchEvent('onSelect', evt, {
-                target
-            });
+            const stored = that._selectedStore;
+            if (evt.shiftKey && stored.length) {
+                const middle = stored[Math.floor(stored.length / 2)];
+
+                // Resolve correct range
+                const [preceding, following] = middle.compareDocumentPosition(target) & 4 ?
+                    [target, middle] : [middle, target];
+
+                const rangeItems = [...that._selectables.filter(el =>
+                    !stored.includes(el) &&
+                    (el.compareDocumentPosition(preceding) & 4) &&
+                    (el.compareDocumentPosition(following) & 2)
+                ), target];
+
+                that.select(rangeItems);
+            } else {
+                that._touchedElements.push(target);
+                that._dispatchEvent('onSelect', evt, {
+                    target
+                });
+            }
         },
 
         _delayedTapMove(evt) {
