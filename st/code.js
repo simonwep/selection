@@ -9,17 +9,19 @@ const selection = Selection.create({
     // The container is also the boundary in this case
     boundaries: ['.box-wrap'],
 
-    onSelect(evt) {
+    onSelect({target, originalEvent, selectedElements}) {
 
         // Check if clicked element is already selected
-        const selected = evt.target.classList.contains('selected');
+        const selected = target.classList.contains('selected');
 
         // Remove class if the user isn't pressing the control key or ⌘ key and the
         // current target is already selected
-        if (!evt.originalEvent.ctrlKey && !evt.originalEvent.metaKey) {
+        if (!originalEvent.ctrlKey && !originalEvent.metaKey) {
 
             // Remove class from every element that is selected
-            evt.selectedElements.forEach(s => s.classList.remove('selected'));
+            for (const el of selectedElements) {
+                el.classList.remove('selected');
+            }
 
             // Clear previous selection
             this.clearSelection();
@@ -28,13 +30,13 @@ const selection = Selection.create({
         if (!selected) {
 
             // Select element
-            evt.target.classList.add('selected');
+            target.classList.add('selected');
             this.keepSelection();
         } else {
 
             // Unselect element
-            evt.target.classList.remove('selected');
-            this.removeFromSelection(evt.target);
+            target.classList.remove('selected');
+            this.removeFromSelection(target);
         }
     },
 
@@ -44,21 +46,27 @@ const selection = Selection.create({
         if (!originalEvent.ctrlKey && !originalEvent.metaKey) {
 
             // Unselect all elements
-            selectedElements.forEach(s => s.classList.remove('selected'));
+            for (const el of selectedElements) {
+                el.classList.remove('selected');
+            }
 
             // Clear previous selection
             this.clearSelection();
         }
     },
 
-    onMove({selectedElements, changedElements}) {
+    onMove({selectedElements, changedElements: {removed}}) {
 
         // Add a custom class to the elements that where selected.
-        selectedElements.forEach(s => s.classList.add('selected'));
+        for (const el of selectedElements) {
+            el.classList.add('selected');
+        }
 
         // Remove the class from elements that where removed
         // since the last selection
-        changedElements.removed.forEach(s => s.classList.remove('selected'));
+        for (const el of removed) {
+            el.classList.remove('selected');
+        }
     },
 
     onStop() {

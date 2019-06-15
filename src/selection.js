@@ -1,7 +1,7 @@
 import {on, off, css, selectAll, eventPath, intersects, simplifyEvent, removeElement} from './utils';
 
 // Some var shorting for better compression and readability
-const {abs, max, min, round} = Math;
+const {abs, max, min, round, floor, ceil} = Math;
 const doc = document;
 const preventDefault = e => e.preventDefault();
 
@@ -220,7 +220,7 @@ function Selection(options = {}) {
 
             const stored = that._selectedStore;
             if (evt.shiftKey && stored.length) {
-                const middle = stored[Math.floor(stored.length / 2)];
+                const middle = stored[floor(stored.length / 2)];
 
                 // Resolve correct range
                 const [preceding, following] = middle.compareDocumentPosition(target) & 4 ?
@@ -288,12 +288,12 @@ function Selection(options = {}) {
 
                     // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
                     if (ss.y !== null) {
-                        scon.scrollTop += Math.ceil(ss.y / that.options.scrollSpeedDivider);
+                        scon.scrollTop += ceil(ss.y / that.options.scrollSpeedDivider);
                         that._areaY1 -= scon.scrollTop - scrollTop;
                     }
 
                     if (ss.x !== null) {
-                        scon.scrollLeft += Math.ceil(ss.x / that.options.scrollSpeedDivider);
+                        scon.scrollLeft += ceil(ss.x / that.options.scrollSpeedDivider);
                         that._areaX1 -= scon.scrollLeft - scrollLeft;
                     }
 
@@ -340,20 +340,20 @@ function Selection(options = {}) {
             let y = that._areaY2;
 
             if (x < brect.left) {
-                ss.x = scrollLeft ? -Math.abs(brect.left - x) : null;
+                ss.x = scrollLeft ? -abs(brect.left - x) : null;
                 x = brect.left;
             } else if (x > brect.left + brect.width) {
-                ss.x = scrollWidth - scrollLeft - clientWidth ? Math.abs(brect.left + brect.width - x) : null;
+                ss.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x) : null;
                 x = brect.left + brect.width;
             } else {
                 ss.x = null;
             }
 
             if (y < brect.top) {
-                ss.y = scrollTop ? -Math.abs(brect.top - y) : null;
+                ss.y = scrollTop ? -abs(brect.top - y) : null;
                 y = brect.top;
             } else if (y > brect.top + brect.height) {
-                ss.y = scrollHeight - scrollTop - clientHeight ? Math.abs(brect.top + brect.height - y) : null;
+                ss.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y) : null;
                 y = brect.top + brect.height;
             } else {
                 ss.y = null;
