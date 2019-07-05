@@ -575,13 +575,13 @@ function Selection(options = {}) {
 
 // Export utils
 Selection.utils = {
-    on: on,
-    off: off,
-    css: css,
-    intersects: intersects,
-    selectAll: selectAll,
-    eventPath: eventPath,
-    removeElement: removeElement
+    on,
+    off,
+    css,
+    intersects,
+    selectAll,
+    eventPath,
+    removeElement
 };
 
 /**

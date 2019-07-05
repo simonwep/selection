@@ -38,7 +38,7 @@ export const on = eventListener.bind(null, 'addEventListener');
  */
 export const off = eventListener.bind(null, 'removeEventListener');
 
-const unitify = (val, unit = 'px') => typeof val === 'number' ? val + unit : '' + val;
+const unitify = (val, unit = 'px') => typeof val === 'number' ? val + unit :  val;
 
 /**
  * Add css to a DOM-Element or returns the current
