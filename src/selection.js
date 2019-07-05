@@ -197,13 +197,8 @@ function Selection(options = {}) {
             on(doc, 'selectstart', preventDefault);
 
             // Add listener
-            on(doc, 'mousemove', that._delayedTapMove);
-            on(doc, 'touchmove', that._delayedTapMove, {
-                passive: false
-            });
-
+            on(doc, ['touchmove', 'mousemove'], that._delayedTapMove, {passive: false});
             on(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
-            evt.preventDefault();
         },
 
         _onSingleTap(evt) {
@@ -247,8 +242,8 @@ function Selection(options = {}) {
             // Check pixel threshold
             if (abs((x + y) - (that._areaX1 + that._areaY1)) >= that.options.startThreshold) {
 
-                off(doc, ['mousemove', 'touchmove'], that._delayedTapMove);
-                on(doc, ['mousemove', 'touchmove'], that._onTapMove);
+                off(doc, ['mousemove', 'touchmove'], that._delayedTapMove, {passive: false});
+                on(doc, ['mousemove', 'touchmove'], that._onTapMove, {passive: false});
                 css(that._areaElement, 'display', 'block');
 
                 // New start position
@@ -261,6 +256,8 @@ function Selection(options = {}) {
                 // the user performed a mutli-selection
                 that._singleClick = false;
             }
+
+            evt.preventDefault(); // Prevent swipe-down refresh
         },
 
         _onTapMove(evt) {
@@ -320,6 +317,8 @@ function Selection(options = {}) {
                 that._updatedTouchingElements();
                 that._dispatchEvent('onMove', evt);
             }
+
+            evt.preventDefault(); // Prevent swipe-down refresh
         },
 
         _manualScroll(evt) {
