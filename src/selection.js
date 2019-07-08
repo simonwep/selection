@@ -45,13 +45,8 @@ function Selection(options = {}) {
         _scrollAvailable: true,
         _scrollSpeed: {x: null, y: null},
 
-        // Selection-area parent
-        _selectionAreaContainer: null,
-
         _init() {
-            that._selectionAreaContainer = selectAll(that.options.selectionAreaContainer)[0];
             that._clippingElement.appendChild(that._areaElement);
-            that._selectionAreaContainer.appendChild(that._clippingElement);
 
             // Apply basic styles to the area element
             css(that._areaElement, {
@@ -86,6 +81,9 @@ function Selection(options = {}) {
         _onTapStart(evt) {
             const {x, y, target} = simplifyEvent(evt);
             const targetBoundingClientRect = target.getBoundingClientRect();
+
+            // Apppend selection-area to the dom
+            selectAll(that.options.selectionAreaContainer)[0].appendChild(that._clippingElement);
 
             // Check mouse middleware
             if (!that.options.validateStart(evt)) {
@@ -391,6 +389,9 @@ function Selection(options = {}) {
             // Unbind mouse scrolling listener
             off(window, 'wheel', that._manualScroll);
 
+            // Remove selection-area from dom
+            that._clippingElement.remove();
+
             // Enable default select event
             off(doc, 'selectstart', preventDefault);
             css(that._areaElement, 'display', 'none');
@@ -539,7 +540,7 @@ function Selection(options = {}) {
          */
         destroy() {
             that.disable();
-            that._selectionAreaContainer.removeChild(that._clippingElement);
+            that._clippingElement.remove();
         },
 
         /**
