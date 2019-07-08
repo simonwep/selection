@@ -10,25 +10,25 @@
 <p align="center">
     <a href="https://choosealicense.com/licenses/mit/"><img
         alt="License MIT"
-        src="https://img.shields.io/badge/licence-MIT-blue.svg"></a>
+        src="https://img.shields.io/badge/licence-MIT-blue.svg?style=flat-square"></a>
     <img alt="No dependencies"
-        src="https://img.shields.io/badge/dependencies-none-3387e0.svg">
+        src="https://img.shields.io/badge/dependencies-none-3387e0.svg?style=flat-square">
     <a href="https://www.patreon.com/simonwep"><img
         alt="Support me"
-        src="https://img.shields.io/badge/patreon-support-57D3E4.svg"></a>
+        src="https://img.shields.io/badge/patreon-support-57D3E4.svg?style=flat-square"></a>
     <a href="https://www.jsdelivr.com/package/npm/@simonwep/selection-js"><img
         alt="jsdelivr hits"
-        src="https://data.jsdelivr.com/v1/package/npm/@simonwep/selection-js/badge?style=rounded"></a>
+        src="https://data.jsdelivr.com/v1/package/npm/@simonwep/selection-js/badge?style=flat-square"></a>
     <a href="https://travis-ci.org/Simonwep/selection"><img
         alt="Build Status"
-        src="https://travis-ci.org/Simonwep/selection.svg?branch=master"></a>
+        src="https://img.shields.io/travis/Simonwep/selection.svg?style=popout-square"></a>
     <a href="https://www.npmjs.com/package/@simonwep/selection-js"><img
         alt="downloads per week"
-        src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
-    <img alt="gzip size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=gzip">
-    <img alt="brotli size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=brotli">
+        src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg?style=flat-square"></a>
+    <img alt="gzip size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=gzip&style=flat-square">
+    <img alt="brotli size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=brotli&style=flat-square">
     <img alt="Current version"
-        src="https://img.shields.io/badge/version-0.2.5-23AD62.svg">
+        src="https://img.shields.io/github/tag/Simonwep/selection.svg?color=23AD62&label=version&style=flat-square">
 </p>
 
 <h3 align="center">
@@ -105,7 +105,7 @@ const selection = new Selection({
 
     // Query selector or dom node to set up container for selection-area-element
     selectionAreaContainer: 'body',
-    
+
     // On scrollable areas the number on px per frame is devided by this amount.
     // Default is 10 to provide a enjoyable scroll experience.
     scrollSpeedDivider: 10,

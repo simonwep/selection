@@ -1,6 +1,6 @@
 {
     "name": "@simonwep/selection-js",
-    "version": "0.2.5",
+    "version": "1.0.0",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "main": "dist/selection.min.js",
     "scripts": {
@@ -25,12 +25,12 @@
     "homepage": "https://github.com/Simonwep/selection#readme",
     "devDependencies": {
         "@babel/core": "^7.5.0",
-        "@babel/plugin-proposal-object-rest-spread": "^7.5.0",
+        "@babel/plugin-proposal-object-rest-spread": "^7.5.1",
         "@babel/preset-env": "^7.5.0",
         "babel-loader": "^8.0.6",
         "eslint": "^6.0.1",
         "eslint-loader": "^2.2.1",
-        "webpack": "^4.35.2",
+        "webpack": "^4.35.3",
         "webpack-cli": "^3.3.5",
         "webpack-dev-server": "^3.7.2"
     }
