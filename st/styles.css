@@ -5,12 +5,16 @@
 ::-webkit-scrollbar {
     width: 0.5em;
     height: 0.55em;
-    background-color: #faf9f7;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
     background: #afafaf;
     border-radius: 0.2em;
+}
+
+::-webkit-scrollbar-corner {
+    display: none;
 }
 
 * {
@@ -44,10 +48,29 @@ header h1 .js {
     color: #35d6f9;
 }
 
+header a {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.3em;
+    color: white;
+    margin-top: 5vh;
+    padding: 0.75em 1.25em;
+    transition: 0.3s all;
+    background: #4285f4;
+    border-radius: 50em;
+    box-shadow: 0 0.15em 0.5em rgba(66, 133, 244, 0.75);
+    font-family: 'Montserrat', sans-serif;
+}
+
+header a:hover {
+    background: #4291f6;
+}
+
 main {
     width: 100%;
     max-width: 50em;
-    margin: 3em auto;
+    margin: 1.5em auto;
 }
 
 main .sec .head {
@@ -72,6 +95,9 @@ main section.demo .box-wrap {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    border: 2px solid rgba(66, 68, 90, 0.075);
+    border-radius: 0.15em;
+    padding: 1em 0;
 }
 
 main section.demo .box-wrap.green,
@@ -139,14 +165,14 @@ main section.demo .info p {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
     text-transform: uppercase;
-    color: #7c7f91;
+    color: #4285f4;
     font-size: 0.85em;
     line-height: 1em;
     letter-spacing: -0.05em;
     padding: 0.2em 0.4em 0.2em 0.4em;
     margin: 0 0.5em;
-    border: 1px solid #42445a;
-    border-bottom: 2px solid #42445a;
+    border: 1px solid #4285f4;
+    border-bottom: 2px solid #4285f4;
     border-radius: 2px;
 }
 
