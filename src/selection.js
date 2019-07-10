@@ -564,6 +564,9 @@ function Selection(options = {}) {
             that._changedElements.added = elements;
             that._selectedStore.push(...elements);
             that._dispatchEvent('onMove', null);
+
+            this._updatedTouchingElements();
+            that._dispatchEvent('onStop', null);
             return that;
         }
     };
