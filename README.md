@@ -91,7 +91,7 @@ const selection = new Selection({
     // the default mode is touch (just touching it).
     mode: 'touch',
 
-    // Enable single-click selection
+    // Enable single-click selection (Also disables range-selection via shift + ctrl)
     singleClick: true,
 
     // Query selectors from elements which can be selected
@@ -169,7 +169,7 @@ const selection = new Selection({
 * selection.getSelection() _- Returns currently selected elements as an Array._
 * selection.removeFromSelection(el`:HTMLElement`) _- Removes a particular element from the current selection._
 * selection.resolveSelectables() _- Need to be called if during a selection elements have been added._
-* selection.select(query`:[String]|String`) _- Manually adds elements to the selection, can be a / an array of queries / elements._
+* selection.select(query`:[String]|String`) _- Manually adds elements to the selection, can be a / an array of queries / elements. Triggers `onMove` and `onStop`._
 
 ## Events
 Event properties of start, stop and move event.
