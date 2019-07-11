@@ -1,7 +1,7 @@
 import {on, off, css, selectAll, eventPath, intersects, simplifyEvent, removeElement} from './utils';
 
 // Some var shorting for better compression and readability
-const {abs, max, min, round, floor, ceil} = Math;
+const {abs, max, min, round, ceil} = Math;
 const doc = document;
 const preventDefault = e => e.preventDefault();
 
@@ -202,6 +202,14 @@ function Selection(options = {}) {
         _onSingleTap(evt) {
             let {target} = simplifyEvent(evt);
 
+            /**
+             * Resolve selectables again.
+             * If the user starded in a scrollable area they will be reduced
+             * to the current area. Prevent the exclusion of these if a range-selection
+             * gets performed.
+             */
+            that.resolveSelectables();
+
             // Traverse dom upwards to check if target is selectable
             while (!that._selectables.includes(target)) {
                 if (!target.parentElement) {
@@ -213,11 +221,10 @@ function Selection(options = {}) {
 
             const stored = that._selectedStore;
             if (evt.shiftKey && stored.length) {
-                const middle = stored[floor(stored.length / 2)];
+                const reference = stored[stored.length - 1];
 
                 // Resolve correct range
-                const [preceding, following] = middle.compareDocumentPosition(target) & 4 ?
-                    [target, middle] : [middle, target];
+                const [preceding, following] = reference.compareDocumentPosition(target) & 4 ? [target, reference] : [reference, target];
 
                 const rangeItems = [...that._selectables.filter(el =>
                     !stored.includes(el) &&
