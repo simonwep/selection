@@ -383,7 +383,7 @@ function Selection(options = {}) {
             off(doc, ['touchmove', 'mousemove'], that._onTapMove);
             off(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
 
-            if (that._singleClick && that.options.singleClick) {
+            if (evt && that._singleClick && that.options.singleClick) {
                 that._onSingleTap(evt);
             } else if (!that._singleClick && !noevent) {
                 that._updatedTouchingElements();
