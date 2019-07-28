@@ -31,6 +31,7 @@ function Selection(options = {}) {
 
         // Store for keepSelection
         _selectedStore: [],
+        _selectables: [],
         _touchedElements: [], // Currently touched elements
         _changedElements: {
             added: [],  // Added elements since last selection
@@ -47,6 +48,9 @@ function Selection(options = {}) {
 
         _init() {
             that._clippingElement.appendChild(that._areaElement);
+
+            // Add class to the area element
+            that._areaElement.classList.add(that.options.class);
 
             // Apply basic styles to the area element
             css(that._areaElement, {
@@ -82,9 +86,6 @@ function Selection(options = {}) {
             const {x, y, target} = simplifyEvent(evt);
             const targetBoundingClientRect = target.getBoundingClientRect();
 
-            // Apppend selection-area to the dom
-            selectAll(that.options.selectionAreaContainer)[0].appendChild(that._clippingElement);
-
             // Check mouse middleware
             if (!that.options.validateStart(evt)) {
                 return;
@@ -94,102 +95,29 @@ function Selection(options = {}) {
             const startAreas = selectAll(that.options.startareas);
             that._boundaries = selectAll(that.options.boundaries);
 
-            // Check if area starts in one of the start areas / boundaries
-            const evtpath = eventPath(evt);
-            if (!startAreas.find(el => evtpath.includes(el)) ||
-                !that._boundaries.find(el => evtpath.includes(el))) {
-                return;
-            }
-
-            // Area start point
-            that._areaX1 = x;
-            that._areaY1 = y;
-
-            // Area end point
-            that._areaX2 = 0;
-            that._areaY2 = 0;
-
-            that._singleClick = true; // To detect single-click
-
             // Check in which container the user currently acts
             that._targetContainer = that._boundaries.find(el =>
                 intersects(el.getBoundingClientRect(), targetBoundingClientRect)
             );
 
-            if (!that._targetContainer) {
+            // Check if area starts in one of the start areas / boundaries
+            const evtpath = eventPath(evt);
+            if (!that._targetContainer ||
+                !startAreas.find(el => evtpath.includes(el)) ||
+                !that._boundaries.find(el => evtpath.includes(el))) {
                 return;
             }
 
-            that.resolveSelectables();
+            // Area start point
+            that._ax1 = x;
+            that._ay1 = y;
 
-            // Just saving the boundaries of this container for later
-            const tb = that._targetBoundary = that._targetContainer.getBoundingClientRect();
-            that._touchedElements = [];
-            that._changedElements = {
-                added: [],
-                removed: []
-            };
+            // Area end point
+            that._ax2 = 0;
+            that._ay2 = 0;
 
-            // Find container and check if it's scrollable
-            if (round(that._targetContainer.scrollHeight) !== round(tb.height) ||
-                round(that._targetContainer.scrollWidth) !== round(tb.width)) {
-
-                // Indenticates if the user is currently in a scrollable area
-                that._scrollAvailable = true;
-
-                // Detect mouse scrolling
-                on(window, 'wheel', that._manualScroll, {passive: false});
-
-                /**
-                 * The selection-area will also cover other element which are
-                 * out of the current scrollable parent. So find all elements
-                 * which are in the current scrollable element. Later these are
-                 * the only selectables instead of all.
-                 */
-                that._selectables = that._selectables.filter(s => that._targetContainer.contains(s));
-
-                /**
-                 * To clip the area, the selection area has a parent
-                 * which has exact the same dimensions as the scrollable elemeent.
-                 * Now if the area exeeds these boundaries it will be cropped.
-                 */
-                css(that._clippingElement, {
-                    top: tb.top,
-                    left: tb.left,
-                    width: tb.width,
-                    height: tb.height
-                });
-
-                /**
-                 * The area element is relative to the clipping element,
-                 * but when this is moved or transformed we need to correct
-                 * the positions via a negative margin.
-                 */
-                css(that._areaElement, {
-                    marginTop: -tb.top,
-                    marginLeft: -tb.left
-                });
-            } else {
-                that._scrollAvailable = false;
-
-                /**
-                 * Reset margin and clipping element dimensions.
-                 */
-                css(that._clippingElement, {
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%'
-                });
-
-                css(that._areaElement, {
-                    'margin-top': 0,
-                    'margin-left': 0
-                });
-            }
-
-            // Add class to the area element
-            that._areaElement.classList.add(that.options.class);
+            // To detect single-click
+            that._singleClick = true;
 
             // Prevent default select event
             on(doc, 'selectstart', preventDefault);
@@ -245,21 +173,92 @@ function Selection(options = {}) {
             const {x, y} = simplifyEvent(evt);
 
             // Check pixel threshold
-            if (abs((x + y) - (that._areaX1 + that._areaY1)) >= that.options.startThreshold) {
-
+            if (abs((x + y) - (that._ax1 + that._ay1)) >= that.options.startThreshold) {
                 off(doc, ['mousemove', 'touchmove'], that._delayedTapMove, {passive: false});
                 on(doc, ['mousemove', 'touchmove'], that._onTapMove, {passive: false});
+
+                // Make area element visible
                 css(that._areaElement, 'display', 'block');
 
-                // New start position
-                that._onTapMove(evt);
+                // Apppend selection-area to the dom
+                selectAll(that.options.selectionAreaContainer)[0].appendChild(that._clippingElement);
 
-                // Fire event
-                that._dispatchEvent('onStart', evt);
+                // Now after the threshold is reached resolve all selectables
+                that.resolveSelectables();
 
                 // An action is recognized as single-select until
                 // the user performed a mutli-selection
                 that._singleClick = false;
+
+                // Just saving the boundaries of this container for later
+                const tb = that._targetBoundary = that._targetContainer.getBoundingClientRect();
+                that._touchedElements = [];
+                that._changedElements = {
+                    added: [],
+                    removed: []
+                };
+
+                // Find container and check if it's scrollable
+                if (round(that._targetContainer.scrollHeight) !== round(tb.height) ||
+                    round(that._targetContainer.scrollWidth) !== round(tb.width)) {
+
+                    // Indenticates if the user is currently in a scrollable area
+                    that._scrollAvailable = true;
+
+                    // Detect mouse scrolling
+                    on(window, 'wheel', that._manualScroll, {passive: false});
+
+                    /**
+                     * The selection-area will also cover other element which are
+                     * out of the current scrollable parent. So find all elements
+                     * which are in the current scrollable element. Later these are
+                     * the only selectables instead of all.
+                     */
+                    that._selectables = that._selectables.filter(s => that._targetContainer.contains(s));
+
+                    /**
+                     * To clip the area, the selection area has a parent
+                     * which has exact the same dimensions as the scrollable elemeent.
+                     * Now if the area exeeds these boundaries it will be cropped.
+                     */
+                    css(that._clippingElement, {
+                        top: tb.top,
+                        left: tb.left,
+                        width: tb.width,
+                        height: tb.height
+                    });
+
+                    /**
+                     * The area element is relative to the clipping element,
+                     * but when this is moved or transformed we need to correct
+                     * the positions via a negative margin.
+                     */
+                    css(that._areaElement, {
+                        marginTop: -tb.top,
+                        marginLeft: -tb.left
+                    });
+                } else {
+                    that._scrollAvailable = false;
+
+                    /**
+                     * Reset margin and clipping element dimensions.
+                     */
+                    css(that._clippingElement, {
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%'
+                    });
+
+                    css(that._areaElement, {
+                        marginTop: 0,
+                        marginLeft: 0
+                    });
+                }
+
+                // Trigger recalc and fire event
+                that._onTapMove(evt);
+                that._dispatchEvent('onStart', evt);
             }
 
             evt.preventDefault(); // Prevent swipe-down refresh
@@ -269,8 +268,8 @@ function Selection(options = {}) {
             const {x, y} = simplifyEvent(evt);
             const scon = that._targetContainer;
             const ss = that._scrollSpeed;
-            that._areaX2 = x;
-            that._areaY2 = y;
+            that._ax2 = x;
+            that._ay2 = y;
 
             if (that._scrollAvailable && (ss.y !== null || ss.x !== null)) {
 
@@ -291,12 +290,12 @@ function Selection(options = {}) {
                     // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
                     if (ss.y !== null) {
                         scon.scrollTop += ceil(ss.y / that.options.scrollSpeedDivider);
-                        that._areaY1 -= scon.scrollTop - scrollTop;
+                        that._ay1 -= scon.scrollTop - scrollTop;
                     }
 
                     if (ss.x !== null) {
                         scon.scrollLeft += ceil(ss.x / that.options.scrollSpeedDivider);
-                        that._areaX1 -= scon.scrollLeft - scrollLeft;
+                        that._ax1 -= scon.scrollLeft - scrollLeft;
                     }
 
                     /**
@@ -340,8 +339,8 @@ function Selection(options = {}) {
             const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = that._targetContainer;
             const brect = that._targetBoundary;
             const ss = that._scrollSpeed;
-            let x = that._areaX2;
-            let y = that._areaY2;
+            let x = that._ax2;
+            let y = that._ay2;
 
             if (x < brect.left) {
                 ss.x = scrollLeft ? -abs(brect.left - x) : null;
@@ -363,10 +362,10 @@ function Selection(options = {}) {
                 ss.y = null;
             }
 
-            const x3 = min(that._areaX1, x);
-            const y3 = min(that._areaY1, y);
-            const x4 = max(that._areaX1, x);
-            const y4 = max(that._areaY1, y);
+            const x3 = min(that._ax1, x);
+            const y3 = min(that._ay1, y);
+            const x4 = max(that._ax1, x);
+            const y4 = max(that._ay1, y);
 
             Object.assign(that._areaElement.style, {
                 top: `${y3}px`,
