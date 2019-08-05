@@ -35,7 +35,6 @@ function Selection(options = {}) {
 
         // Evenlistener name: [callbacks]
         _eventListener: {
-            init: [],
             beforestart: [],
             start: [],
             move: [],
@@ -625,7 +624,7 @@ Selection.utils = {
 Selection.create = options => new Selection(options);
 
 // Set version
-Selection.version = '1.1.1';
+Selection.version = '1.2.0';
 
 // Export API
 export default Selection;

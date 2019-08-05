@@ -43,6 +43,8 @@
 
 ### Features
 * Supports touch devices
+* Ultra small
+* Highly optimized
 * Simple usage
 * No jQuery
 * Vertical and horizontal scroll support
@@ -69,7 +71,6 @@ const options = {
 };
 const selection = Selection.create(options);
 ```
-It's recommended to also specify a bounding area for the selection (see 'Options').
 
 ***
 
@@ -114,8 +115,8 @@ const selection = new Selection({
 ```
 
 ## Events
-Since version `1.2.x` Selection-js is event-driven. 
-Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind eventlistener.
+Since version `1.2.x` selection-js is event-driven. 
+Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-listener.
 
 | Event      | Description
 | -------------- | ----------- | 
@@ -167,26 +168,7 @@ selection.on('beforestart', evt => {
 * selection.getSelection() _- Returns currently selected elements as an Array._
 * selection.removeFromSelection(el`:HTMLElement`) _- Removes a particular element from the current selection._
 * selection.resolveSelectables() _- Need to be called if during a selection elements have been added._
-* selection.select(query`:[String]|String`) _- Manually adds elements to the selection, can be a / an array of queries / elements. Returns actual selected elements as array._
-
-## Events
-Event properties of start, stop and move event.
- * selection`:Selection` _- Current selection object._
- * eventName`:String` _- The event name._
- * areaElement`:HTMLElement` _- The selection element._
- * originalEvent`:Event` _- The original mouse-event._
- * selectedElements`:Array[HTMLElements]` _- Array with currently selected HTMLElements._
- * changedElements`:Object`
- * added`:Array[HTMLElements]` _- Elements which are added to `selectedElements` since the last interaction (mousemove)._
- * removed`:Array[HTMLElements]`  _- Elements which are removed from `selectedElements` since last interaction (mousemove)._
-
-
-### Filter event
-Will be called on every selection, can be used to ignore specific elements in the current selection.
- * selection`:Selection` _- Current selection object._
- * eventName`:String` _- The event name._
- * element`:HTMLElement` _- HTMLElement, return false if you didn't want it in the selection._
-
+* selection.select(query`:[String]|String`) _- Manually appends elements to the selection, can be a / an array of queries / elements. Returns actual selected elements as array._
 
 ## Static methods
 
