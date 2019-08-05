@@ -119,21 +119,20 @@ Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind eventlis
 
 | Event      | Description
 | -------------- | ----------- | 
-| `init`         | Selectionjs got initialized, the element is present in the dom. | 
 | `beforestart`  | The `mousedown` / `touchstart` got called inside a valid boundary.  |
 | `start`        | User stardet the selection, the `startThreshold` got fulfilled. | 
 | `move`         | The user dragged the mouse aroun. |
 | `stop`         | The user stopped the selection, called on `mouseup` and `touchend` / `touchcancel` after a selection. |
 
-Every event contains the folling properties:
+Every event-object contains the folling properties:
 ```js
 {
-    oe,   // Original mouse- / touchevent. 'undefined' in this init event.
+    oe,   // Original mouse- / touchevent.
     inst, // Selectionjs instance
     area, // Area element
-    selected, // Array of selected elements
+    selected, // Array of currently selected elements
     changed: {
-        added, // Added elements against the previous selection
+        added,  // Added elements against the previous event
         removed // Same as added but for removed elements
     }
 }
@@ -141,20 +140,15 @@ Every event contains the folling properties:
 
 > Example:
 ```js
-selection.on('init', () => {
-    console.log('init');
-}).on('beforestart', () => {
-    
+selection.on('beforestart', evt => {
     // This function can return "false" to abort the selection
-    console.log('beforestart');
-}).on('start', () => {
-    console.log('start');
-}).on('move', () => {
-    console.log('move');
-}).on('stop', () => {
-    console.log('stop');
-}).on('select', () => {
-    console.log('select');
+    console.log('beforestart', evt);
+}).on('start', evt => {
+    console.log('start', evt);
+}).on('move', evt => {
+    console.log('move', evt);
+}).on('stop', evt => {
+    console.log('stop', evt);
 });
 ```
 
@@ -173,7 +167,7 @@ selection.on('init', () => {
 * selection.getSelection() _- Returns currently selected elements as an Array._
 * selection.removeFromSelection(el`:HTMLElement`) _- Removes a particular element from the current selection._
 * selection.resolveSelectables() _- Need to be called if during a selection elements have been added._
-* selection.select(query`:[String]|String`) _- Manually adds elements to the selection, can be a / an array of queries / elements. Triggers `onMove` and `onStop`._
+* selection.select(query`:[String]|String`) _- Manually adds elements to the selection, can be a / an array of queries / elements. Returns actual selected elements as array._
 
 ## Events
 Event properties of start, stop and move event.

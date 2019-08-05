@@ -73,7 +73,6 @@ function Selection(options = {}) {
             });
 
             that.enable();
-            that._emit('init');
         },
 
         _bindStartEvents(type) {
@@ -585,7 +584,7 @@ function Selection(options = {}) {
 
             that._selectedStore.push(...elements);
             that._updatedTouchingElements();
-            return that;
+            return elements;
         }
     };
 
