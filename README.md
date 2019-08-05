@@ -64,18 +64,6 @@ Include via [jsdelivr.net](https://www.jsdelivr.com/)
 
 ## Usage
 ```javascript
-const options = {
-
-  // All elements with the class 'selectable' selectable.
-  selectables: ['.selectable']
-};
-const selection = Selection.create(options);
-```
-
-***
-
-## Options
-```javascript
 const selection = new Selection({
 
     // Class for the selection-area-element
