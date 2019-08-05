@@ -25,10 +25,10 @@ function Selection(options = {}) {
         }, options),
 
         // Store for keepSelection
-        _selectedStore: [],
+        _stored: [],
         _selectables: [],
-        _selectedElements: [], // Currently touched elements
-        _changedElements: {
+        _selected: [], // Currently touched elements
+        _changed: {
             added: [],  // Added elements since last selection
             removed: [] // Removed elements since last selection
         },
@@ -43,7 +43,7 @@ function Selection(options = {}) {
         },
 
         // Create area element
-        _areaElement: doc.createElement('div'),
+        _area: doc.createElement('div'),
         _clippingElement: doc.createElement('div'),
 
         // Is getting set on movement. Varied.
@@ -51,13 +51,13 @@ function Selection(options = {}) {
         _scrollSpeed: {x: null, y: null},
 
         _init() {
-            that._clippingElement.appendChild(that._areaElement);
+            that._clippingElement.appendChild(that._area);
 
             // Add class to the area element
-            that._areaElement.classList.add(that.options.class);
+            that._area.classList.add(that.options.class);
 
             // Apply basic styles to the area element
-            css(that._areaElement, {
+            css(that._area, {
                 willChange: 'top, left, bottom, right, width, height',
                 top: 0,
                 left: 0,
@@ -121,6 +121,8 @@ function Selection(options = {}) {
 
             // To detect single-click
             that._singleClick = true;
+            that._selected = [];
+            that.clearSelection(false);
 
             // Prevent default select event
             on(doc, 'selectstart', preventDefault);
@@ -151,7 +153,7 @@ function Selection(options = {}) {
             }
 
             that._emit('start', evt);
-            const stored = that._selectedStore;
+            const stored = that._stored;
             if (evt.shiftKey && stored.length) {
                 const reference = stored[stored.length - 1];
 
@@ -159,7 +161,6 @@ function Selection(options = {}) {
                 const [preceding, following] = reference.compareDocumentPosition(target) & 4 ? [target, reference] : [reference, target];
 
                 const rangeItems = [...that._selectables.filter(el =>
-                    !stored.includes(el) &&
                     (el.compareDocumentPosition(preceding) & 4) &&
                     (el.compareDocumentPosition(following) & 2)
                 ), target];
@@ -168,7 +169,13 @@ function Selection(options = {}) {
                 that._emit('move', evt);
                 that._emit('stop', evt);
             } else {
-                that.select(target);
+
+                if (that._stored.includes(target)) {
+                    that.removeFromSelection(target);
+                } else {
+                    that.select(target);
+                }
+
                 that._emit('move', evt);
                 that._emit('stop', evt);
             }
@@ -183,7 +190,7 @@ function Selection(options = {}) {
                 on(doc, ['mousemove', 'touchmove'], that._onTapMove, {passive: false});
 
                 // Make area element visible
-                css(that._areaElement, 'display', 'block');
+                css(that._area, 'display', 'block');
 
                 // Apppend selection-area to the dom
                 selectAll(that.options.selectionAreaContainer)[0].appendChild(that._clippingElement);
@@ -197,11 +204,6 @@ function Selection(options = {}) {
 
                 // Just saving the boundaries of this container for later
                 const tb = that._targetBoundary = that._targetContainer.getBoundingClientRect();
-                that._selectedElements = [];
-                that._changedElements = {
-                    added: [],
-                    removed: []
-                };
 
                 // Find container and check if it's scrollable
                 if (round(that._targetContainer.scrollHeight) !== round(tb.height) ||
@@ -238,7 +240,7 @@ function Selection(options = {}) {
                      * but when this is moved or transformed we need to correct
                      * the positions via a negative margin.
                      */
-                    css(that._areaElement, {
+                    css(that._area, {
                         marginTop: -tb.top,
                         marginLeft: -tb.left
                     });
@@ -255,7 +257,7 @@ function Selection(options = {}) {
                         height: '100%'
                     });
 
-                    css(that._areaElement, {
+                    css(that._area, {
                         marginTop: 0,
                         marginLeft: 0
                     });
@@ -372,7 +374,7 @@ function Selection(options = {}) {
             const x4 = max(that._ax1, x);
             const y4 = max(that._ay1, y);
 
-            Object.assign(that._areaElement.style, {
+            Object.assign(that._area.style, {
                 top: `${y3}px`,
                 left: `${x3}px`,
                 width: `${x4 - x3}px`,
@@ -405,13 +407,13 @@ function Selection(options = {}) {
 
             // Enable default select event
             off(doc, 'selectstart', preventDefault);
-            css(that._areaElement, 'display', 'none');
+            css(that._area, 'display', 'none');
         },
 
         _updatedTouchingElements() {
-            const {_selectedElements, _selectables, _areaElement, options} = that;
+            const {_selected, _selectables, _area, options} = that;
             const {mode} = options;
-            const areaRect = _areaElement.getBoundingClientRect();
+            const areaRect = _area.getBoundingClientRect();
 
             // Update
             const touched = [];
@@ -425,7 +427,7 @@ function Selection(options = {}) {
                 if (intersects(areaRect, node.getBoundingClientRect(), mode)) {
 
                     // Check if the element wasn't present in the last selection.
-                    if (!_selectedElements.includes(node)) {
+                    if (!_selected.includes(node)) {
                         added.push(node);
                     }
 
@@ -434,27 +436,31 @@ function Selection(options = {}) {
             }
 
             // Check which elements where removed since last selection
-            for (let i = 0, n = _selectedElements.length, el; el = _selectedElements[i], i < n; i++) {
+            for (let i = 0, n = _selected.length, el; el = _selected[i], i < n; i++) {
                 if (!touched.includes(el)) {
                     removed.push(el);
                 }
             }
 
             // Save
-            that._selectedElements = touched;
-            that._changedElements = {added, removed};
+            that._selected = touched;
+            that._changed = {added, removed};
         },
 
         _emit(event, evt) {
+            let ok = true;
+
             for (const listener of that._eventListener[event]) {
-                listener.call(that, {
+                ok = listener.call(that, {
                     inst: that,
-                    area: that._areaElement,
-                    selected: that._selectedElements.concat(that._selectedStore),
-                    changed: that._changedElements,
+                    area: that._area,
+                    selected: that._selected.concat(that._stored),
+                    changed: that._changed,
                     oe: evt
-                });
+                }) && ok;
             }
+
+            return ok;
         },
 
         /**
@@ -501,33 +507,40 @@ function Selection(options = {}) {
          * Allows multiple selections.
          */
         keepSelection() {
-            for (let i = 0, n = that._selectedElements.length, el; el = that._selectedElements[i], i < n; i++) {
-                if (!that._selectedStore.includes(el)) {
-                    that._selectedStore.push(el);
+            const {_selected, _stored} = that;
+
+            for (let i = 0, n = _selected.length, el; el = _selected[i], i < n; i++) {
+                if (!_stored.includes(el)) {
+                    _stored.push(el);
                 }
             }
         },
 
         /**
          * Clear the elements which where saved by 'keepSelection()'.
+         * @param store If the store should also get cleared
          */
-        clearSelection() {
-            that._selectedStore = [];
+        clearSelection(store = true) {
+            store && (that._stored = []);
+            that._selected = [];
+            that._changed.added = [];
+            that._changed.removed = [];
         },
 
         /**
          * Removes an particular element from the selection.
          */
         removeFromSelection(el) {
-            removeElement(that._selectedStore, el);
-            removeElement(that._selectedElements, el);
+            that._changed.removed.push(el);
+            removeElement(that._stored, el);
+            removeElement(that._selected, el);
         },
 
         /**
          * @returns {Array} Selected elements
          */
         getSelection() {
-            return that._selectedStore;
+            return that._stored;
         },
 
         /**
@@ -576,14 +589,14 @@ function Selection(options = {}) {
          * @param query - CSS Query, can be an array of queries
          */
         select(query) {
-            const {_selectedElements, _selectedStore} = that;
+            const {_selected, _stored} = that;
             const elements = selectAll(query).filter(el =>
-                !_selectedElements.includes(el) &&
-                !_selectedStore.includes(el)
+                !_selected.includes(el) &&
+                !_stored.includes(el)
             );
 
-            that._selectedStore.push(...elements);
-            that._updatedTouchingElements();
+            that._selected.push(...elements);
+            that._changed.added.push(...elements);
             return elements;
         }
     };

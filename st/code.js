@@ -23,10 +23,10 @@ const selection = Selection.create({
         inst.clearSelection();
     }
 
-}).on('move', ({selected, changed: {removed}}) => {
+}).on('move', ({changed: {removed, added}}) => {
 
     // Add a custom class to the elements that where selected.
-    for (const el of selected) {
+    for (const el of added) {
         el.classList.add('selected');
     }
 
