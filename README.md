@@ -108,55 +108,61 @@ const selection = new Selection({
 
     // On scrollable areas the number on px per frame is devided by this amount.
     // Default is 10 to provide a enjoyable scroll experience.
-    scrollSpeedDivider: 10,
-
-    // Will be called before the selection starts (mouse / touchdown). Can be used
-    // to specify which action / mousebutton are needed to start the selection.
-    validateStart(evt) {
-        evt; // MouseEvent or TouchEvent
-
-        // Return true to start the selection, false to cancel it.
-        return true;
-    },
-
-    // Element selection stardet, see Events for details
-    onStart(evt) {
-        evt.selection;
-        evt.eventName;
-        evt.areaElement;
-        evt.originalEvent;
-        evt.selectedElements;
-        evt.changedElements;
-    },
-
-    // Single-click selection
-    onSelect(evt) {
-       // Same properties as onStart
-       evt.target; // Clicked element
-    },
-
-    // Element selection move
-    onMove(evt) {
-       // Same properties as onStart
-    },
-
-    // Element selection stopped
-    onStop(evt) {
-       // Same properties as onStart
-    },
-
-    // Filter single element
-    selectionFilter(evt) {
-       evt.selection; // This selection instance
-       evt.eventName; // The event name
-       evt.element;   // The element which is in the current selection
-       // return true to keep the element in the current selection
-    }
+    scrollSpeedDivider: 10
 });
 
 ```
 
+## Events
+Since version `1.2.x` Selection-js is event-driven. 
+Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind eventlistener.
+
+| Event      | Description
+| -------------- | ----------- | 
+| `init`         | Selectionjs got initialized, the element is present in the dom. | 
+| `beforestart`  | The `mousedown` / `touchstart` got called inside a valid boundary.  |
+| `start`        | User stardet the selection, the `startThreshold` got fulfilled. | 
+| `move`         | The user dragged the mouse aroun. |
+| `stop`         | The user stopped the selection, called on `mouseup` and `touchend` / `touchcancel` after a selection. |
+| `select`       | If `singleClick` is `true` this event gets fired including a `target` property which is the HTMLElement. |
+
+Every event contains at lease the folling properties:
+```js
+{
+    inst, // Selectionjs instance
+    area, // Area element
+    selected, // Array of selected elements
+    changed: {
+        added, // Added elements against the previous selection
+        removed // Same as added but for removed elements
+    }
+}
+```
+
+`beforestart`, `start`, `move` and `stop` also have a `oe` property which is the original mouse-event.
+
+> Example:
+```js
+selection.on('init', () => {
+    console.log('init');
+}).on('beforestart', () => {
+    
+    // This function can return "false" to abort the selection
+    console.log('beforestart');
+}).on('start', () => {
+    console.log('start');
+}).on('move', () => {
+    console.log('move');
+}).on('stop', () => {
+    console.log('stop');
+}).on('select', () => {
+    console.log('select');
+});
+```
+
 ## Methods
+* selection.on(event`:String`, cb`:Function`) _- Appends an event listener to the given corresponding event-name (see section Events), returns the current instance so it can be chained._
+* selection.off(event`:String`, cb`:Function`) _- Removes an event listener from the given corresponding event-name (see section Events), returns the current instance so it can be chained._
 * selection.option(name`:String`) _- Returns the option by name._
 * selection.option(name`:String`, value`:Mixed`) _- Set a new option value._
 * selection.disable() _- Disable the functionality to make selections._

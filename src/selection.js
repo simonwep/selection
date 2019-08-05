@@ -11,21 +11,16 @@ function Selection(options = {}) {
 
         options: Object.assign({
             class: 'selection-area',
-
             mode: 'touch',
             startThreshold: 10,
             singleClick: true,
             disableTouch: false,
 
-            validateStart: () => true,
-
             selectables: [],
-
             scrollSpeedDivider: 10,
 
             startareas: ['html'],
             boundaries: ['html'],
-
             selectionAreaContainer: 'body'
         }, options),
 
@@ -36,6 +31,16 @@ function Selection(options = {}) {
         _changedElements: {
             added: [],  // Added elements since last selection
             removed: [] // Removed elements since last selection
+        },
+
+        // Evenlistener name: [callbacks]
+        _eventListener: {
+            init: [],
+            beforestart: [],
+            start: [],
+            move: [],
+            stop: [],
+            select: []
         },
 
         // Create area element
@@ -69,6 +74,7 @@ function Selection(options = {}) {
             });
 
             that.enable();
+            that._emit('init');
         },
 
         _bindStartEvents(type) {
@@ -86,11 +92,6 @@ function Selection(options = {}) {
             const {x, y, target} = simplifyEvent(evt);
             const targetBoundingClientRect = target.getBoundingClientRect();
 
-            // Check mouse middleware
-            if (!that.options.validateStart(evt)) {
-                return;
-            }
-
             // Find start-areas and boundaries
             const startAreas = selectAll(that.options.startareas);
             that._boundaries = selectAll(that.options.boundaries);
@@ -105,6 +106,10 @@ function Selection(options = {}) {
             if (!that._targetContainer ||
                 !startAreas.find(el => evtpath.includes(el)) ||
                 !that._boundaries.find(el => evtpath.includes(el))) {
+                return;
+            }
+
+            if (that._emit('beforestart', {oe: evt}) === false) {
                 return;
             }
 
@@ -163,7 +168,8 @@ function Selection(options = {}) {
                 that.select(rangeItems);
             } else {
                 that._touchedElements.push(target);
-                that._dispatchEvent('onSelect', evt, {
+                that._emit('select', {
+                    oe: evt,
                     target
                 });
             }
@@ -258,7 +264,7 @@ function Selection(options = {}) {
 
                 // Trigger recalc and fire event
                 that._onTapMove(evt);
-                that._dispatchEvent('onStart', evt);
+                that._emit('start', {oe: evt});
             }
 
             evt.preventDefault(); // Prevent swipe-down refresh
@@ -305,7 +311,7 @@ function Selection(options = {}) {
                      */
                     that._redrawArea();
                     that._updatedTouchingElements();
-                    that._dispatchEvent('onMove', evt);
+                    that._emit('move', {oe: evt});
 
                     // Keep scrolling even if the user stops to move his pointer
                     requestAnimationFrame(scroll);
@@ -319,7 +325,7 @@ function Selection(options = {}) {
                  */
                 that._redrawArea();
                 that._updatedTouchingElements();
-                that._dispatchEvent('onMove', evt);
+                that._emit('move', {oe: evt});
             }
 
             evt.preventDefault(); // Prevent swipe-down refresh
@@ -386,7 +392,7 @@ function Selection(options = {}) {
                 that._onSingleTap(evt);
             } else if (!that._singleClick && !noevent) {
                 that._updatedTouchingElements();
-                that._dispatchEvent('onStop', evt);
+                that._emit('stop', {oe: evt});
             }
 
             // Reset scroll speed
@@ -405,11 +411,6 @@ function Selection(options = {}) {
 
         _updatedTouchingElements() {
             const {_touchedElements, _selectables, _areaElement, options} = that;
-
-            // Filter event
-            const filterEvent = options.selectionFilter && options.selectionFilter.bind(that);
-            const filterEventOk = typeof filterEvent === 'function';
-
             const {mode} = options;
             const areaRect = _areaElement.getBoundingClientRect();
 
@@ -423,15 +424,6 @@ function Selection(options = {}) {
 
                 // Check if area intersects element
                 if (intersects(areaRect, node.getBoundingClientRect(), mode)) {
-
-                    // Fire filter event
-                    if (filterEventOk &&
-                        !filterEvent.call(that, {
-                            selection: that,
-                            eventName: 'selectionFilter',
-                            element: node
-                        })
-                    ) continue;
 
                     // Check if the element wasn't present in the last selection.
                     if (!_touchedElements.includes(node)) {
@@ -454,21 +446,46 @@ function Selection(options = {}) {
             that._changedElements = {added, removed};
         },
 
-        _dispatchEvent(eventName, originalEvent, additional = {}) {
-            const event = that.options[eventName];
-
-            // Validate function
-            if (typeof event === 'function') {
-                return event.call(that, {
-                    selection: that,
-                    areaElement: that._areaElement,
-                    selectedElements: that._touchedElements.concat(that._selectedStore),
-                    changedElements: that._changedElements,
-                    eventName,
-                    originalEvent,
-                    ...additional
+        _emit(event, args = {}) {
+            for (const listener of that._eventListener[event]) {
+                listener.call(that, {
+                    inst: that,
+                    area: that._areaElement,
+                    selected: that._touchedElements.concat(that._selectedStore),
+                    changed: that._changedElements,
+                    event,
+                    ...args
                 });
             }
+        },
+
+        /**
+         * Adds an eventlistener
+         * @param event
+         * @param cb
+         */
+        on(event, cb) {
+            that._eventListener[event].push(cb);
+            return that;
+        },
+
+        /**
+         * Removes an event listener
+         * @param event
+         * @param cb
+         */
+        off(event, cb) {
+            const callBacks = that._eventListener[event];
+
+            if (callBacks) {
+                const index = callBacks.indexOf(cb);
+
+                if (~index) {
+                    callBacks.splice(index, 1);
+                }
+            }
+
+            return that;
         },
 
         /**
@@ -569,10 +586,10 @@ function Selection(options = {}) {
 
             that._changedElements.added = elements;
             that._selectedStore.push(...elements);
-            that._dispatchEvent('onMove', null);
+            this._emit('move');
 
             this._updatedTouchingElements();
-            that._dispatchEvent('onStop', null);
+            this._emit('stop');
             return that;
         }
     };
