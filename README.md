@@ -124,11 +124,11 @@ Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind eventlis
 | `start`        | User stardet the selection, the `startThreshold` got fulfilled. | 
 | `move`         | The user dragged the mouse aroun. |
 | `stop`         | The user stopped the selection, called on `mouseup` and `touchend` / `touchcancel` after a selection. |
-| `select`       | If `singleClick` is `true` this event gets fired including a `target` property which is the HTMLElement. |
 
-Every event contains at lease the folling properties:
+Every event contains the folling properties:
 ```js
 {
+    oe,   // Original mouse- / touchevent. 'undefined' in this init event.
     inst, // Selectionjs instance
     area, // Area element
     selected, // Array of selected elements
@@ -138,8 +138,6 @@ Every event contains at lease the folling properties:
     }
 }
 ```
-
-`beforestart`, `start`, `move` and `stop` also have a `oe` property which is the original mouse-event.
 
 > Example:
 ```js
