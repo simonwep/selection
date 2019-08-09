@@ -273,7 +273,7 @@ function Selection(options = {}) {
         _onTapMove(evt) {
             const {x, y} = simplifyEvent(evt);
             const scon = that._targetContainer;
-            const ss = that._scrollSpeed;
+            let ss = that._scrollSpeed;
             that._ax2 = x;
             that._ay2 = y;
 
@@ -281,6 +281,8 @@ function Selection(options = {}) {
 
                 // Continous scrolling
                 requestAnimationFrame(function scroll() {
+                    // Make sure that ss is not outdated
+                    ss = that._scrollSpeed;
 
                     // Scrolling is not anymore required
                     if (ss.y === null && ss.x === null) {
