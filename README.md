@@ -110,7 +110,7 @@ Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-li
 | -------------- | ----------- | 
 | `beforestart`  | The `mousedown` / `touchstart` got called inside a valid boundary.  |
 | `start`        | User stardet the selection, the `startThreshold` got fulfilled. | 
-| `move`         | The user dragged the mouse aroun. |
+| `move`         | The user dragged the mouse around. |
 | `stop`         | The user stopped the selection, called on `mouseup` and `touchend` / `touchcancel` after a selection. |
 
 Every event-object contains the folling properties:
