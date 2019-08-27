@@ -41,6 +41,12 @@
   <a href="https://simonwep.github.io/selection/">Fully Featured demo</a>
 </h3>
 
+<p align="center">
+    <a href="https://www.buymeacoffee.com/aVc3krbXQ" target="_blank">
+        <img src="https://user-images.githubusercontent.com/30767528/63641973-9d301680-c6b7-11e9-9d29-2ad1da50fdce.png"></a>
+    </a>
+</p>
+
 ### Features
 * Supports touch devices
 * Ultra small
