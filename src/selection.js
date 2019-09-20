@@ -627,7 +627,7 @@ Selection.utils = {
 Selection.create = options => Selection(options);
 
 // Set version
-Selection.version = '1.2.0';
+Selection.version = '1.2.1';
 
 // Export API
 export default Selection;
