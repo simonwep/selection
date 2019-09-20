@@ -281,6 +281,7 @@ function Selection(options = {}) {
 
                 // Continous scrolling
                 requestAnimationFrame(function scroll() {
+
                     // Make sure that ss is not outdated
                     ss = that._scrollSpeed;
 
@@ -560,7 +561,7 @@ function Selection(options = {}) {
          */
         option(name, value) {
             const {options} = that;
-            return value === null ? options[name] : (options[name] = value);
+            return value === undefined ? options[name] : (options[name] = value);
         },
 
         /**
@@ -623,7 +624,7 @@ Selection.utils = {
  * Create selection instance
  * @param {Object} [options]
  */
-Selection.create = options => new Selection(options);
+Selection.create = options => Selection(options);
 
 // Set version
 Selection.version = '1.2.0';

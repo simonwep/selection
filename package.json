@@ -3,6 +3,8 @@
     "version": "1.2.0",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "main": "dist/selection.min.js",
+    "author": "Simon Reinisch <trash@reinisch.io>",
+    "license": "MIT",
     "scripts": {
         "build": "webpack --mode production",
         "dev": "webpack-dev-server --mode development",
@@ -17,21 +19,19 @@
         "selecting",
         "user-selection"
     ],
-    "author": "Simon Reinisch <toports@gmx.de>",
-    "license": "MIT",
     "bugs": {
         "url": "https://github.com/Simonwep/selection/issues"
     },
     "homepage": "https://github.com/Simonwep/selection#readme",
     "devDependencies": {
-        "@babel/core": "^7.5.0",
-        "@babel/plugin-proposal-object-rest-spread": "^7.5.1",
-        "@babel/preset-env": "^7.5.0",
+        "@babel/core": "^7.6.0",
+        "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+        "@babel/preset-env": "^7.6.0",
         "babel-loader": "^8.0.6",
-        "eslint": "^6.0.1",
-        "eslint-loader": "^2.2.1",
-        "webpack": "^4.35.3",
-        "webpack-cli": "^3.3.5",
-        "webpack-dev-server": "^3.7.2"
+        "eslint": "^6.4.0",
+        "eslint-loader": "^3.0.0",
+        "webpack": "^4.40.2",
+        "webpack-cli": "^3.3.9",
+        "webpack-dev-server": "^3.8.1"
     }
 }
