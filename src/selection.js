@@ -182,9 +182,13 @@ function Selection(options = {}) {
 
         _delayedTapMove(evt) {
             const {x, y} = simplifyEvent(evt);
+            const {startThreshold} = that.options;
+            const {_ax1, _ay1} = that; // Coordinates of first "tap"
 
             // Check pixel threshold
-            if (abs((x + y) - (that._ax1 + that._ay1)) >= that.options.startThreshold) {
+            const thresholdType = typeof startThreshold;
+            if ((thresholdType === 'number' && abs((x + y) - (_ax1 + _ay1)) >= startThreshold) ||
+                (thresholdType === 'object' && abs(x - _ax1) >= startThreshold.x || abs(y - _ay1) >= startThreshold.y)) {
                 off(doc, ['mousemove', 'touchmove'], that._delayedTapMove, {passive: false});
                 on(doc, ['mousemove', 'touchmove'], that._onTapMove, {passive: false});
 
