@@ -2,11 +2,11 @@ const {version} = require('./package');
 const webpack = require('webpack');
 
 module.exports = {
-
+    mode: 'production',
     entry: './src/selection.js',
 
     output: {
-        path: __dirname + '/dist',
+        path: `${__dirname}/dist`,
         publicPath: 'dist/',
         filename: 'selection.min.js',
         library: 'Selection',
@@ -14,17 +14,11 @@ module.exports = {
         libraryTarget: 'umd'
     },
 
-    devServer: {
-        contentBase: __dirname + '/',
-        host: '0.0.0.0',
-        port: 3003
-    },
-
     module: {
         rules: [
             {
                 test: /\.js$/,
-                use: [
+                loader: [
                     'babel-loader',
                     'eslint-loader'
                 ]
