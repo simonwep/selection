@@ -1,4 +1,5 @@
-import {on, off, css, selectAll, eventPath, intersects, simplifyEvent, removeElement} from './utils';
+import {css, eventPath, intersects, off, on, removeElement, selectAll, simplifyEvent} from './utils';
+import {version}                                                                      from '../package';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
@@ -630,8 +631,6 @@ Selection.utils = {
  */
 Selection.create = options => Selection(options);
 
-// Set version
-Selection.version = '1.2.1';
-
-// Export API
+// Set version and export
+Selection.version = version;
 export default Selection;
