@@ -51,26 +51,16 @@ const unitify = (val, unit = 'px') => typeof val === 'number' ? val + unit : val
  */
 export function css(el, attr, val) {
     const style = el && el.style;
-    if (!style) return;
+    if (style) {
+        if (typeof attr === 'object') {
 
-    if (typeof attr === 'object') {
+            for (const [key, value] of Object.entries(attr)) {
+                style[key] = unitify(value);
+            }
 
-        for (const prop in attr) {
-            style[prop] = unitify(attr[prop]);
+        } else if (val && typeof attr === 'string') {
+            style[attr] = unitify(val);
         }
-
-    } else if (val === null) {
-
-        const dw = document.defaultView;
-        if (dw && dw.getComputedStyle) {
-            val = dw.getComputedStyle(el, null);
-        } else if (el.currentStyle) {
-            val = el.currentStyle;
-        }
-
-        return attr === null ? val : val[attr];
-    } else {
-        style[attr] = unitify(val);
     }
 }
 
@@ -141,11 +131,15 @@ export function selectAll(selector) {
  */
 export function eventPath(evt) {
     let path = evt.path || (evt.composedPath && evt.composedPath());
-    if (path) return path;
 
-    let el = evt.target.parentElement;
-    path = [evt.target, el];
-    while (el = el.parentElement) path.push(el);
+    if (path) {
+        return path;
+    }
+
+    let el = evt.target;
+    for (path = [el]; (el = el.parentElement);) {
+        path.push(el);
+    }
 
     path.push(document, window);
     return path;
@@ -156,7 +150,10 @@ export function eventPath(evt) {
  */
 export function removeElement(arr, el) {
     const index = arr.indexOf(el);
-    if (~index) arr.splice(index, 1);
+
+    if (~index) {
+        arr.splice(index, 1);
+    }
 }
 
 export function simplifyEvent(evt) {

@@ -179,8 +179,6 @@ Selection.utils
 
 * on(el`:HTMLElement`, event`:String`, fn`:Function`[, options `:Object`]) _- Attach an event handler function._
 * off(el`:HTMLElement`, event`:String`, fn`:Function`[, options `:Object`]) _- Remove an event handler._
-* css(el`:HTMLElement`)`:Object` _- Get all css properties from this element._
-* css(el`:HTMLElement`, attr`:String`)`:Mixed` _- Get the value from a style property._
 * css(el`:HTMLElement`, attr`:String`, val`:String`) _- Set a specific style property._
 * css(el`:HTMLElement`, attr`:Object`) _- Set multiple style properties._
 * intersects(ela`:HTMLElement`, elb`:HTMLElement`)`:Boolean` _- Check if an HTMLElement intersects another._
