@@ -13,6 +13,7 @@ function Selection(options = {}) {
         options: Object.assign({
             class: 'selection-area',
             mode: 'touch',
+            tapMode: 'native',
             startThreshold: 10,
             singleClick: true,
             disableTouch: false,
@@ -133,7 +134,27 @@ function Selection(options = {}) {
         },
 
         _onSingleTap(evt) {
-            let {target} = simplifyEvent(evt);
+            const {tapMode} = that.options;
+            const spl = simplifyEvent(evt);
+            let target = null;
+
+            if (tapMode === 'native') {
+                target = spl.target;
+            } else if (tapMode === 'touch') {
+                that.resolveSelectables();
+
+                const {x, y} = spl;
+                target = that._selectables.find(v => {
+                    const {right, left, top, bottom} = v.getBoundingClientRect();
+                    return x < right && x > left && y < bottom && y > top;
+                });
+            } else {
+                throw `Unkown tapMode option: ${tapMode}`;
+            }
+
+            if (!target) {
+                return false;
+            }
 
             /**
              * Resolve selectables again.

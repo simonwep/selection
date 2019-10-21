@@ -87,6 +87,11 @@ const selection = new Selection({
     // the default mode is touch (just touching it).
     mode: 'touch',
 
+    // Behaviour on single-click
+    // Available modes are 'native' (element was mouse-event target) or 
+    // 'touch' (element got touched)
+    tapMode: 'native',
+
     // Enable single-click selection (Also disables range-selection via shift + ctrl)
     singleClick: true,
 
