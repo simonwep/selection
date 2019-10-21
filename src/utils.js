@@ -104,6 +104,9 @@ export function intersects(a, b, mode) {
                 && a.bottom >= b.top
                 && a.top <= b.bottom;
         }
+        default: {
+            throw `Unkown intersection mode: ${mode}`;
+        }
     }
 }
 
