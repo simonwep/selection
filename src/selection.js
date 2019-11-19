@@ -149,7 +149,7 @@ function Selection(options = {}) {
                     return x < right && x > left && y < bottom && y > top;
                 });
             } else {
-                throw `Unkown tapMode option: ${tapMode}`;
+                throw `Unknown tapMode option: ${tapMode}`;
             }
 
             if (!target) {
