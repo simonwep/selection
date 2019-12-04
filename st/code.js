@@ -1,3 +1,21 @@
+// Generate dom elements
+const boxes = [
+    ['.box-wrap.boxes.red', 252],
+    ['.box-wrap.boxes.blue', 42],
+    ['.box-wrap.boxes.green', 42]
+];
+
+for (const [sel, items] of boxes) {
+    const container = document.querySelector(sel);
+
+    for (let i = 0; i < items; i++) {
+        container.appendChild(
+            document.createElement('div')
+        );
+    }
+}
+
+// Initialize selectionjs
 const selection = Selection.create({
 
     // Class for the selection-area
