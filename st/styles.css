@@ -20,6 +20,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 html,
@@ -28,7 +29,7 @@ body {
 }
 
 body {
-    background: #f1f8ff;
+    background: #f2f5f7;
     font-family: 'Noto Sans', sans-serif;
 }
 
@@ -45,7 +46,7 @@ header h1 {
 }
 
 header h1 .js {
-    color: #35d6f9;
+    color: #4285f4;
 }
 
 header a {
@@ -65,6 +66,14 @@ header a {
 
 header a:hover {
     background: #4291f6;
+}
+
+h2 {
+    margin-bottom: 0.75em;
+    font-weight: 400;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    color: #42445a;
 }
 
 main {
@@ -114,6 +123,7 @@ main section.demo .box-wrap.red {
     max-height: 25em;
     overflow: auto;
     padding: 0.5em;
+    margin-bottom: 3em;
 }
 
 main section.demo .box-wrap.red > div {
@@ -131,6 +141,7 @@ main .boxes div {
     width: 3em;
     margin: 0.2em;
     background: rgba(66, 68, 90, 0.075);
+    border: 2px solid transparent;
     border-radius: 0.15em;
     transition: all 0.3s;
     cursor: pointer;
@@ -138,20 +149,23 @@ main .boxes div {
 
 main .boxes.green div.selected {
     background: #7febc2;
+    border: 2px solid rgba(0, 0, 0, 0.075);
 }
 
 main .boxes.blue div.selected {
     background: #7fa0eb;
+    border: 2px solid rgba(0, 0, 0, 0.075);
 }
 
 main .boxes.red div.selected {
     background: #eb8181;
+    border: 2px solid rgba(0, 0, 0, 0.075);
 }
 
 .selection {
-    background: rgba(0, 0, 255, 0.1);
+    background: rgba(46, 115, 252, 0.11);
     border-radius: 0.1em;
-    border: 0.05em solid rgba(0, 0, 255, 0.2);
+    border: 2px solid rgba(98, 155, 255, 0.81);
 }
 
 main section.demo .info p {
@@ -177,7 +191,7 @@ main section.demo .info p {
 }
 
 .gist {
-    margin-top: 5em;
+    margin-top: 2em;
 }
 
 .js-file-line-container,
@@ -206,5 +220,14 @@ main section.demo .info p {
 
     main section.demo .info {
         font-size: 0.8em;
+    }
+
+    main .boxes {
+        margin: 0 0.5em;
+    }
+
+    main .boxes div {
+        height: 1.75em;
+        width: 1.75em;
     }
 }
