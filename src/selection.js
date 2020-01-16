@@ -131,6 +131,9 @@ function Selection(options = {}) {
             // Add listener
             on(doc, ['touchmove', 'mousemove'], that._delayedTapMove, {passive: false});
             on(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
+
+            // Firefox will scroll down the page which would break the selection.
+            evt.preventDefault();
         },
 
         _onSingleTap(evt) {
