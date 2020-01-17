@@ -1,6 +1,6 @@
 {
     "name": "@simonwep/selection-js",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "main": "dist/selection.min.js",
     "author": "Simon Reinisch <trash@reinisch.io>",
