@@ -109,7 +109,11 @@ const selection = new Selection({
 
     // On scrollable areas the number on px per frame is devided by this amount.
     // Default is 10 to provide a enjoyable scroll experience.
-    scrollSpeedDivider: 10
+    scrollSpeedDivider: 10,
+
+    // Browsers handle mouse-wheel events differently, this number will be used as 
+    // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider
+    manualScrollSpeed: 750
 });
 
 ```

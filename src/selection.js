@@ -20,6 +20,7 @@ function Selection(options = {}) {
 
             selectables: [],
             scrollSpeedDivider: 10,
+            manualScrollSpeed: 750,
 
             startareas: ['html'],
             boundaries: ['html'],
@@ -364,9 +365,13 @@ function Selection(options = {}) {
         },
 
         _manualScroll(evt) {
-            const {scrollSpeedDivider} = that.options;
-            that._scrollSpeed.y += scrollSpeedDivider * (evt.wheelDeltaY * -1);
-            that._scrollSpeed.x += scrollSpeedDivider * (evt.wheelDeltaX * -1);
+            const {manualScrollSpeed} = that.options;
+
+            // Consistent scrolling speed on all browsers
+            const deltaY = evt.deltaY > 0 ? 1 : -1;
+            const deltaX = evt.deltaX > 0 ? 1 : -1;
+            that._scrollSpeed.y += deltaY * manualScrollSpeed;
+            that._scrollSpeed.x += deltaX * manualScrollSpeed;
             that._onTapMove(evt);
 
             // Prevent defaul scrolling behaviour, eg. page scrolling
