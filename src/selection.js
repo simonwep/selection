@@ -302,6 +302,7 @@ function Selection(options = {}) {
 
         _onTapMove(evt) {
             const {x, y} = simplifyEvent(evt);
+            const {scrollSpeedDivider} = that.options;
             const scon = that._targetContainer;
             let ss = that._scrollSpeed;
             that._ax2 = x;
@@ -328,12 +329,12 @@ function Selection(options = {}) {
 
                     // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
                     if (ss.y !== null) {
-                        scon.scrollTop += ceil(ss.y / that.options.scrollSpeedDivider);
+                        scon.scrollTop += ceil(ss.y / scrollSpeedDivider);
                         that._ay1 -= scon.scrollTop - scrollTop;
                     }
 
                     if (ss.x !== null) {
-                        scon.scrollLeft += ceil(ss.x / that.options.scrollSpeedDivider);
+                        scon.scrollLeft += ceil(ss.x / scrollSpeedDivider);
                         that._ax1 -= scon.scrollLeft - scrollLeft;
                     }
 
@@ -368,8 +369,8 @@ function Selection(options = {}) {
             const {manualScrollSpeed} = that.options;
 
             // Consistent scrolling speed on all browsers
-            const deltaY = evt.deltaY > 0 ? 1 : -1;
-            const deltaX = evt.deltaX > 0 ? 1 : -1;
+            const deltaY = evt.deltaY ? (evt.deltaY > 0 ? 1 : -1) : 0;
+            const deltaX = evt.deltaX ? (evt.deltaX > 0 ? 1 : -1) : 0;
             that._scrollSpeed.y += deltaY * manualScrollSpeed;
             that._scrollSpeed.x += deltaX * manualScrollSpeed;
             that._onTapMove(evt);
