@@ -4,7 +4,8 @@
         "node": true
     },
     "extends": [
-        "eslint:recommended"
+        "eslint:recommended",
+        "simon"
     ],
     "parserOptions": {
         "ecmaVersion": 2018,

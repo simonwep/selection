@@ -8,7 +8,7 @@
     "scripts": {
         "build": "webpack --config webpack.config.prod.js",
         "dev": "webpack-dev-server --config webpack.config.dev.js",
-        "lint": "eslint ./src"
+        "lint": "eslint ./src --fix"
     },
     "repository": {
         "type": "git",
@@ -29,10 +29,11 @@
         "@babel/preset-env": "^7.7.1",
         "babel-loader": "^8.0.6",
         "eslint": "^6.6.0",
+        "eslint-config-simon": "^1.1.1",
         "eslint-loader": "^3.0.2",
+        "terser-webpack-plugin": "^2.2.1",
         "webpack": "^4.41.2",
         "webpack-cli": "^3.3.10",
-        "webpack-dev-server": "^3.9.0",
-        "terser-webpack-plugin": "^2.2.1"
+        "webpack-dev-server": "^3.9.0"
     }
 }

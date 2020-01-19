@@ -1,3 +1,4 @@
+/* eslint-disable prefer-rest-params */
 function eventListener(method, elements, events, fn, options = {}) {
 
     // Normalize array
@@ -7,7 +8,9 @@ function eventListener(method, elements, events, fn, options = {}) {
         elements = [elements];
     }
 
-    if (!Array.isArray(events)) events = [events];
+    if (!Array.isArray(events)) {
+        events = [events];
+    }
 
     for (const element of elements) {
         for (const event of events) {
@@ -95,7 +98,7 @@ export function intersects(a, b, mode) {
                 && a.top <= b.bottom;
         }
         default: {
-            throw `Unkown intersection mode: ${mode}`;
+            throw new Error(`Unkown intersection mode: ${mode}`);
         }
     }
 }

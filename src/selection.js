@@ -153,7 +153,7 @@ function Selection(options = {}) {
                     return x < right && x > left && y < bottom && y > top;
                 });
             } else {
-                throw `Unknown tapMode option: ${tapMode}`;
+                throw new Error(`Unknown tapMode option: ${tapMode}`);
             }
 
             if (!target) {
@@ -227,8 +227,7 @@ function Selection(options = {}) {
                 // Now after the threshold is reached resolve all selectables
                 that.resolveSelectables();
 
-                // An action is recognized as single-select until
-                // the user performed a mutli-selection
+                // An action is recognized as single-select until the user performed a mutli-selection
                 that._singleClick = false;
 
                 // Just saving the boundaries of this container for later
@@ -458,7 +457,8 @@ function Selection(options = {}) {
             const removed = [];
 
             // Itreate over the selectable elements
-            for (let i = 0, n = _selectables.length, node; node = _selectables[i], i < n; i++) {
+            for (let i = 0; i < _selectables.length; i++) {
+                const node = _selectables[i];
 
                 // Check if area intersects element
                 if (intersects(areaRect, node.getBoundingClientRect(), mode)) {
@@ -473,7 +473,8 @@ function Selection(options = {}) {
             }
 
             // Check which elements where removed since last selection
-            for (let i = 0, n = _selected.length, el; el = _selected[i], i < n; i++) {
+            for (let i = 0; i < _selected.length; i++) {
+                const el = _selected[i];
                 if (!touched.includes(el)) {
                     removed.push(el);
                 }
@@ -546,7 +547,8 @@ function Selection(options = {}) {
         keepSelection() {
             const {_selected, _stored} = that;
 
-            for (let i = 0, n = _selected.length, el; el = _selected[i], i < n; i++) {
+            for (let i = 0; i < _selected.length; i++) {
+                const el = _selected[i];
                 if (!_stored.includes(el)) {
                     _stored.push(el);
                 }
