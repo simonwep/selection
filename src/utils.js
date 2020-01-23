@@ -108,7 +108,7 @@ export function intersects(a, b, mode) {
  * @param selector The selector or an Array of selectors.
  * @returns {Array} Array of DOM-Nodes.
  */
-export function selectAll(selector) {
+export function selectAll(selector, doc = document) {
     if (!Array.isArray(selector)) {
         selector = [selector];
     }
@@ -118,8 +118,8 @@ export function selectAll(selector) {
         const item = selector[i];
 
         if (typeof item === 'string') {
-            nodes.push(...document.querySelectorAll(item));
-        } else if (item instanceof HTMLElement) {
+            nodes.push(...doc.querySelectorAll(item));
+        } else if (item instanceof doc.defaultView.HTMLElement) {
             nodes.push(item);
         }
     }
