@@ -12,6 +12,7 @@ function Selection(options = {}) {
 
         options: Object.assign({
             class: 'selection-area',
+            document: doc,
             mode: 'touch',
             tapMode: 'native',
             startThreshold: 10,
@@ -79,10 +80,10 @@ function Selection(options = {}) {
 
         _bindStartEvents(type) {
             const fn = type === 'on' ? on : off;
-            fn(doc, 'mousedown', that._onTapStart);
+            fn(that.options.document, 'mousedown', that._onTapStart);
 
             if (!that.options.disableTouch) {
-                fn(doc, 'touchstart', that._onTapStart, {
+                fn(that.options.document, 'touchstart', that._onTapStart, {
                     passive: false
                 });
             }
@@ -93,8 +94,8 @@ function Selection(options = {}) {
             const targetBoundingClientRect = target.getBoundingClientRect();
 
             // Find start-areas and boundaries
-            const startAreas = selectAll(that.options.startareas);
-            that._boundaries = selectAll(that.options.boundaries);
+            const startAreas = selectAll(that.options.startareas, that.options.document);
+            that._boundaries = selectAll(that.options.boundaries, that.options.document);
 
             // Check in which container the user currently acts
             that._targetContainer = that._boundaries.find(el =>
@@ -127,11 +128,11 @@ function Selection(options = {}) {
             that.clearSelection(false);
 
             // Prevent default select event
-            on(doc, 'selectstart', preventDefault);
+            on(that.options.document, 'selectstart', preventDefault);
 
             // Add listener
-            on(doc, ['touchmove', 'mousemove'], that._delayedTapMove, {passive: false});
-            on(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
+            on(that.options.document, ['touchmove', 'mousemove'], that._delayedTapMove, {passive: false});
+            on(that.options.document, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
 
             // Firefox will scroll down the page which would break the selection.
             evt.preventDefault();
@@ -215,14 +216,14 @@ function Selection(options = {}) {
             const thresholdType = typeof startThreshold;
             if ((thresholdType === 'number' && abs((x + y) - (_ax1 + _ay1)) >= startThreshold) ||
                 (thresholdType === 'object' && abs(x - _ax1) >= startThreshold.x || abs(y - _ay1) >= startThreshold.y)) {
-                off(doc, ['mousemove', 'touchmove'], that._delayedTapMove, {passive: false});
-                on(doc, ['mousemove', 'touchmove'], that._onTapMove, {passive: false});
+                off(that.options.document, ['mousemove', 'touchmove'], that._delayedTapMove, {passive: false});
+                on(that.options.document, ['mousemove', 'touchmove'], that._onTapMove, {passive: false});
 
                 // Make area element visible
                 css(that._area, 'display', 'block');
 
                 // Apppend selection-area to the dom
-                selectAll(that.options.selectionAreaContainer)[0].appendChild(that._clippingElement);
+                selectAll(that.options.selectionAreaContainer, that.options.document)[0].appendChild(that._clippingElement);
 
                 // Now after the threshold is reached resolve all selectables
                 that.resolveSelectables();
@@ -421,9 +422,9 @@ function Selection(options = {}) {
         _onTapStop(evt, noevent) {
 
             // Remove event handlers
-            off(doc, ['mousemove', 'touchmove'], that._delayedTapMove);
-            off(doc, ['touchmove', 'mousemove'], that._onTapMove);
-            off(doc, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
+            off(that.options.document, ['mousemove', 'touchmove'], that._delayedTapMove);
+            off(that.options.document, ['touchmove', 'mousemove'], that._onTapMove);
+            off(that.options.document, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
 
             if (evt && that._singleClick && that.options.singleClick) {
                 that._onSingleTap(evt);
@@ -442,7 +443,7 @@ function Selection(options = {}) {
             that._clippingElement.remove();
 
             // Enable default select event
-            off(doc, 'selectstart', preventDefault);
+            off(that.options.document, 'selectstart', preventDefault);
             css(that._area, 'display', 'none');
         },
 
@@ -537,7 +538,7 @@ function Selection(options = {}) {
         resolveSelectables() {
 
             // Resolve selectors
-            that._selectables = selectAll(that.options.selectables);
+            that._selectables = selectAll(that.options.selectables, that.options.document);
         },
 
         /**
@@ -629,7 +630,7 @@ function Selection(options = {}) {
          */
         select(query) {
             const {_selected, _stored} = that;
-            const elements = selectAll(query).filter(el =>
+            const elements = selectAll(query, that.options.document).filter(el =>
                 !_selected.includes(el) &&
                 !_stored.includes(el)
             );
