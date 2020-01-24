@@ -3,7 +3,6 @@ import {version}                                                                
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
-const doc = document;
 const preventDefault = e => e.preventDefault();
 
 function Selection(options = {}) {
@@ -12,7 +11,7 @@ function Selection(options = {}) {
 
         options: Object.assign({
             class: 'selection-area',
-            document: doc,
+            frame: document,
             mode: 'touch',
             tapMode: 'native',
             startThreshold: 10,
@@ -46,14 +45,17 @@ function Selection(options = {}) {
         },
 
         // Create area element
-        _area: doc.createElement('div'),
-        _clippingElement: doc.createElement('div'),
+        _area: null,
+        _clippingElement: null,
 
         // Is getting set on movement. Varied.
         _scrollAvailable: true,
         _scrollSpeed: {x: null, y: null},
 
         _init() {
+            const {frame} = that.options;
+            that._area = frame.createElement('div');
+            that._clippingElement = frame.createElement('div');
             that._clippingElement.appendChild(that._area);
 
             // Add class to the area element
@@ -79,11 +81,12 @@ function Selection(options = {}) {
         },
 
         _bindStartEvents(type) {
+            const {frame} = that.options;
             const fn = type === 'on' ? on : off;
-            fn(that.options.document, 'mousedown', that._onTapStart);
+            fn(frame, 'mousedown', that._onTapStart);
 
             if (!that.options.disableTouch) {
-                fn(that.options.document, 'touchstart', that._onTapStart, {
+                fn(frame, 'touchstart', that._onTapStart, {
                     passive: false
                 });
             }
@@ -91,11 +94,12 @@ function Selection(options = {}) {
 
         _onTapStart(evt) {
             const {x, y, target} = simplifyEvent(evt);
+            const {startareas, boundaries, frame} = that.options;
             const targetBoundingClientRect = target.getBoundingClientRect();
 
             // Find start-areas and boundaries
-            const startAreas = selectAll(that.options.startareas, that.options.document);
-            that._boundaries = selectAll(that.options.boundaries, that.options.document);
+            const startAreas = selectAll(startareas, frame);
+            that._boundaries = selectAll(boundaries, frame);
 
             // Check in which container the user currently acts
             that._targetContainer = that._boundaries.find(el =>
@@ -128,11 +132,11 @@ function Selection(options = {}) {
             that.clearSelection(false);
 
             // Prevent default select event
-            on(that.options.document, 'selectstart', preventDefault);
+            on(frame, 'selectstart', preventDefault);
 
             // Add listener
-            on(that.options.document, ['touchmove', 'mousemove'], that._delayedTapMove, {passive: false});
-            on(that.options.document, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
+            on(frame, ['touchmove', 'mousemove'], that._delayedTapMove, {passive: false});
+            on(frame, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
 
             // Firefox will scroll down the page which would break the selection.
             evt.preventDefault();
@@ -209,21 +213,21 @@ function Selection(options = {}) {
 
         _delayedTapMove(evt) {
             const {x, y} = simplifyEvent(evt);
-            const {startThreshold} = that.options;
+            const {startThreshold, frame} = that.options;
             const {_ax1, _ay1} = that; // Coordinates of first "tap"
 
             // Check pixel threshold
             const thresholdType = typeof startThreshold;
             if ((thresholdType === 'number' && abs((x + y) - (_ax1 + _ay1)) >= startThreshold) ||
                 (thresholdType === 'object' && abs(x - _ax1) >= startThreshold.x || abs(y - _ay1) >= startThreshold.y)) {
-                off(that.options.document, ['mousemove', 'touchmove'], that._delayedTapMove, {passive: false});
-                on(that.options.document, ['mousemove', 'touchmove'], that._onTapMove, {passive: false});
+                off(frame, ['mousemove', 'touchmove'], that._delayedTapMove, {passive: false});
+                on(frame, ['mousemove', 'touchmove'], that._onTapMove, {passive: false});
 
                 // Make area element visible
                 css(that._area, 'display', 'block');
 
                 // Apppend selection-area to the dom
-                selectAll(that.options.selectionAreaContainer, that.options.document)[0].appendChild(that._clippingElement);
+                selectAll(that.options.selectionAreaContainer, frame)[0].appendChild(that._clippingElement);
 
                 // Now after the threshold is reached resolve all selectables
                 that.resolveSelectables();
@@ -420,13 +424,14 @@ function Selection(options = {}) {
         },
 
         _onTapStop(evt, noevent) {
+            const {frame, singleClick} = that.options;
 
             // Remove event handlers
-            off(that.options.document, ['mousemove', 'touchmove'], that._delayedTapMove);
-            off(that.options.document, ['touchmove', 'mousemove'], that._onTapMove);
-            off(that.options.document, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
+            off(frame, ['mousemove', 'touchmove'], that._delayedTapMove);
+            off(frame, ['touchmove', 'mousemove'], that._onTapMove);
+            off(frame, ['mouseup', 'touchcancel', 'touchend'], that._onTapStop);
 
-            if (evt && that._singleClick && that.options.singleClick) {
+            if (evt && that._singleClick && singleClick) {
                 that._onSingleTap(evt);
             } else if (!that._singleClick && !noevent) {
                 that._updatedTouchingElements();
@@ -443,7 +448,7 @@ function Selection(options = {}) {
             that._clippingElement.remove();
 
             // Enable default select event
-            off(that.options.document, 'selectstart', preventDefault);
+            off(frame, 'selectstart', preventDefault);
             css(that._area, 'display', 'none');
         },
 
@@ -538,7 +543,7 @@ function Selection(options = {}) {
         resolveSelectables() {
 
             // Resolve selectors
-            that._selectables = selectAll(that.options.selectables, that.options.document);
+            that._selectables = selectAll(that.options.selectables, that.options.frame);
         },
 
         /**
@@ -629,8 +634,8 @@ function Selection(options = {}) {
          * @param query - CSS Query, can be an array of queries
          */
         select(query) {
-            const {_selected, _stored} = that;
-            const elements = selectAll(query, that.options.document).filter(el =>
+            const {_selected, _stored, options} = that;
+            const elements = selectAll(query, options.frame).filter(el =>
                 !_selected.includes(el) &&
                 !_stored.includes(el)
             );

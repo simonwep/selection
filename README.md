@@ -75,6 +75,9 @@ const selection = new Selection({
     // Class for the selection-area-element
     class: 'selection-area',
 
+    // document object - if you want to use it within an embed document (or iframe)
+    frame: document,
+
     // px, how many pixels the point should move before starting the selection (combined distance).
     // Or specifiy the threshold for each axis by passing an object like {x: <number>, y: <number>}.
     startThreshold: 10,
