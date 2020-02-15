@@ -46,6 +46,7 @@ function Selection(options = {}) {
 
         // Create area element
         _area: null,
+        _areaDomRect: null, // Caches the position of the selection-area
         _clippingElement: null,
 
         // Is getting set on movement. Varied.
@@ -319,9 +320,11 @@ function Selection(options = {}) {
 
                     // Make sure that ss is not outdated
                     ss = that._scrollSpeed;
+                    const scrollY = ss.y !== null;
+                    const scrollX = ss.x !== null;
 
                     // Scrolling is not anymore required
-                    if (ss.y === null && ss.x === null) {
+                    if (!scrollY && !scrollX) {
                         return;
                     }
 
@@ -332,18 +335,18 @@ function Selection(options = {}) {
                     const {scrollTop, scrollLeft} = scon;
 
                     // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
-                    if (ss.y !== null) {
+                    if (scrollY) {
                         scon.scrollTop += ceil(ss.y / scrollSpeedDivider);
                         that._ay1 -= scon.scrollTop - scrollTop;
                     }
 
-                    if (ss.x !== null) {
+                    if (scrollX) {
                         scon.scrollLeft += ceil(ss.x / scrollSpeedDivider);
                         that._ax1 -= scon.scrollLeft - scrollLeft;
                     }
 
                     /**
-                     * We changed the start coordinates ->  redraw the selectiona area
+                     * We changed the start coordinates -> redraw the selectiona area
                      * We changed the dimensions of the area element -> re-calc selected elements
                      * The selected elements array has been changed -> fire event
                      */
@@ -414,13 +417,17 @@ function Selection(options = {}) {
             const y3 = min(that._ay1, y);
             const x4 = max(that._ax1, x);
             const y4 = max(that._ay1, y);
+            const width = x4 - x3;
+            const height = y4 - y3;
 
+            // It's generally faster to not use es6-templates
             Object.assign(that._area.style, {
-                top: `${y3}px`,
-                left: `${x3}px`,
-                width: `${x4 - x3}px`,
-                height: `${y4 - y3}px`
+                transform: `translate3d(${  x3  }px, ${  y3  }px` + ', 0)',
+                width: `${width  }px`,
+                height: `${height  }px`
             });
+
+            that._areaDomRect = new DOMRect(x3, y3, width, height);
         },
 
         _onTapStop(evt, noevent) {
@@ -453,9 +460,8 @@ function Selection(options = {}) {
         },
 
         _updatedTouchingElements() {
-            const {_selected, _selectables, _area, options} = that;
+            const {_selected, _selectables, options, _areaDomRect} = that;
             const {mode} = options;
-            const areaRect = _area.getBoundingClientRect();
 
             // Update
             const touched = [];
@@ -467,7 +473,7 @@ function Selection(options = {}) {
                 const node = _selectables[i];
 
                 // Check if area intersects element
-                if (intersects(areaRect, node.getBoundingClientRect(), mode)) {
+                if (intersects(_areaDomRect, node.getBoundingClientRect(), mode)) {
 
                     // Check if the element wasn't present in the last selection.
                     if (!_selected.includes(node)) {
