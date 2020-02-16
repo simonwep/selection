@@ -93,7 +93,7 @@ function Selection(options = {}) {
             }
         },
 
-        _onTapStart(evt) {
+        _onTapStart(evt, silent = false) {
             const {x, y, target} = simplifyEvent(evt);
             const {startareas, boundaries, frame} = that.options;
             const targetBoundingClientRect = target.getBoundingClientRect();
@@ -115,7 +115,7 @@ function Selection(options = {}) {
                 return;
             }
 
-            if (that._emit('beforestart', evt) === false) {
+            if (!silent && that._emit('beforestart', evt) === false) {
                 return;
             }
 
@@ -511,6 +511,15 @@ function Selection(options = {}) {
             }
 
             return ok;
+        },
+
+        /**
+         * Manually triggers the start of a selection
+         * @param evt A MouseEvent / TouchEvent -like object
+         * @param silent If beforestart should be fired,
+         */
+        trigger(evt, silent = true) {
+            that._onTapStart(evt, silent);
         },
 
         /**

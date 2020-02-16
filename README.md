@@ -170,6 +170,7 @@ selection.on('beforestart', evt => {
 * selection.destroy() _- Unbinds all events and removes the area-element._
 * selection.cancel() _- Cancels the current selection process._
 
+* selection.trigger(evt`:MouseEvent|TouchEvent`, silent`:boolean`) _- Manually triggers the start of a selection. `silent = true` means that no `beforestart` event will get fired (default)._
 * selection.keepSelection() _- Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections._
 * selection.clearSelection() _- Clear the previous selection (elements which were saved by `keepSelection()`)._
 * selection.getSelection() _- Returns currently selected elements as an Array._
