@@ -350,9 +350,10 @@ function Selection(options = {}) {
                      * We changed the dimensions of the area element -> re-calc selected elements
                      * The selected elements array has been changed -> fire event
                      */
-                    that._redrawArea();
+                    that._reacalcAreaRect();
                     that._updatedTouchingElements();
                     that._emit('move', evt);
+                    that._redrawArea();
 
                     // Keep scrolling even if the user stops to move his pointer
                     requestAnimationFrame(scroll);
@@ -364,9 +365,10 @@ function Selection(options = {}) {
                  * If scrolling is active this area is getting re-dragwed by the
                  * anonymized scroll function.
                  */
-                that._redrawArea();
+                that._reacalcAreaRect();
                 that._updatedTouchingElements();
                 that._emit('move', evt);
+                that._redrawArea();
             }
 
             evt.preventDefault(); // Prevent swipe-down refresh
@@ -386,7 +388,7 @@ function Selection(options = {}) {
             evt.preventDefault();
         },
 
-        _redrawArea() {
+        _reacalcAreaRect() {
             const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = that._targetContainer;
             const brect = that._targetBoundary;
             const ss = that._scrollSpeed;
@@ -417,17 +419,19 @@ function Selection(options = {}) {
             const y3 = min(that._ay1, y);
             const x4 = max(that._ax1, x);
             const y4 = max(that._ay1, y);
-            const width = x4 - x3;
-            const height = y4 - y3;
+            that._areaDomRect = new DOMRect(x3, y3, x4 - x3, y4 - y3);
+        },
+
+        _redrawArea() {
+            const {x, y, width, height} = that._areaDomRect;
+            const areaStyle = that._area.style;
 
             // It's generally faster to not use es6-templates
-            Object.assign(that._area.style, {
-                transform: `translate3d(${  x3  }px, ${  y3  }px` + ', 0)',
-                width: `${width  }px`,
-                height: `${height  }px`
-            });
-
-            that._areaDomRect = new DOMRect(x3, y3, width, height);
+            // It's also faster to manually change the properties instead of calling Object.assign
+            /* eslint prefer-template: "off" */
+            areaStyle.transform = 'translate3d(' + x + 'px,' + y + 'px, 0)';
+            areaStyle.width = width + 'px';
+            areaStyle.height = height + 'px';
         },
 
         _onTapStop(evt, noevent) {
