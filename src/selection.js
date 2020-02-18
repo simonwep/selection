@@ -129,7 +129,6 @@ function Selection(options = {}) {
 
             // To detect single-click
             that._singleClick = true;
-            that._selected = [];
             that.clearSelection(false);
 
             // Prevent default select event
