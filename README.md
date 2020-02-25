@@ -125,6 +125,8 @@ const selection = new Selection({
 Since version `1.2.x` selection-js is event-driven. 
 Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-listener.
 
+> You may want to checkout the [source](https://gist.github.com/Simonwep/b0c25725a4715c1c5aab501d6a782a71) used in the demo-page, it's easier than reading through the manual.
+
 | Event      | Description
 | -------------- | ----------- | 
 | `beforestart`  | The `mousedown` / `touchstart` got called inside a valid boundary. Return `false` to cancel selection immediatly.  |
@@ -147,15 +149,31 @@ Every event-object contains the folling properties:
 ```
 
 > Example:
+
 ```js
 selection.on('beforestart', evt => {
-    // This function can return "false" to abort the selection
+    
+    // Use this event to decide whether a selection should take place or not.
+    // For example if the user should be able to normally interact with input-elements you 
+    // may want to prevent a selection if the user clicks such a element:
+    // selection.on('beforestart', ({oe}) => {
+    //   return oe.target.tagName !== 'INPUT'; // Returning false prevents a selection
+    // });
+    
     console.log('beforestart', evt);
 }).on('start', evt => {
+
+    // A selection got initiated, you could now clear the previous selection or
+    // keep it if in case of multi-selection.
     console.log('start', evt);
 }).on('move', evt => {
+
+    // Here you can update elements based on their state.
     console.log('move', evt);
 }).on('stop', evt => {
+
+    // The last event can be used to call functions like keepSelection() in case the user wants
+    // to select multiple elements.
     console.log('stop', evt);
 });
 ```
