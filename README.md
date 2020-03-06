@@ -178,6 +178,8 @@ selection.on('beforestart', evt => {
 });
 ```
 
+> You can find event-related examples [here](EXAMPLES.md).
+
 ## Methods
 * selection.on(event`:String`, cb`:Function`) _- Appends an event listener to the given corresponding event-name (see section Events), returns the current instance so it can be chained._
 * selection.off(event`:String`, cb`:Function`) _- Removes an event listener from the given corresponding event-name (see section Events), returns the current instance so it can be chained._
