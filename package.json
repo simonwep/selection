@@ -25,16 +25,16 @@
     },
     "homepage": "https://github.com/Simonwep/selection#readme",
     "devDependencies": {
-        "@babel/core": "^7.7.2",
-        "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
-        "@babel/preset-env": "^7.7.1",
-        "babel-loader": "^8.0.6",
-        "eslint": "^6.6.0",
-        "eslint-config-simon": "^1.1.1",
-        "eslint-loader": "^3.0.2",
-        "terser-webpack-plugin": "^2.2.1",
-        "webpack": "^4.41.2",
-        "webpack-cli": "^3.3.10",
-        "webpack-dev-server": "^3.9.0"
+        "@babel/core": "^7.9.0",
+        "@babel/plugin-proposal-object-rest-spread": "^7.9.0",
+        "@babel/preset-env": "^7.9.0",
+        "babel-loader": "^8.1.0",
+        "eslint": "^6.8.0",
+        "eslint-config-simon": "^1.3.0",
+        "eslint-loader": "^4.0.0",
+        "terser-webpack-plugin": "^2.3.5",
+        "webpack": "^4.42.1",
+        "webpack-cli": "^3.3.11",
+        "webpack-dev-server": "^3.10.3"
     }
 }
