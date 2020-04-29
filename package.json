@@ -9,7 +9,8 @@
     "scripts": {
         "build": "webpack --config webpack.config.prod.js",
         "dev": "webpack-dev-server --config webpack.config.dev.js",
-        "lint": "eslint ./src --fix"
+        "lint": "eslint ./src",
+        "lint:fix": "eslint ./src --fix"
     },
     "repository": {
         "type": "git",
