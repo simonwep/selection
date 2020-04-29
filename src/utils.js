@@ -135,7 +135,7 @@ export function selectAll(selector, doc = document) {
 export function eventPath(evt) {
     let path = evt.path || (evt.composedPath && evt.composedPath());
 
-    if (path) {
+    if (path && path.length > 0) {
         return path;
     }
 
