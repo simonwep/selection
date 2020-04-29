@@ -3,7 +3,7 @@
  * maintainted unofficially until v1.2.0 by Mitsuka Hanakura a.k.a. ragg <https://github.com/ra-gg>.
  */
 
-type ElementList = Element | readonly Element[] | NodeList | HTMLCollection;
+type ElementList = HTMLCollection | HTMLElement | Array<HTMLElement>;
 
 declare namespace Selection {
     interface SelectionEvent {
