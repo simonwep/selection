@@ -1,6 +1,6 @@
 {
     "name": "@simonwep/selection-js",
-    "version": "1.6.0",
+    "version": "1.7.0",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "main": "dist/selection.min.js",
     "typings": "./types/selection.d.ts",
@@ -19,7 +19,11 @@
     "keywords": [
         "selection",
         "selecting",
-        "user-selection"
+        "js-utility",
+        "user-selection",
+        "ui",
+        "user-interface",
+        "ui-library"
     ],
     "bugs": {
         "url": "https://github.com/Simonwep/selection/issues"
