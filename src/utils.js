@@ -80,22 +80,22 @@ export function intersects(a, b, mode) {
             const bxc = b.left + b.width / 2;
             const byc = b.top + b.height / 2;
 
-            return bxc >= a.left
-                && bxc <= a.right
-                && byc >= a.top
-                && byc <= a.bottom;
+            return bxc >= a.left &&
+                bxc <= a.right &&
+                byc >= a.top &&
+                byc <= a.bottom;
         }
         case 'cover': {
-            return b.left >= a.left
-                && b.top >= a.top
-                && b.right <= a.right
-                && b.bottom <= a.bottom;
+            return b.left >= a.left &&
+                b.top >= a.top &&
+                b.right <= a.right &&
+                b.bottom <= a.bottom;
         }
         case 'touch': {
-            return a.right >= b.left
-                && a.left <= b.right
-                && a.bottom >= b.top
-                && a.top <= b.bottom;
+            return a.right >= b.left &&
+                a.left <= b.right &&
+                a.bottom >= b.top &&
+                a.top <= b.bottom;
         }
         default: {
             throw new Error(`Unkown intersection mode: ${mode}`);

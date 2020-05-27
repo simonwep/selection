@@ -1,10 +1,11 @@
 import {css, eventPath, intersects, off, on, removeElement, selectAll, simplifyEvent} from './utils';
-import {version}                                                                      from '../package';
+import {version} from '../package';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
 const preventDefault = e => e.preventDefault();
 
+/* eslint-disable new-cap */
 function Selection(options = {}) {
 
     const that = {
@@ -32,7 +33,7 @@ function Selection(options = {}) {
         _selectables: [],
         _selected: [], // Currently touched elements
         _changed: {
-            added: [],  // Added elements since last selection
+            added: [], // Added elements since last selection
             removed: [] // Removed elements since last selection
         },
 
