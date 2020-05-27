@@ -5,6 +5,9 @@ import {version} from '../package';
 const {abs, max, min, round, ceil} = Math;
 const preventDefault = e => e.preventDefault();
 
+// Edge < 79 uses the unofficial name ClienRect
+const DOMRect = typeof window.DOMRect === 'undefined' ? window.ClientRect : window.DOMRect;
+
 /* eslint-disable new-cap */
 function Selection(options = {}) {
 
