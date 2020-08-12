@@ -353,7 +353,7 @@ function Selection(options = {}) {
                      * We changed the dimensions of the area element -> re-calc selected elements
                      * The selected elements array has been changed -> fire event
                      */
-                    that._reacalcAreaRect();
+                    that._recalcAreaRect();
                     that._updatedTouchingElements();
                     that._emit('move', evt);
                     that._redrawArea();
@@ -368,7 +368,7 @@ function Selection(options = {}) {
                  * If scrolling is active this area is getting re-dragwed by the
                  * anonymized scroll function.
                  */
-                that._reacalcAreaRect();
+                that._recalcAreaRect();
                 that._updatedTouchingElements();
                 that._emit('move', evt);
                 that._redrawArea();
@@ -391,7 +391,7 @@ function Selection(options = {}) {
             evt.preventDefault();
         },
 
-        _reacalcAreaRect() {
+        _recalcAreaRect() {
             const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = that._targetContainer;
             const brect = that._targetBoundary;
             const ss = that._scrollSpeed;
