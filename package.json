@@ -1,6 +1,6 @@
 {
     "name": "@simonwep/selection-js",
-    "version": "1.7.0",
+    "version": "1.7.1",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "main": "dist/selection.min.js",
     "typings": "./types/selection.d.ts",
