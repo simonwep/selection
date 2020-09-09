@@ -111,7 +111,7 @@ declare class Selection {
 
     enable(): void;
 
-    select(query: Parameters<Selection.SelectionUtils['selectAll']>[0]): this;
+    select(query: Parameters<Selection.SelectionUtils['selectAll']>[0]): Element[];
 }
 
 export = Selection;
