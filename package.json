@@ -31,12 +31,10 @@
     "homepage": "https://github.com/Simonwep/selection#readme",
     "devDependencies": {
         "@babel/core": "^7.12.10",
-        "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
         "@babel/preset-env": "^7.12.11",
         "babel-loader": "^8.2.2",
         "eslint": "^7.16.0",
         "eslint-config-simon": "^2.1.0",
-        "eslint-loader": "^4.0.2",
         "terser-webpack-plugin": "^5.0.3",
         "webpack": "^5.11.0",
         "webpack-cli": "^4.3.0",

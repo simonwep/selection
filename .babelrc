@@ -1,8 +1,7 @@
 {
-    "plugins": [
-        "@babel/plugin-proposal-object-rest-spread"
-    ],
     "presets": [
-        "@babel/preset-env"
+       [ "@babel/preset-env", {
+           "targets": "> 1.5%, not dead, not ie 11"
+       }]
     ]
 }

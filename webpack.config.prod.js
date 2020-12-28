@@ -19,10 +19,7 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
-                use: [
-                    'babel-loader',
-                    'eslint-loader'
-                ]
+                use: 'babel-loader'
             }
         ]
     },
@@ -37,7 +34,7 @@ module.exports = {
         }),
 
         new webpack.DefinePlugin({
-            VERSION: JSON.stringify(version),
+            VERSION: JSON.stringify(version)
         })
     ],
 
