@@ -7,7 +7,7 @@ const preventDefault = (e: Event) => e.preventDefault();
 
 /* eslint-disable new-cap */
 export default class Selection {
-    public static version: VERSION;
+    public static version = VERSION;
 
     // Options
     public options: SelectionOptions;
