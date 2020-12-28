@@ -5,7 +5,7 @@ const path = require('path');
 
 module.exports = {
     mode: 'production',
-    entry: './src/selection.js',
+    entry: './src/index.ts',
 
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -15,11 +15,18 @@ module.exports = {
         libraryTarget: 'umd'
     },
 
+    resolve: {
+        extensions: ['.js', '.ts']
+    },
+
     module: {
         rules: [
             {
-                test: /\.js$/,
-                use: 'babel-loader'
+                test: /\.[jt]s$/,
+                use: [
+                    'ts-loader',
+                    'babel-loader'
+                ]
             }
         ]
     },

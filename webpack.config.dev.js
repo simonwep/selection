@@ -4,21 +4,40 @@ const path = require('path');
 
 module.exports = {
     mode: 'development',
-    entry: './src/selection.js',
+    entry: './src/index.ts',
 
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'selection.min.js',
         library: 'Selection',
         libraryExport: 'default',
-        libraryTarget: 'umd',
-        umdNamedDefine: true,
-        globalObject: 'this'
+        libraryTarget: 'umd'
+    },
+
+    resolve: {
+        extensions: ['.js', '.ts']
+    },
+
+    module: {
+        rules: [
+            {
+                test: /\.[jt]s$/,
+                use: [
+                    {
+                        loader:'ts-loader',
+                        options: {
+                            transpileOnly: true
+                        }
+                    }
+                ]
+            }
+        ]
     },
 
     devServer: {
-        watchContentBase: true,
-        publicPath: '/dist/',
+        dev: {
+            publicPath: '/dist'
+        },
         host: '0.0.0.0',
         port: 3003
     },
