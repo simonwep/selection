@@ -15,7 +15,10 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.js', '.ts']
+        extensions: ['.js', '.ts'],
+        alias: {
+            '@utils': path.resolve('./src/utils')
+        }
     },
 
     module: {

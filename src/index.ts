@@ -1,8 +1,8 @@
-import {css, eventPath, intersects, off, on, removeElement, selectAll, simplifyEvent} from './utils';
+import {css, eventPath, intersects, off, on, removeElement, selectAll, simplifyEvent} from '@utils';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
-const preventDefault = e => e.preventDefault();
+const preventDefault = (e: Event) => e.preventDefault();
 
 // Edge < 79 uses the unofficial name ClienRect
 const DOMRect = typeof window.DOMRect === 'undefined' ? window.ClientRect : window.DOMRect;
