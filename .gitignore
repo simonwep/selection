@@ -1,4 +1,5 @@
 _psd/
+lib/
 node_modules/
 .release-info
 *.iml

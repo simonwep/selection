@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
+        "declaration": true,
+        "declarationDir": "lib",
         "moduleResolution": "node",
         "esModuleInterop": true,
         "noImplicitAny": true,
         "sourceMap": true,
         "target": "ES2019",
         "strict": true,
-        "module": "CommonJS",
         "lib": ["dom", "ES2019"],
         "baseUrl": ".",
         "paths": {
