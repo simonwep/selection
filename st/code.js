@@ -40,7 +40,6 @@ const selection = Selection.create({
         selection.clearSelection();
     }
 
-    console.log('start');
 }).on('move', ({changed: {removed, added}}) => {
 
     // Add a custom class to the elements that where selected.
@@ -54,8 +53,6 @@ const selection = Selection.create({
         el.classList.remove('selected');
     }
 
-    console.log('move');
 }).on('stop', () => {
-    console.log('keep');
     selection.keepSelection();
 });
