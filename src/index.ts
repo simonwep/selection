@@ -1,30 +1,28 @@
-import {css, eventPath, intersects, off, on, removeElement, selectAll, simplifyEvent} from '@utils';
+import {css, eventPath, intersects, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
+import {AreaRect, ChangedElements, Coordinates, LooseCoordinates, SelectionEvents, SelectionOptions} from './types';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
 const preventDefault = (e: Event) => e.preventDefault();
-
-// Edge < 79 uses the unofficial name ClienRect
-const DOMRect = typeof window.DOMRect === 'undefined' ? window.ClientRect : window.DOMRect;
 
 /* eslint-disable new-cap */
 export default class Selection {
     public static version: VERSION;
 
     // Options
-    public options;
+    public options: SelectionOptions;
 
     // Store for keepSelection
-    private _stored = [];
-    private _selectables = [];
-    private _selected = []; // Currently touched elements
-    private _changed = {
+    private _stored: Array<Element> = [];
+    private _selectables: Array<Element> = [];
+    private _selected: Array<Element> = []; // Currently touched elements
+    private _changed: ChangedElements = {
         added: [], // Added elements since last selection
         removed: [] // Removed elements since last selection
     };
 
     // Evenlistener name: [callbacks]
-    private _eventListener = {
+    private _eventListener: Record<keyof SelectionEvents, Array<Function>> = {
         beforestart: [],
         start: [],
         move: [],
@@ -32,20 +30,24 @@ export default class Selection {
     };
 
     // Create area element
-    private _area = null;
-    private _areaDomRect = null; // Caches the position of the selection-area
-    private _clippingElement = null;
+    private _area: HTMLElement;
+    private _areaDomRect?: DOMRect; // Caches the position of the selection-area
+    private _clippingElement: HTMLElement;
+    private _targetContainer?: Element;
+    private _targetBoundary?: DOMRect;
+    private _areaRect?: AreaRect;
+    private _singleClick?: boolean;
 
     // Is getting set on movement. Varied.
-    private _scrollAvailable = true;
-    private _scrollSpeed = {x: null, y: null};
+    private _scrollAvailable: boolean = true;
+    private _scrollSpeed: LooseCoordinates = {x: null, y: null};
 
     // Alternative way of creating an instance
-    public static create(opt: SelectionOptions): Selection {
+    public static create(opt: Partial<SelectionOptions>): Selection {
         return new Selection(opt);
     }
 
-    constructor(opt: SelectionOptions) {
+    constructor(opt: Partial<SelectionOptions>) {
         this.options = Object.assign({
             class: 'selection-area',
             frame: document,
@@ -66,8 +68,8 @@ export default class Selection {
 
         // Bind locale functions to instance
         for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
-            if (typeof this[key] === 'function') {
-                this[key] = this[key].bind(this);
+            if (typeof (this as any)[key] === 'function') {
+                (this as any)[key] = (this as any)[key].bind(this);
             }
         }
 
@@ -80,25 +82,25 @@ export default class Selection {
         this._area.classList.add(this.options.class);
 
         // Apply basic styles to the area element
-        css(this._area, {
+        css(this._area as HTMLElement, {
             willChange: 'top, left, bottom, right, width, height',
             top: 0,
             left: 0,
             position: 'fixed'
         });
 
-        css(this._clippingElement, {
+        css(this._clippingElement as HTMLElement, {
             overflow: 'hidden',
             position: 'fixed',
             transform: 'translate3d(0, 0, 0)', // https://stackoverflow.com/a/38268846
             pointerEvents: 'none',
-            zIndex: '1'
+            zIndex: 1
         });
 
         this.enable();
     }
 
-    _bindStartEvents(type) {
+    _bindStartEvents(type: 'on' | 'off') {
         const {frame} = this.options;
         const fn = type === 'on' ? on : off;
         fn(frame, 'mousedown', this._onTapStart);
@@ -110,17 +112,18 @@ export default class Selection {
         }
     }
 
-    _onTapStart(evt, silent = false) {
+    _onTapStart(evt: MouseEvent | TouchEvent, silent = false) {
         const {x, y, target} = simplifyEvent(evt);
-        const {startareas, boundaries, frame} = this.options;
+        const {options} = this;
+        const {frame} = this.options;
         const targetBoundingClientRect = target.getBoundingClientRect();
 
         // Find start-areas and boundaries
-        const startAreas = selectAll(startareas, frame);
-        this._boundaries = selectAll(boundaries, frame);
+        const startAreas = selectAll(options.startareas, options.frame);
+        const resolvedBoundaries = selectAll(options.boundaries, options.frame);
 
         // Check in which container the user currently acts
-        this._targetContainer = this._boundaries.find(el =>
+        this._targetContainer = resolvedBoundaries.find(el =>
             intersects(el.getBoundingClientRect(), targetBoundingClientRect)
         );
 
@@ -128,7 +131,7 @@ export default class Selection {
         const evtpath = eventPath(evt);
         if (!this._targetContainer ||
             !startAreas.find(el => evtpath.includes(el)) ||
-            !this._boundaries.find(el => evtpath.includes(el))) {
+            !resolvedBoundaries.find(el => evtpath.includes(el))) {
             return;
         }
 
@@ -136,13 +139,8 @@ export default class Selection {
             return;
         }
 
-        // Area start point
-        this._ax1 = x;
-        this._ay1 = y;
-
-        // Area end point
-        this._ax2 = 0;
-        this._ay2 = 0;
+        // Area rect
+        this._areaRect = {x1: x, y1: y, x2: 0, y2: 0};
 
         // To detect single-click
         this._singleClick = true;
@@ -159,7 +157,7 @@ export default class Selection {
         evt.preventDefault();
     }
 
-    _onSingleTap(evt) {
+    _onSingleTap(evt: MouseEvent | TouchEvent) {
         const {tapMode} = this.options;
         const spl = simplifyEvent(evt);
         let target = null;
@@ -228,15 +226,20 @@ export default class Selection {
         }
     }
 
-    _delayedTapMove(evt) {
+    _delayedTapMove(evt: MouseEvent | TouchEvent) {
         const {x, y} = simplifyEvent(evt);
         const {startThreshold, frame} = this.options;
-        const {_ax1, _ay1} = this; // Coordinates of first "tap"
+        const {x1, y1} = this._areaRect as AreaRect; // Coordinates of first "tap"
 
         // Check pixel threshold
         const thresholdType = typeof startThreshold;
-        if ((thresholdType === 'number' && abs((x + y) - (_ax1 + _ay1)) >= startThreshold) ||
-            (thresholdType === 'object' && abs(x - _ax1) >= startThreshold.x || abs(y - _ay1) >= startThreshold.y)) {
+        if (
+            // Single number
+            (thresholdType === 'number' && abs((x + y) - (x1 + y1)) >= startThreshold) ||
+
+            // Different x and y threshold
+            (thresholdType === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x || abs(y - y1) >= (startThreshold as Coordinates).y)
+        ) {
             off(frame, ['mousemove', 'touchmove'], this._delayedTapMove, {passive: false});
             on(frame, ['mousemove', 'touchmove'], this._onTapMove, {passive: false});
 
@@ -253,11 +256,11 @@ export default class Selection {
             this._singleClick = false;
 
             // Just saving the boundaries of this container for later
-            const tb = this._targetBoundary = this._targetContainer.getBoundingClientRect();
+            const tb = this._targetBoundary = (this._targetContainer as HTMLElement).getBoundingClientRect();
 
             // Find container and check if it's scrollable
-            if (round(this._targetContainer.scrollHeight) !== round(tb.height) ||
-                round(this._targetContainer.scrollWidth) !== round(tb.width)) {
+            if (round((this._targetContainer as HTMLElement).scrollHeight) !== round(tb.height) ||
+                round((this._targetContainer as HTMLElement).scrollWidth) !== round(tb.width)) {
 
                 // Indenticates if the user is currently in a scrollable area
                 this._scrollAvailable = true;
@@ -271,7 +274,7 @@ export default class Selection {
                  * which are in the current scrollable element. Later these are
                  * the only selectables instead of all.
                  */
-                this._selectables = this._selectables.filter(s => this._targetContainer.contains(s));
+                this._selectables = this._selectables.filter(s => (this._targetContainer as HTMLElement).contains(s));
 
                 /**
                  * To clip the area, the selection area has a parent
@@ -321,21 +324,23 @@ export default class Selection {
         evt.preventDefault(); // Prevent swipe-down refresh
     }
 
-    _onTapMove(evt) {
+    _onTapMove(evt: MouseEvent | TouchEvent) {
         const {x, y} = simplifyEvent(evt);
         const {scrollSpeedDivider} = this.options;
-        const scon = this._targetContainer;
+        const scon = this._targetContainer as Element;
         let ss = this._scrollSpeed;
-        this._ax2 = x;
-        this._ay2 = y;
+
+        (this._areaRect as AreaRect).x2 = x;
+        (this._areaRect as AreaRect).y2 = y;
 
         if (this._scrollAvailable && (ss.y !== null || ss.x !== null)) {
+            const that = this;
 
             // Continous scrolling
             requestAnimationFrame(function scroll() {
 
                 // Make sure this ss is not outdated
-                ss = this._scrollSpeed;
+                ss = that._scrollSpeed;
                 const scrollY = ss.y !== null;
                 const scrollX = ss.x !== null;
 
@@ -351,14 +356,14 @@ export default class Selection {
                 const {scrollTop, scrollLeft} = scon;
 
                 // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
-                if (scrollY) {
+                if (scrollY && ss.y) {
                     scon.scrollTop += ceil(ss.y / scrollSpeedDivider);
-                    this._ay1 -= scon.scrollTop - scrollTop;
+                    (that._areaRect as AreaRect).y1 -= scon.scrollTop - scrollTop;
                 }
 
-                if (scrollX) {
+                if (scrollX && ss.x) {
                     scon.scrollLeft += ceil(ss.x / scrollSpeedDivider);
-                    this._ax1 -= scon.scrollLeft - scrollLeft;
+                    (that._areaRect as AreaRect).x1 -= scon.scrollLeft - scrollLeft;
                 }
 
                 /**
@@ -366,10 +371,10 @@ export default class Selection {
                  * We changed the dimensions of the area element -> re-calc selected elements
                  * The selected elements array has been changed -> fire event
                  */
-                this._recalcAreaRect();
-                this._updatedTouchingElements();
-                this._emit('move', evt);
-                this._redrawArea();
+                that._recalcAreaRect();
+                that._updatedTouchingElements();
+                that._emit('move', evt);
+                that._redrawArea();
 
                 // Keep scrolling even if the user stops to move his pointer
                 requestAnimationFrame(scroll);
@@ -390,14 +395,14 @@ export default class Selection {
         evt.preventDefault(); // Prevent swipe-down refresh
     }
 
-    _manualScroll(evt) {
+    _manualScroll(evt: any) {
         const {manualScrollSpeed} = this.options;
 
         // Consistent scrolling speed on all browsers
         const deltaY = evt.deltaY ? (evt.deltaY > 0 ? 1 : -1) : 0;
         const deltaX = evt.deltaX ? (evt.deltaX > 0 ? 1 : -1) : 0;
-        this._scrollSpeed.y += deltaY * manualScrollSpeed;
-        this._scrollSpeed.x += deltaX * manualScrollSpeed;
+        (this._scrollSpeed.y as number) += deltaY * manualScrollSpeed;
+        (this._scrollSpeed.x as number) += deltaX * manualScrollSpeed;
         this._onTapMove(evt);
 
         // Prevent defaul scrolling behaviour, eg. page scrolling
@@ -405,41 +410,41 @@ export default class Selection {
     }
 
     _recalcAreaRect() {
-        const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = this._targetContainer;
-        const brect = this._targetBoundary;
+        const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = this._targetContainer as Element;
+        const arect = this._areaRect as AreaRect;
+        const brect = this._targetBoundary as DOMRect;
         const ss = this._scrollSpeed;
-        let x = this._ax2;
-        let y = this._ay2;
+        let {x2, y2} = arect;
 
-        if (x < brect.left) {
-            ss.x = scrollLeft ? -abs(brect.left - x) : null;
-            x = brect.left;
-        } else if (x > brect.left + brect.width) {
-            ss.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x) : null;
-            x = brect.left + brect.width;
+        if (x2 < brect.left) {
+            ss.x = scrollLeft ? -abs(brect.left - x2) : null;
+            x2 = brect.left;
+        } else if (x2 > brect.left + brect.width) {
+            ss.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x2) : null;
+            x2 = brect.left + brect.width;
         } else {
             ss.x = null;
         }
 
-        if (y < brect.top) {
-            ss.y = scrollTop ? -abs(brect.top - y) : null;
-            y = brect.top;
-        } else if (y > brect.top + brect.height) {
-            ss.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y) : null;
-            y = brect.top + brect.height;
+        if (y2 < brect.top) {
+            ss.y = scrollTop ? -abs(brect.top - y2) : null;
+            y2 = brect.top;
+        } else if (y2 > brect.top + brect.height) {
+            ss.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2) : null;
+            y2 = brect.top + brect.height;
         } else {
             ss.y = null;
         }
 
-        const x3 = min(this._ax1, x);
-        const y3 = min(this._ay1, y);
-        const x4 = max(this._ax1, x);
-        const y4 = max(this._ay1, y);
+        const x3 = min(arect.x1, x2);
+        const y3 = min(arect.y1, y2);
+        const x4 = max(arect.x1, x2);
+        const y4 = max(arect.y1, y2);
         this._areaDomRect = new DOMRect(x3, y3, x4 - x3, y4 - y3);
     }
 
     _redrawArea() {
-        const {x, y, width, height} = this._areaDomRect;
+        const {x, y, width, height} = this._areaDomRect as DOMRect;
         const areaStyle = this._area.style;
 
         // It's generally faster to not use es6-templates
@@ -450,7 +455,7 @@ export default class Selection {
         areaStyle.height = height + 'px';
     }
 
-    _onTapStop(evt, noevent) {
+    _onTapStop(evt: MouseEvent | TouchEvent | null, silent: boolean) {
         const {frame, singleClick} = this.options;
 
         // Remove event handlers
@@ -460,7 +465,7 @@ export default class Selection {
 
         if (evt && this._singleClick && singleClick) {
             this._onSingleTap(evt);
-        } else if (!this._singleClick && !noevent) {
+        } else if (!this._singleClick && !silent) {
             this._updatedTouchingElements();
             this._emit('stop', evt);
         }
@@ -493,7 +498,7 @@ export default class Selection {
             const node = _selectables[i];
 
             // Check if area intersects element
-            if (intersects(_areaDomRect, node.getBoundingClientRect(), mode)) {
+            if (intersects(_areaDomRect as DOMRect, node.getBoundingClientRect(), mode)) {
 
                 // Check if the element wasn't present in the last selection.
                 if (!_selected.includes(node)) {
@@ -517,17 +522,20 @@ export default class Selection {
         this._changed = {added, removed};
     }
 
-    _emit(event, evt) {
+    _emit(event: keyof SelectionEvents, evt: MouseEvent | TouchEvent | null) {
         let ok = true;
 
         for (const listener of this._eventListener[event]) {
-            ok = listener.call(this, {
-                inst: this,
+            const res = listener({
                 area: this._area,
                 selected: this._selected.concat(this._stored),
                 changed: this._changed,
-                oe: evt
-            }) && ok;
+                event: evt
+            });
+
+            if (typeof res === 'boolean') {
+                ok = ok && res;
+            }
         }
 
         return ok;
@@ -538,7 +546,7 @@ export default class Selection {
      * @param evt A MouseEvent / TouchEvent -like object
      * @param silent If beforestart should be fired,
      */
-    trigger(evt, silent = true) {
+    trigger(evt: MouseEvent | TouchEvent, silent = true) {
         this._onTapStart(evt, silent);
     }
 
@@ -547,7 +555,7 @@ export default class Selection {
      * @param event
      * @param cb
      */
-    on(event, cb) {
+    on<Event extends keyof SelectionEvents>(event: Event, cb: SelectionEvents[Event]) {
         this._eventListener[event].push(cb);
         return this;
     }
@@ -557,7 +565,7 @@ export default class Selection {
      * @param event
      * @param cb
      */
-    off(event, cb) {
+    off<Event extends keyof SelectionEvents>(event: Event, cb: SelectionEvents[Event]) {
         const callBacks = this._eventListener[event];
 
         if (callBacks) {
@@ -610,7 +618,7 @@ export default class Selection {
     /**
      * Removes an particular element from the selection.
      */
-    removeFromSelection(el) {
+    removeFromSelection(el: Element) {
         this._changed.removed.push(el);
         removeElement(this._stored, el);
         removeElement(this._selected, el);
@@ -629,17 +637,6 @@ export default class Selection {
      */
     cancel(keepEvent = false) {
         this._onTapStop(null, !keepEvent);
-    }
-
-    /**
-     * Set or get an option.
-     * @param   {string} name
-     * @param   {*}      value
-     * @return  {*}      the new value
-     */
-    option(name, value) {
-        const {options} = this;
-        return value === undefined ? options[name] : (options[name] = value);
     }
 
     /**
@@ -669,7 +666,7 @@ export default class Selection {
      * @param query - CSS Query, can be an array of queries
      * @param quiet - If this should not trigger the move event
      */
-    select(query, quiet = false) {
+    select(query: SelectAllSelectors, quiet = false) {
         const {_changed, _selected, _stored, options} = this;
         const elements = selectAll(query, options.frame).filter(el =>
             !_selected.includes(el) &&

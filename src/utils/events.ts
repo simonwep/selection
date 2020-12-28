@@ -70,11 +70,11 @@ export const off = eventListener('removeEventListener');
  * Simplifies a touch / mouse-event
  * @param evt
  */
-export const simplifyEvent = (evt: TouchEvent): {
+export const simplifyEvent = (evt: any): {
     tap: MouseEvent | Touch;
     x: number;
     y: number;
-    target: EventTarget;
+    target: HTMLElement;
 } => {
     const tap = (evt.touches && evt.touches[0] || evt);
     return {

@@ -1,13 +1,5 @@
-/**
- * Definitions initially taken from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/simonwep__selection-js/index.d.ts
- * maintainted unofficially until v1.2.0 by Mitsuka Hanakura a.k.a. ragg <https://github.com/ra-gg>.
- */
-
-type ElementList = HTMLCollection | HTMLElement | Array<HTMLElement>;
-
 interface SelectionEvent {
-    oe: MouseEvent | TouchEvent;
-    inst: Selection;
+    event: MouseEvent | TouchEvent | null;
     area: Element;
     selected: ReadonlyArray<Element>;
     changed: {
@@ -19,95 +11,49 @@ interface SelectionEvent {
 type Mode = 'touch' | 'center' | 'cover';
 type TapMode = 'touch' | 'native';
 
-interface SelectionOptions {
-    class?: string;
-    frame?: Node;
-    mode?: Mode;
-    tapMode?: TapMode;
-    startThreshold?: number;
-    singleClick?: boolean;
-    disableTouch?: boolean;
-
-    selectables?: ReadonlyArray<String>;
-    scrollSpeedDivider?: number;
-    manualScrollSpeed?: number;
-
-    startareas?: ReadonlyArray<string>;
-    boundaries?: ReadonlyArray<string>;
-    selectionAreaContainer?: string | HTMLElement | ReadonlyArray<string | HTMLElement>;
+export type AreaRect = {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
 }
 
-interface SelectionUtils {
-    on(
-        el: ElementList,
-        events: string | ReadonlyArray<string>,
-        fn: (ev: Event) => void,
-        options?: AddEventListenerOptions
-    ): void;
-
-    off(
-        el: ElementList,
-        events: string | ReadonlyArray<string>,
-        fn: (ev: Event) => void,
-        options?: AddEventListenerOptions
-    ): void;
-
-    css(el: Element, attr: Record<string, string | number>): any;
-
-    css(el: Element, attr: string, val: string | number): any;
-
-    intersects(a: Element, b: Element, mode: Mode): boolean;
-
-    selectAll(selector: string | HTMLElement | ReadonlyArray<string | HTMLElement>): Element[];
-
-    eventPath(evt: Event): EventTarget[];
-
-    removeElement(arr: Element[], el: Element): void;
+export interface ChangedElements {
+    added: Array<Element>;
+    removed: Array<Element>;
 }
 
-interface SelectionEvents {
-    beforestart: (e: Selection.SelectionEvent) => boolean;
-    start: (e: Selection.SelectionEvent) => void;
-    move: (e: Selection.SelectionEvent) => void;
-    stop: (e: Selection.SelectionEvent) => void;
+export interface LooseCoordinates {
+    x: number | null;
+    y: number | null;
 }
 
-declare class Selection {
-    static create(options: Selection.SelectionOptions): Selection;
+export interface Coordinates {
+    x: number;
+    y: number;
+}
 
-    static utils: Selection.SelectionUtils;
-    static version: string;
+export interface SelectionOptions {
+    class: string;
+    frame: Document;
+    mode: Mode;
+    tapMode: TapMode;
+    startThreshold: number | Coordinates;
+    singleClick: boolean;
+    disableTouch: boolean;
 
-    constructor(options: Selection.SelectionOptions);
+    selectables: ReadonlyArray<string>;
+    scrollSpeedDivider: number;
+    manualScrollSpeed: number;
 
-    trigger(evt: UIEvent, silent?: boolean): void;
+    startareas: ReadonlyArray<string>;
+    boundaries: ReadonlyArray<string>;
+    selectionAreaContainer: string | HTMLElement | ReadonlyArray<string | HTMLElement>;
+}
 
-    on<E extends keyof SelectionEvents>(ev: E, cb: SelectionEvents[E]): this;
-
-    off<E extends keyof SelectionEvents>(ev: E, cb: SelectionEvents[E]): this;
-
-    resolveSelectables(): void;
-
-    keepSelection(): void;
-
-    clearSelection(): void;
-
-    removeFromSelection(el: Element): void;
-
-    getSelection(): Element[];
-
-    cancel(keepEvent?: boolean): void;
-
-    option<K extends keyof Selection.SelectionOptions>(
-        name: K,
-        value?: Selection.SelectionOptions[K]
-    ): Selection.SelectionOptions[K];
-
-    disable(): void;
-
-    destroy(): void;
-
-    enable(): void;
-
-    select(query: Parameters<Selection.SelectionUtils['selectAll']>[0]): Element[];
+export interface SelectionEvents {
+    beforestart: (e: SelectionEvent) => boolean;
+    start: (e: SelectionEvent) => void;
+    move: (e: SelectionEvent) => void
+    stop: (e: SelectionEvent) => void;
 }

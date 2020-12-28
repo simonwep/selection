@@ -15,13 +15,13 @@ const unitify = (val: string | number, unit = 'px'): string => {
  */
 export function css(
     {style}: HTMLElement,
-    attr: Properties | keyof Properties,
+    attr: Partial<Record<keyof Properties, string | number>> | keyof Properties,
     val?: string | number
 ): void {
     if (typeof attr === 'object') {
 
         for (const [key, value] of Object.entries(attr)) {
-            style[key as any] = unitify(value);
+            style[key as any] = unitify(value as string | number);
         }
 
     } else if (val !== undefined) {

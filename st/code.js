@@ -26,19 +26,19 @@ const selection = Selection.create({
 
     // The container is also the boundary in this case
     boundaries: ['.box-wrap']
-}).on('start', ({inst, selected, oe}) => {
+}).on('start', ({selected, event}) => {
 
     // Remove class if the user isn't pressing the control key or ⌘ key
-    if (!oe.ctrlKey && !oe.metaKey) {
+    if (!event.ctrlKey && !event.metaKey) {
 
         // Unselect all elements
         for (const el of selected) {
             el.classList.remove('selected');
-            inst.removeFromSelection(el);
+            selection.removeFromSelection(el);
         }
 
         // Clear previous selection
-        inst.clearSelection();
+        selection.clearSelection();
     }
 
 }).on('move', ({changed: {removed, added}}) => {
@@ -54,6 +54,6 @@ const selection = Selection.create({
         el.classList.remove('selected');
     }
 
-}).on('stop', ({inst}) => {
-    inst.keepSelection();
+}).on('stop', () => {
+    selection.keepSelection();
 });
