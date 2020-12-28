@@ -1,15 +1,22 @@
-interface SelectionEvent {
+interface SelectionSimpleEvent {
     event: MouseEvent | TouchEvent | null;
-    area: Element;
-    selected: ReadonlyArray<Element>;
-    changed: {
-        added: ReadonlyArray<Element>;
-        removed: ReadonlyArray<Element>;
-    };
 }
 
-type Mode = 'touch' | 'center' | 'cover';
-type TapMode = 'touch' | 'native';
+interface SelectionStartEvent extends SelectionSimpleEvent {
+    stored: ReadonlyArray<Element>;
+}
+
+interface SelectionMoveEvent extends SelectionSimpleEvent {
+    selected: ReadonlyArray<Element>;
+    changed: ChangedElements;
+}
+
+export interface SelectionEvents {
+    beforestart: (e: SelectionSimpleEvent) => boolean;
+    start: (e: SelectionStartEvent) => void;
+    move: (e: SelectionMoveEvent) => void
+    stop: (e: SelectionSimpleEvent) => void;
+}
 
 export type AreaRect = {
     x1: number;
@@ -33,6 +40,9 @@ export interface Coordinates {
     y: number;
 }
 
+type Mode = 'touch' | 'center' | 'cover';
+type TapMode = 'touch' | 'native';
+
 export interface SelectionOptions {
     class: string;
     frame: Document;
@@ -51,9 +61,3 @@ export interface SelectionOptions {
     selectionAreaContainer: string | HTMLElement | ReadonlyArray<string | HTMLElement>;
 }
 
-export interface SelectionEvents {
-    beforestart: (e: SelectionEvent) => boolean;
-    start: (e: SelectionEvent) => void;
-    move: (e: SelectionEvent) => void
-    stop: (e: SelectionEvent) => void;
-}

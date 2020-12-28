@@ -1,12 +1,13 @@
 import {css, eventPath, intersects, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
-import {AreaRect, ChangedElements, Coordinates, LooseCoordinates, SelectionEvents, SelectionOptions} from './types';
+import {EventTarget} from './EventEmitter';
+import {AreaRect, ChangedElements, Coordinates, LooseCoordinates, SelectionOptions} from './types';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
 const preventDefault = (e: Event) => e.preventDefault();
 
 /* eslint-disable new-cap */
-export default class Selection {
+export default class Selection extends EventTarget {
     public static version = VERSION;
 
     // Options
@@ -19,14 +20,6 @@ export default class Selection {
     private _changed: ChangedElements = {
         added: [], // Added elements since last selection
         removed: [] // Removed elements since last selection
-    };
-
-    // Evenlistener name: [callbacks]
-    private _eventListener: Record<keyof SelectionEvents, Array<Function>> = {
-        beforestart: [],
-        start: [],
-        move: [],
-        stop: []
     };
 
     // Create area element
@@ -48,6 +41,8 @@ export default class Selection {
     }
 
     constructor(opt: Partial<SelectionOptions>) {
+        super();
+
         this.options = Object.assign({
             class: 'selection-area',
             frame: document,
@@ -135,7 +130,7 @@ export default class Selection {
             return;
         }
 
-        if (!silent && this._emit('beforestart', evt) === false) {
+        if (!silent && this.emit('beforestart', {event: evt}) === false) {
             return;
         }
 
@@ -172,8 +167,6 @@ export default class Selection {
                 const {right, left, top, bottom} = v.getBoundingClientRect();
                 return x < right && x > left && y < bottom && y > top;
             });
-        } else {
-            throw new Error(`Unknown tapMode option: ${tapMode}`);
         }
 
         if (!target) {
@@ -197,7 +190,7 @@ export default class Selection {
             target = target.parentElement;
         }
 
-        this._emit('start', evt);
+        this._emitStartEvent(evt);
         const stored = this._stored;
         if (evt.shiftKey && stored.length) {
             const reference = stored[stored.length - 1];
@@ -211,8 +204,8 @@ export default class Selection {
             ), target];
 
             this.select(rangeItems);
-            this._emit('move', evt);
-            this._emit('stop', evt);
+            this._emitMoveEvent(evt);
+            this.emit('stop', {event: evt});
         } else {
 
             if (this._stored.includes(target)) {
@@ -221,8 +214,8 @@ export default class Selection {
                 this.select(target);
             }
 
-            this._emit('move', evt);
-            this._emit('stop', evt);
+            this._emitMoveEvent(evt);
+            this.emit('stop', {event: evt});
         }
     }
 
@@ -317,8 +310,8 @@ export default class Selection {
             }
 
             // Trigger recalc and fire event
+            this._emitStartEvent(evt);
             this._onTapMove(evt);
-            this._emit('start', evt);
         }
 
         evt.preventDefault(); // Prevent swipe-down refresh
@@ -373,7 +366,7 @@ export default class Selection {
                  */
                 that._recalcAreaRect();
                 that._updatedTouchingElements();
-                that._emit('move', evt);
+                that._emitMoveEvent(evt);
                 that._redrawArea();
 
                 // Keep scrolling even if the user stops to move his pointer
@@ -388,7 +381,7 @@ export default class Selection {
              */
             this._recalcAreaRect();
             this._updatedTouchingElements();
-            this._emit('move', evt);
+            this._emitMoveEvent(evt);
             this._redrawArea();
         }
 
@@ -467,7 +460,7 @@ export default class Selection {
             this._onSingleTap(evt);
         } else if (!this._singleClick && !silent) {
             this._updatedTouchingElements();
-            this._emit('stop', evt);
+            this.emit('stop', {event: evt});
         }
 
         // Reset scroll speed
@@ -522,23 +515,19 @@ export default class Selection {
         this._changed = {added, removed};
     }
 
-    _emit(event: keyof SelectionEvents, evt: MouseEvent | TouchEvent | null) {
-        let ok = true;
+    _emitMoveEvent(evt: MouseEvent | TouchEvent | null) {
+        this.emit('move', {
+            event: evt,
+            changed: this._changed,
+            selected: this._selected
+        });
+    }
 
-        for (const listener of this._eventListener[event]) {
-            const res = listener({
-                area: this._area,
-                selected: this._selected.concat(this._stored),
-                changed: this._changed,
-                event: evt
-            });
-
-            if (typeof res === 'boolean') {
-                ok = ok && res;
-            }
-        }
-
-        return ok;
+    _emitStartEvent(evt: MouseEvent | TouchEvent) {
+        this.emit('start', {
+            event: evt,
+            stored: this._stored
+        });
     }
 
     /**
@@ -548,35 +537,6 @@ export default class Selection {
      */
     trigger(evt: MouseEvent | TouchEvent, silent = true) {
         this._onTapStart(evt, silent);
-    }
-
-    /**
-     * Adds an eventlistener
-     * @param event
-     * @param cb
-     */
-    on<Event extends keyof SelectionEvents>(event: Event, cb: SelectionEvents[Event]) {
-        this._eventListener[event].push(cb);
-        return this;
-    }
-
-    /**
-     * Removes an event listener
-     * @param event
-     * @param cb
-     */
-    off<Event extends keyof SelectionEvents>(event: Event, cb: SelectionEvents[Event]) {
-        const callBacks = this._eventListener[event];
-
-        if (callBacks) {
-            const index = callBacks.indexOf(cb);
-
-            if (~index) {
-                callBacks.splice(index, 1);
-            }
-        }
-
-        return this;
     }
 
     /**
@@ -595,13 +555,9 @@ export default class Selection {
      */
     keepSelection() {
         const {_selected, _stored} = this;
-
-        for (let i = 0; i < _selected.length; i++) {
-            const el = _selected[i];
-            if (!_stored.includes(el)) {
-                _stored.push(el);
-            }
-        }
+        _stored.push(
+            ..._selected.filter(el => !_stored.includes(el))
+        );
     }
 
     /**
@@ -629,6 +585,13 @@ export default class Selection {
      */
     getSelection() {
         return this._stored;
+    }
+
+    /**
+     * @returns {HTMLElement} The selection area element
+     */
+    getSelectionArea() {
+        return this._area;
     }
 
     /**
@@ -678,7 +641,7 @@ export default class Selection {
         _changed.added.push(...elements);
 
         // Fire event
-        this._emit('move', null);
+        this._emitMoveEvent(null);
         return elements;
     }
 }
