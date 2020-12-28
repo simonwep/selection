@@ -7,6 +7,9 @@
         "eslint:recommended",
         "simon"
     ],
+    "globals": {
+        "VERSION": true
+    },
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module"

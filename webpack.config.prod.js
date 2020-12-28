@@ -1,14 +1,14 @@
 const TerserPlugin = require('terser-webpack-plugin');
 const {version} = require('./package');
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
     mode: 'production',
     entry: './src/selection.js',
 
     output: {
-        path: `${__dirname}/dist`,
-        publicPath: 'dist/',
+        path: path.resolve(__dirname, 'dist'),
         filename: 'selection.min.js',
         library: 'Selection',
         libraryExport: 'default',
@@ -19,7 +19,7 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
-                loader: [
+                use: [
                     'babel-loader',
                     'eslint-loader'
                 ]
@@ -34,6 +34,10 @@ module.exports = {
 
         new webpack.BannerPlugin({
             banner: `Selectionjs ${version} MIT | https://github.com/Simonwep/selection`
+        }),
+
+        new webpack.DefinePlugin({
+            VERSION: JSON.stringify(version),
         })
     ],
 
@@ -41,7 +45,6 @@ module.exports = {
         minimizer: [
             new TerserPlugin({
                 extractComments: false,
-                sourceMap: true,
                 terserOptions: {
                     mangle: {
                         properties: {

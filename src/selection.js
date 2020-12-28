@@ -1,5 +1,4 @@
 import {css, eventPath, intersects, off, on, removeElement, selectAll, simplifyEvent} from './utils';
-import {version} from '../package';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
@@ -654,16 +653,21 @@ function Selection(options = {}) {
         /**
          * Manually select elements
          * @param query - CSS Query, can be an array of queries
+         * @param quiet - If this should not trigger the move event
          */
-        select(query) {
-            const {_selected, _stored, options} = that;
+        select(query, quiet = false) {
+            const {_changed, _selected, _stored, options} = that;
             const elements = selectAll(query, options.frame).filter(el =>
                 !_selected.includes(el) &&
                 !_stored.includes(el)
             );
 
-            that._selected.push(...elements);
-            that._changed.added.push(...elements);
+            // Update stores
+            _selected.push(...elements);
+            _changed.added.push(...elements);
+
+            // Fire event
+            that._emit('move', null);
             return elements;
         }
     };
@@ -692,5 +696,5 @@ Selection.utils = {
 Selection.create = options => Selection(options);
 
 // Set version and export
-Selection.version = version;
+Selection.version = VERSION;
 export default Selection;
