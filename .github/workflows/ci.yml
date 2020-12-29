@@ -2,12 +2,11 @@ name: CI
 
 on: ["push", "pull_request"]
 
-env:
-  CI: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v2
 

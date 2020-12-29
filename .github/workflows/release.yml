@@ -2,12 +2,13 @@ name: Release
 
 on:
   release:
-  types: [created]
-
+    types: [created]
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -21,5 +22,3 @@ jobs:
           npm run build
       - name: Publish
       - run: npm publish
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
