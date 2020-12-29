@@ -1,45 +1,34 @@
-<h1 align="center">
-   <img alt="Logo" src="https://image.ibb.co/dejTj7/selection_js.png"/>
-</h1>
+<h3 align="center">
+    <img alt="Logo" src="https://user-images.githubusercontent.com/30767528/103286800-5a83fa00-49e1-11eb-8091-ef895c6f8241.png" width="400"/>
+</h3>
 
 <h3 align="center">
-	Simple and easy selection library to enable visual
-    DOM-Selection
+    Visual dom-selection library 
 </h3>
 
 <p align="center">
     <a href="https://choosealicense.com/licenses/mit/"><img
         alt="License MIT"
-        src="https://img.shields.io/badge/licence-MIT-blue.svg?style=flat-square"></a>
+        src="https://img.shields.io/badge/licence-MIT-ae15cc.svg"></a>
     <img alt="No dependencies"
-        src="https://img.shields.io/badge/dependencies-none-3387e0.svg?style=flat-square">
+        src="https://img.shields.io/badge/dependencies-none-8115cc.svg">
     <a href="https://www.patreon.com/simonwep"><img
         alt="Support me"
-        src="https://img.shields.io/badge/patreon-support-57D3E4.svg?style=flat-square"></a>
+        src="https://img.shields.io/badge/patreon-support-6a15cc.svg"></a>
     <a href="https://www.jsdelivr.com/package/npm/@simonwep/selection-js"><img
         alt="jsdelivr hits"
-        src="https://data.jsdelivr.com/v1/package/npm/@simonwep/selection-js/badge?style=flat-square"></a>
-    <a href="https://travis-ci.org/Simonwep/selection"><img
+        src="https://img.shields.io/jsdelivr/npm/hm/@simonwep/selection-js"></a>
+    <a href="https://github.com/Simonwep/selection/actions?query=workflow%3ACI"><img
         alt="Build Status"
-        src="https://img.shields.io/travis/Simonwep/selection.svg?style=popout-square"></a>
+        src="https://github.com/Simonwep/selection/workflows/CI/badge.svg"></a>
     <a href="https://www.npmjs.com/package/@simonwep/selection-js"><img
         alt="downloads per week"
-        src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg?style=flat-square"></a>
-    <img alt="gzip size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=gzip&style=flat-square">
-    <img alt="brotli size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=brotli&style=flat-square">
+        src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
+    <img alt="gzip size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=gzip">
+    <img alt="brotli size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=brotli">
     <img alt="Current version"
-        src="https://img.shields.io/github/tag/Simonwep/selection.svg?color=23AD62&label=version&style=flat-square">
+        src="https://img.shields.io/github/tag/Simonwep/selection.svg?color=23AD62&label=version">
 </p>
-
-<h3 align="center">
-   <img
-    width="700px"
-    alt="Demo" src="https://user-images.githubusercontent.com/12004383/39947840-4685bc0e-556b-11e8-95cf-068ab6d7e9de.gif"/>
-</h3>
-
-<h3 align="center">
-  <a href="https://simonwep.github.io/selection/">Fully Featured demo</a>
-</h3>
 
 <p align="center">
     <a href="https://www.buymeacoffee.com/aVc3krbXQ" target="_blank">
@@ -48,29 +37,38 @@
 </p>
 
 ### Features
-* Supports touch devices
-* Ultra small
-* Highly optimized
+* Tiny (only ~4kb)
 * Simple usage
-* No jQuery
+* Highly optimized
+* Zero dependencies
+* Mobile / touch support
 * Vertical and horizontal scroll support
 
 ### Install
 
-Via npm
+Via npm:
 ```
-$ npm install @simonwep/selection-js --save
+$ npm install @simonwep/selection-js
+```
+
+Via yarn:
+```
+$ yarn add @simonwep/selection-js
 ```
 
 Include via [jsdelivr.net](https://www.jsdelivr.com/)
-
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js/dist/selection.min.js"></script>
 ```
 
+Or using ES6 modules:
+```js
+import {SelectionArea} from "https://cdn.jsdelivr.net/npm/@simonwep/selection-js/dist/selection.min.mjs"
+```
+
 ## Usage
 ```javascript
-const selection = new Selection({
+const selection = new SelectionArea({
 
     // Class for the selection-area-element
     class: 'selection-area',
@@ -82,8 +80,8 @@ const selection = new Selection({
     // Or specifiy the threshold for each axis by passing an object like {x: <number>, y: <number>}.
     startThreshold: 10,
 
-    // Disable the selection functionality for touch devices
-    disableTouch: false,
+    // Enable / disable touch support
+    touch: true,
 
     // On which point an element should be selected.
     // Available modes are cover (cover the entire element), center (touch the center) or
@@ -91,8 +89,7 @@ const selection = new Selection({
     mode: 'touch',
 
     // Behaviour on single-click
-    // Available modes are 'native' (element was mouse-event target) or 
-    // 'touch' (element got touched)
+    // Available modes are 'native' (element was mouse-event target) or 'touch' (element got touched)
     tapMode: 'native',
 
     // Enable single-click selection (Also disables range-selection via shift + ctrl)
@@ -108,21 +105,24 @@ const selection = new Selection({
     boundaries: ['html'],
 
     // Query selector or dom node to set up container for selection-area-element
-    selectionAreaContainer: 'body',
+    container: 'body',
 
-    // On scrollable areas the number on px per frame is devided by this amount.
-    // Default is 10 to provide a enjoyable scroll experience.
-    scrollSpeedDivider: 10,
+    // Scroll configuration
+    scrolling: {
 
-    // Browsers handle mouse-wheel events differently, this number will be used as 
-    // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider
-    manualScrollSpeed: 750
+        // On scrollable areas the number on px per frame is devided by this amount.
+        // Default is 10 to provide a enjoyable scroll experience.
+        speedDivider: 10,
+
+        // Browsers handle mouse-wheel events differently, this number will be used as 
+        // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider
+        manualSpeed: 750
+    }
 });
 
 ```
 
 ## Events
-Since version `1.2.x` selection-js is event-driven. 
 Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-listener.
 
 > You may want to checkout the [source](https://gist.github.com/Simonwep/b0c25725a4715c1c5aab501d6a782a71) used in the demo-page, it's easier than reading through the manual.
@@ -131,22 +131,10 @@ Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-li
 | -------------- | ----------- | 
 | `beforestart`  | The `mousedown` / `touchstart` got called inside a valid boundary. Return `false` to cancel selection immediatly.  |
 | `start`        | User started the selection, the `startThreshold` got fulfilled. | 
-| `move`         | The user dragged the mouse around. |
+| `move`         | The user is selecting elements / moving the mouse around. |
 | `stop`         | The user stopped the selection, called on `mouseup` and `touchend` / `touchcancel` after a selection. |
 
-Every event-object contains the folling properties:
-```js
-{
-    oe,   // Original mouse- / touchevent.
-    inst, // Selectionjs instance
-    area, // Area element
-    selected, // Array of currently selected elements
-    changed: {
-        added,  // Added elements against the previous event
-        removed // Same as added but for removed elements
-    }
-}
-```
+Check out [types.ts](https://github.com/Simonwep/selection/blob/v2/src/types.ts) to see what kind of data is passed to each event.
 
 > Example:
 
@@ -156,8 +144,8 @@ selection.on('beforestart', evt => {
     // Use this event to decide whether a selection should take place or not.
     // For example if the user should be able to normally interact with input-elements you 
     // may want to prevent a selection if the user clicks such a element:
-    // selection.on('beforestart', ({oe}) => {
-    //   return oe.target.tagName !== 'INPUT'; // Returning false prevents a selection
+    // selection.on('beforestart', ({event}) => {
+    //   return event.target.tagName !== 'INPUT'; // Returning false prevents a selection
     // });
     
     console.log('beforestart', evt);
@@ -181,10 +169,8 @@ selection.on('beforestart', evt => {
 > You can find event-related examples [here](EXAMPLES.md).
 
 ## Methods
-* selection.on(event`:String`, cb`:Function`) _- Appends an event listener to the given corresponding event-name (see section Events), returns the current instance so it can be chained._
+* selection.on(event`:String`, cb`:Function`) _- Adds an event listener to the given corresponding event-name (see section Events), returns the current instance so it can be chained._
 * selection.off(event`:String`, cb`:Function`) _- Removes an event listener from the given corresponding event-name (see section Events), returns the current instance so it can be chained._
-* selection.option(name`:String`) _- Returns the option by name._
-* selection.option(name`:String`, value`:Mixed`) _- Set a new option value._
 * selection.disable() _- Disable the functionality to make selections._
 * selection.enable() _- Enable the functionality to make selections._
 * selection.destroy() _- Unbinds all events and removes the area-element._
@@ -194,22 +180,7 @@ selection.on('beforestart', evt => {
 * selection.keepSelection() _- Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections._
 * selection.clearSelection() _- Clear the previous selection (elements which were saved by `keepSelection()`)._
 * selection.getSelection() _- Returns currently selected elements as an Array._
-* selection.removeFromSelection(el`:HTMLElement`) _- Removes a particular element from the current selection._
-* selection.resolveSelectables() _- Need to be called if during a selection elements have been added._
+* selection.resolveSelectables() _- Need to be called if during a selection elements have been added / removed._
 * selection.select(query`:[String]|String`) _- Manually appends elements to the selection, can be a / an array of queries / elements. Returns actual selected elements as array._
+* selection.deselect(el`:HTMLElement`) _- Removes a particular element from the current selection._
 
-## Static methods
-
-Selection
-* Selection.create(options`:Object`)`:Selection` _- Creates a new instance._
-
-Selection.utils
-
-* on(el`:HTMLElement`, event`:String`, fn`:Function`[, options `:Object`]) _- Attach an event handler function._
-* off(el`:HTMLElement`, event`:String`, fn`:Function`[, options `:Object`]) _- Remove an event handler._
-* css(el`:HTMLElement`, attr`:String`, val`:String`) _- Set a specific style property._
-* css(el`:HTMLElement`, attr`:Object`) _- Set multiple style properties._
-* intersects(ela`:HTMLElement`, elb`:HTMLElement`)`:Boolean` _- Check if an HTMLElement intersects another._
-* selectAll(selector`:String|Array`)`:Array` _- Returns all HTMLElements which were selected by the selector._
-* eventPath(evt`:DOMEvent`)`:NodeList` _- Event.composedPath() polyfill._
-* removeElement(arr`:Array`, el`:Object`) _- Removes an particular element from an Array._
