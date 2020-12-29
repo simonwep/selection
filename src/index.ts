@@ -6,7 +6,7 @@ import {AreaRect, ChangedElements, Coordinates, ScrollEvent, SelectionOptions} f
 const {abs, max, min, round, ceil} = Math;
 const preventDefault = (e: Event) => e.preventDefault();
 
-export class SelectionArea extends EventTarget {
+export default class SelectionArea extends EventTarget {
     public static version = VERSION;
 
     // Options

@@ -65,7 +65,7 @@ Include via [jsdelivr.net](https://www.jsdelivr.com/package/npm/@simonwep/select
 
 Or using ES6 modules:
 ```js
-import {SelectionArea} from "https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.mjs"
+import SelectionArea from "https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.mjs"
 ```
 
 Last but not least you'll need to add some basic styles to make your selection-area visible:
