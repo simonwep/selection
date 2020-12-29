@@ -1,6 +1,5 @@
-_psd/
-lib/
-node_modules/
-.release-info
+node_modules
+lib
+.psd
 *.iml
 .idea/

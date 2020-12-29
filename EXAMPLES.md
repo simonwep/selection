@@ -6,7 +6,7 @@
 selection.on('beforestart', (() => {
     let timeout = null;
 
-    return ({oe}) => {
+    return ({event}) => {
 
         // Check if user already tapped inside of a selection-area.
         if (timeout !== null) {
@@ -20,7 +20,7 @@ selection.on('beforestart', (() => {
             timeout = setTimeout(() => {
 
                 // OK User used only one finger, we can safely initiate a selection and reset the timer.
-                selection.trigger(oe);
+                selection.trigger(event);
                 timeout = null;
             }, 50);
         }
@@ -34,8 +34,8 @@ selection.on('beforestart', (() => {
 #### Preventing the start of a selection based on certain conditions ([#73](https://github.com/Simonwep/selection/issues/73))
 
 ```js
-selection.on('beforestart', evt => {
-    return !evt.oe.path.some(item => {
+selection.on('beforestart', ({event}) => {
+    return !event.path.some(item => {
 
         // item is in this case an element affected by the event-bubbeling.
         // To exclude elements with class "blocked" you could do the following (#73):
@@ -43,7 +43,7 @@ selection.on('beforestart', evt => {
 
         // If the areas you're using contains input elements you might want to prevent
         // any out-going selections from these elements (#72):
-        return oe.target.tagName !== 'INPUT';
+        return event.target.tagName !== 'INPUT';
     });
 });
 ```

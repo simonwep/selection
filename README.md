@@ -79,22 +79,22 @@ Last but not least you'll need to add some basic styles to make your selection-a
 ```javascript
 const selection = new SelectionArea({
 
-    // document object - if you want to use it within an embed document (or iframe)
-    frame: document,
+    // document object - if you want to use it within an embed document (or iframe).
+    document: window.document,
 
-    // Class for the selection-area-element
+    // Class for the selection-area element.
     class: 'selection-area',
 
-    // Query selector or dom node to set up container for selection-area-element
+    // Query selector or dom-node to set up container for the selection-area element.
     container: 'body',
 
-    // Query selectors from elements which can be selected
+    // Query selectors for elements which can be selected.
     selectables: [],
 
-    // Query selectors for elements from where a selection can be start
+    // Query selectors for elements from where a selection can be started from.
     startareas: ['html'],
 
-    // Query selectors for elements which will be used as boundaries for the selection
+    // Query selectors for elements which will be used as boundaries for the selection.
     boundaries: ['html'],
 
     // px, how many pixels the point should move before starting the selection (combined distance).
@@ -109,17 +109,17 @@ const selection = new SelectionArea({
     // the default mode is touch (just touching it).
     intersect: 'touch',
 
-    // Configuration in case a selectable gets just clicked
+    // Configuration in case a selectable gets just clicked.
     singleTap: {
 
-        // Enable single-click selection (Also disables range-selection via shift + ctrl)
+        // Enable single-click selection (Also disables range-selection via shift + ctrl).
         allow: true,
 
-        // 'native' (element was mouse-event target) or 'touch' (element visually touched)
+        // 'native' (element was mouse-event target) or 'touch' (element visually touched).
         intersect: 'native'
     },
 
-    // Scroll configuration
+    // Scroll configuration.
     scrolling: {
 
         // On scrollable areas the number on px per frame is devided by this amount.
@@ -127,7 +127,7 @@ const selection = new SelectionArea({
         speedDivider: 10,
 
         // Browsers handle mouse-wheel events differently, this number will be used as 
-        // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider
+        // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider.
         manualSpeed: 750
     }
 });
@@ -181,18 +181,20 @@ selection.on('beforestart', evt => {
 > You can find event-related examples [here](EXAMPLES.md).
 
 ## Methods
-* selection.on(event`:String`, cb`:Function`) _- Adds an event listener to the given corresponding event-name (see section Events), returns the current instance so it can be chained._
-* selection.off(event`:String`, cb`:Function`) _- Removes an event listener from the given corresponding event-name (see section Events), returns the current instance so it can be chained._
-* selection.disable() _- Disable the functionality to make selections._
-* selection.enable() _- Enable the functionality to make selections._
-* selection.destroy() _- Unbinds all events and removes the area-element._
-* selection.cancel() _- Cancels the current selection process._
 
-* selection.trigger(evt`:MouseEvent|TouchEvent`, silent`:boolean`) _- Manually triggers the start of a selection. `silent = true` means that no `beforestart` event will get fired (default)._
-* selection.keepSelection() _- Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections._
-* selection.clearSelection() _- Clear the previous selection (elements which were saved by `keepSelection()`)._
-* selection.getSelection() _- Returns currently selected elements as an Array._
-* selection.resolveSelectables() _- Need to be called if during a selection elements have been added / removed._
-* selection.select(query`:[String]|String`) _- Manually appends elements to the selection, can be a / an array of queries / elements. Returns actual selected elements as array._
-* selection.deselect(el`:HTMLElement`) _- Removes a particular element from the current selection._
+| Method | Description |
+| ------ | ----------- |
+| **on**(event`:String`, cb`:Function`) | Adds an event listener to the given corresponding event-name (see section Events), returns the current instance, so it can be chained. |
+| **off**(event`:String`, cb`:Function`) | Removes an event listener from the given corresponding event-name (see section Events), returns the current instance, so it can be chained. |
+| **disable**() | Disable the functionality to make selections. |
+| **enable**() | Enable the functionality to make selections. |
+| **destroy**() | Unbinds all events and removes the area-element. |
+| **cancel**() | Cancels the current selection process. |
+| **trigger**(evt`:MouseEvent \| TouchEvent`, silent`: boolean` = true)  | Manually triggers the start of a selection. If `silent` is set to true, no `beforestart` event will be fired. |
+| **keepSelection**() | Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections. |
+| **clearSelection**(store`:boolean` = true) | Clear the previous selection (elements which were stored by calling `keepSelection()`). Pass false to only clear the currently selected elements. |
+| **getSelection**() | Returns currently selected elements. |
+| **resolveSelectables**() | Need to be called if during a selection elements have been added / removed. |
+| **select**(query`:(String \| Element)[]`) | Manually appends elements to the selection, can be a / an array of queries / elements. Returns actual selected elements as array. |
+| **deselect**(el`:HTMLElement`, silent`: boolean` = true) | Removes a particular element from the current selection. `silent` determines whether the `move` event should be fired. |
 

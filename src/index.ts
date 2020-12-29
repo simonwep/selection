@@ -6,7 +6,6 @@ import {AreaRect, ChangedElements, Coordinates, ScrollEvent, SelectionOptions} f
 const {abs, max, min, round, ceil} = Math;
 const preventDefault = (e: Event) => e.preventDefault();
 
-/* eslint-disable new-cap */
 export default class SelectionArea extends EventTarget {
     public static version = VERSION;
 
@@ -48,7 +47,7 @@ export default class SelectionArea extends EventTarget {
 
         this.options = Object.assign({
             class: 'selection-area',
-            frame: document,
+            document: window.document,
             intersect: 'touch',
             startThreshold: 10,
             singleClick: true,
@@ -78,9 +77,9 @@ export default class SelectionArea extends EventTarget {
             }
         }
 
-        const {frame} = this.options;
-        this._area = frame.createElement('div');
-        this._clippingElement = frame.createElement('div');
+        const {document} = this.options;
+        this._area = document.createElement('div');
+        this._clippingElement = document.createElement('div');
         this._clippingElement.appendChild(this._area);
 
         // Add class to the area element
@@ -106,11 +105,11 @@ export default class SelectionArea extends EventTarget {
     }
 
     _bindStartEvents(activate = true): void {
-        const {frame, allowTouch} = this.options;
+        const {document, allowTouch} = this.options;
         const fn = activate ? on : off;
 
-        fn(frame, 'mousedown', this._onTapStart);
-        allowTouch && fn(frame, 'touchstart', this._onTapStart, {
+        fn(document, 'mousedown', this._onTapStart);
+        allowTouch && fn(document, 'touchstart', this._onTapStart, {
             passive: false
         });
     }
@@ -118,12 +117,12 @@ export default class SelectionArea extends EventTarget {
     _onTapStart(evt: MouseEvent | TouchEvent, silent = false): void {
         const {x, y, target} = simplifyEvent(evt);
         const {options} = this;
-        const {frame} = this.options;
+        const {document} = this.options;
         const targetBoundingClientRect = target.getBoundingClientRect();
 
         // Find start-areas and boundaries
-        const startAreas = selectAll(options.startareas, options.frame);
-        const resolvedBoundaries = selectAll(options.boundaries, options.frame);
+        const startAreas = selectAll(options.startareas, options.document);
+        const resolvedBoundaries = selectAll(options.boundaries, options.document);
 
         // Check in which container the user currently acts
         this._targetContainer = resolvedBoundaries.find(el =>
@@ -150,11 +149,11 @@ export default class SelectionArea extends EventTarget {
         this.clearSelection(false);
 
         // Prevent default select event
-        on(frame, 'selectstart', preventDefault);
+        on(document, 'selectstart', preventDefault);
 
         // Add listener
-        on(frame, ['touchmove', 'mousemove'], this._delayedTapMove, {passive: false});
-        on(frame, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
+        on(document, ['touchmove', 'mousemove'], this._delayedTapMove, {passive: false});
+        on(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
 
         // Firefox will scroll down the page which would break the selection.
         evt.preventDefault();
@@ -228,7 +227,7 @@ export default class SelectionArea extends EventTarget {
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {
-        const {startThreshold, frame} = this.options;
+        const {startThreshold, document} = this.options;
         const {x1, y1} = this._areaRect; // Coordinates of first "tap"
         const {x, y} = simplifyEvent(evt);
 
@@ -242,14 +241,14 @@ export default class SelectionArea extends EventTarget {
             // Different x and y threshold
             (thresholdType === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x || abs(y - y1) >= (startThreshold as Coordinates).y)
         ) {
-            off(frame, ['mousemove', 'touchmove'], this._delayedTapMove, {passive: false});
-            on(frame, ['mousemove', 'touchmove'], this._onTapMove, {passive: false});
+            off(document, ['mousemove', 'touchmove'], this._delayedTapMove, {passive: false});
+            on(document, ['mousemove', 'touchmove'], this._onTapMove, {passive: false});
 
             // Make area element visible
             css(this._area, 'display', 'block');
 
             // Apppend selection-area to the dom
-            selectAll(this.options.container, frame)[0].appendChild(this._clippingElement);
+            selectAll(this.options.container, document)[0].appendChild(this._clippingElement);
 
             // Now after the threshold is reached resolve all selectables
             this.resolveSelectables();
@@ -451,19 +450,19 @@ export default class SelectionArea extends EventTarget {
         const areaStyle = this._area.style;
 
         // Using transform will make the area's borders look blurry
-        areaStyle.left = x + 'px';
-        areaStyle.top = y + 'px';
-        areaStyle.width = width + 'px';
-        areaStyle.height = height + 'px';
+        areaStyle.left = `${x}px`;
+        areaStyle.top = `${y}px`;
+        areaStyle.width = `${width}px`;
+        areaStyle.height = `${height}px`;
     }
 
     _onTapStop(evt: MouseEvent | TouchEvent | null, silent: boolean): void {
-        const {frame, singleTap} = this.options;
+        const {document, singleTap} = this.options;
 
         // Remove event handlers
-        off(frame, ['mousemove', 'touchmove'], this._delayedTapMove);
-        off(frame, ['touchmove', 'mousemove'], this._onTapMove);
-        off(frame, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
+        off(document, ['mousemove', 'touchmove'], this._delayedTapMove);
+        off(document, ['touchmove', 'mousemove'], this._onTapMove);
+        off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
 
         if (evt && this._singleClick && singleTap.allow) {
             this._onSingleTap(evt);
@@ -482,7 +481,7 @@ export default class SelectionArea extends EventTarget {
         this._clippingElement.remove();
 
         // Enable default select event
-        off(frame, 'selectstart', preventDefault);
+        off(document, 'selectstart', preventDefault);
         css(this._area, 'display', 'none');
     }
 
@@ -555,7 +554,7 @@ export default class SelectionArea extends EventTarget {
     resolveSelectables(): void {
 
         // Resolve selectors
-        this._selectables = selectAll(this.options.selectables, this.options.frame);
+        this._selectables = selectAll(this.options.selectables, this.options.document);
     }
 
     /**
@@ -628,7 +627,7 @@ export default class SelectionArea extends EventTarget {
      */
     select(query: SelectAllSelectors, quiet = false): Array<Element> {
         const {_changed, _selected, _stored, options} = this;
-        const elements = selectAll(query, options.frame).filter(el =>
+        const elements = selectAll(query, options.document).filter(el =>
             !_selected.includes(el) &&
             !_stored.includes(el)
         );

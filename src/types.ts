@@ -37,21 +37,21 @@ export interface Coordinates {
     y: number;
 }
 
-type TapMode = 'touch' | 'native';
+export type TapMode = 'touch' | 'native';
 
-interface Scrolling {
+export interface Scrolling {
     speedDivider: number;
     manualSpeed: number;
 }
 
-interface SingleTap {
+export interface SingleTap {
     allow: boolean;
     intersect: TapMode;
 }
 
 export interface SelectionOptions {
     class: string;
-    frame: Document;
+    document: Document;
     intersect: Intersection;
     singleTap: SingleTap;
     startThreshold: number | Coordinates;
