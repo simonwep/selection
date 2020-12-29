@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {Properties} from 'csstype';
 
 const unitify = (val: string | number, unit = 'px'): string => {

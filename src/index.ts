@@ -1,6 +1,6 @@
 import {css, eventPath, intersects, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
 import {EventTarget} from './EventEmitter';
-import {AreaRect, ChangedElements, Coordinates, SelectionOptions} from './types';
+import {AreaRect, ChangedElements, Coordinates, ScrollEvent, SelectionOptions} from './types';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
@@ -71,6 +71,7 @@ export default class SelectionArea extends EventTarget {
         }, opt);
 
         // Bind locale functions to instance
+        /* eslint-disable @typescript-eslint/no-explicit-any */
         for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {
             if (typeof (this as any)[key] === 'function') {
                 (this as any)[key] = (this as any)[key].bind(this);
@@ -104,7 +105,7 @@ export default class SelectionArea extends EventTarget {
         this.enable();
     }
 
-    _bindStartEvents(activate = true) {
+    _bindStartEvents(activate = true): void {
         const {frame, allowTouch} = this.options;
         const fn = activate ? on : off;
 
@@ -114,7 +115,7 @@ export default class SelectionArea extends EventTarget {
         });
     }
 
-    _onTapStart(evt: MouseEvent | TouchEvent, silent = false) {
+    _onTapStart(evt: MouseEvent | TouchEvent, silent = false): void {
         const {x, y, target} = simplifyEvent(evt);
         const {options} = this;
         const {frame} = this.options;
@@ -159,7 +160,7 @@ export default class SelectionArea extends EventTarget {
         evt.preventDefault();
     }
 
-    _onSingleTap(evt: MouseEvent | TouchEvent) {
+    _onSingleTap(evt: MouseEvent | TouchEvent): void {
         const {intersect} = this.options.singleTap;
         const spl = simplifyEvent(evt);
         let target = null;
@@ -177,7 +178,7 @@ export default class SelectionArea extends EventTarget {
         }
 
         if (!target) {
-            return false;
+            return;
         }
 
         /**
@@ -226,7 +227,7 @@ export default class SelectionArea extends EventTarget {
         }
     }
 
-    _delayedTapMove(evt: MouseEvent | TouchEvent) {
+    _delayedTapMove(evt: MouseEvent | TouchEvent): void {
         const {startThreshold, frame} = this.options;
         const {x1, y1} = this._areaRect; // Coordinates of first "tap"
         const {x, y} = simplifyEvent(evt);
@@ -325,7 +326,7 @@ export default class SelectionArea extends EventTarget {
         evt.preventDefault(); // Prevent swipe-down refresh
     }
 
-    _onTapMove(evt: MouseEvent | TouchEvent) {
+    _onTapMove(evt: MouseEvent | TouchEvent): void {
         const {x, y} = simplifyEvent(evt);
         const {speedDivider} = this.options.scrolling;
         const scon = this._targetContainer as Element;
@@ -335,13 +336,10 @@ export default class SelectionArea extends EventTarget {
         this._areaRect.y2 = y;
 
         if (this._scrollAvailable && scrollSpeed.y && scrollSpeed.x) {
-            const that = this;
-
-            // Continous scrolling
-            requestAnimationFrame(function scroll() {
+            const scroll = () => {
 
                 // Make sure this ss is not outdated
-                scrollSpeed = that._scrollSpeed;
+                scrollSpeed = this._scrollSpeed;
 
                 if (!scrollSpeed.x && !scrollSpeed.y) {
                     return;
@@ -356,12 +354,12 @@ export default class SelectionArea extends EventTarget {
                 // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
                 if (scrollSpeed.y) {
                     scon.scrollTop += ceil(scrollSpeed.y / speedDivider);
-                    that._areaRect.y1 -= scon.scrollTop - scrollTop;
+                    this._areaRect.y1 -= scon.scrollTop - scrollTop;
                 }
 
                 if (scrollSpeed.x) {
                     scon.scrollLeft += ceil(scrollSpeed.x / speedDivider);
-                    that._areaRect.x1 -= scon.scrollLeft - scrollLeft;
+                    this._areaRect.x1 -= scon.scrollLeft - scrollLeft;
                 }
 
                 /**
@@ -369,14 +367,17 @@ export default class SelectionArea extends EventTarget {
                  * We changed the dimensions of the area element -> re-calc selected elements
                  * The selected elements array has been changed -> fire event
                  */
-                that._recalcAreaRect();
-                that._updatedTouchingElements();
-                that._emitMoveEvent(evt);
-                that._redrawArea();
+                this._recalcAreaRect();
+                this._updatedTouchingElements();
+                this._emitMoveEvent(evt);
+                this._redrawArea();
 
                 // Keep scrolling even if the user stops to move his pointer
                 requestAnimationFrame(scroll);
-            });
+            };
+
+            // Continous scrolling
+            requestAnimationFrame(scroll);
         } else {
 
             /**
@@ -393,7 +394,7 @@ export default class SelectionArea extends EventTarget {
         evt.preventDefault(); // Prevent swipe-down refresh
     }
 
-    _manualScroll(evt: any) {
+    _manualScroll(evt: ScrollEvent): void {
         const {manualSpeed} = this.options.scrolling;
 
         // Consistent scrolling speed on all browsers
@@ -407,7 +408,7 @@ export default class SelectionArea extends EventTarget {
         evt.preventDefault();
     }
 
-    _recalcAreaRect() {
+    _recalcAreaRect(): void {
         const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = this._targetContainer as Element;
         const arect = this._areaRect;
         const brect = this._targetBoundary as DOMRect;
@@ -445,7 +446,7 @@ export default class SelectionArea extends EventTarget {
         this._areaDomRect.height = y4 - y3;
     }
 
-    _redrawArea() {
+    _redrawArea(): void {
         const {x, y, width, height} = this._areaDomRect as DOMRect;
         const areaStyle = this._area.style;
 
@@ -457,7 +458,7 @@ export default class SelectionArea extends EventTarget {
         areaStyle.height = height + 'px';
     }
 
-    _onTapStop(evt: MouseEvent | TouchEvent | null, silent: boolean) {
+    _onTapStop(evt: MouseEvent | TouchEvent | null, silent: boolean): void {
         const {frame, singleTap} = this.options;
 
         // Remove event handlers
@@ -486,7 +487,7 @@ export default class SelectionArea extends EventTarget {
         css(this._area, 'display', 'none');
     }
 
-    _updatedTouchingElements() {
+    _updatedTouchingElements(): void {
         const {_selected, _selectables, options, _areaDomRect} = this;
         const {intersect} = options;
 
@@ -524,7 +525,7 @@ export default class SelectionArea extends EventTarget {
         this._changed = {added, removed};
     }
 
-    _emitMoveEvent(evt: MouseEvent | TouchEvent | null) {
+    _emitMoveEvent(evt: MouseEvent | TouchEvent | null): void {
         this.emit('move', {
             event: evt,
             changed: this._changed,
@@ -532,7 +533,7 @@ export default class SelectionArea extends EventTarget {
         });
     }
 
-    _emitStartEvent(evt: MouseEvent | TouchEvent) {
+    _emitStartEvent(evt: MouseEvent | TouchEvent): void {
         this.emit('start', {
             event: evt,
             stored: this._stored
@@ -544,7 +545,7 @@ export default class SelectionArea extends EventTarget {
      * @param evt A MouseEvent / TouchEvent -like object
      * @param silent If beforestart should be fired,
      */
-    trigger(evt: MouseEvent | TouchEvent, silent = true) {
+    trigger(evt: MouseEvent | TouchEvent, silent = true): void {
         this._onTapStart(evt, silent);
     }
 
@@ -552,7 +553,7 @@ export default class SelectionArea extends EventTarget {
      * Can be used if during a selection elements have been added.
      * Will update everything which can be selected.
      */
-    resolveSelectables() {
+    resolveSelectables(): void {
 
         // Resolve selectors
         this._selectables = selectAll(this.options.selectables, this.options.frame);
@@ -562,7 +563,7 @@ export default class SelectionArea extends EventTarget {
      * Saves the current selection for the next selecion.
      * Allows multiple selections.
      */
-    keepSelection() {
+    keepSelection(): void {
         const {_selected, _stored} = this;
         _stored.push(
             ..._selected.filter(el => !_stored.includes(el))
@@ -573,7 +574,7 @@ export default class SelectionArea extends EventTarget {
      * Clear the elements which where saved by 'keepSelection()'.
      * @param store If the store should also get cleared
      */
-    clearSelection(store = true) {
+    clearSelection(store = true): void {
         store && (this._stored = []);
         this._selected = [];
         this._changed = {added: [], removed: []};
@@ -582,14 +583,14 @@ export default class SelectionArea extends EventTarget {
     /**
      * @returns {Array} Selected elements
      */
-    getSelection() {
+    getSelection(): Array<Element> {
         return this._stored;
     }
 
     /**
      * @returns {HTMLElement} The selection area element
      */
-    getSelectionArea() {
+    getSelectionArea(): HTMLElement {
         return this._area;
     }
 
@@ -597,14 +598,14 @@ export default class SelectionArea extends EventTarget {
      * Cancel the current selection process.
      * @param keepEvent {boolean} true to fire the onStop listener after cancel.
      */
-    cancel(keepEvent = false) {
+    cancel(keepEvent = false): void {
         this._onTapStop(null, !keepEvent);
     }
 
     /**
      * Unbinds all events and removes the area-element
      */
-    destroy() {
+    destroy(): void {
         this.disable();
         this._clippingElement.remove();
     }
@@ -612,11 +613,13 @@ export default class SelectionArea extends EventTarget {
     /**
      * Disable the selection functinality.
      */
+    /* eslint-disable no-invalid-this */
     disable = this._bindStartEvents.bind(this, false);
 
     /**
      * Disable the selection functinality.
      */
+    /* eslint-disable no-invalid-this */
     enable = this._bindStartEvents;
 
     /**

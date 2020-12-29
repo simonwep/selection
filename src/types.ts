@@ -1,14 +1,19 @@
 import {Intersection} from '@utils';
 
-interface SelectionSimpleEvent {
+export interface ChangedElements {
+    added: Array<Element>;
+    removed: Array<Element>;
+}
+
+export interface SelectionSimpleEvent {
     event: MouseEvent | TouchEvent | null;
 }
 
-interface SelectionStartEvent extends SelectionSimpleEvent {
+export interface SelectionStartEvent extends SelectionSimpleEvent {
     stored: ReadonlyArray<Element>;
 }
 
-interface SelectionMoveEvent extends SelectionSimpleEvent {
+export interface SelectionMoveEvent extends SelectionSimpleEvent {
     selected: ReadonlyArray<Element>;
     changed: ChangedElements;
 }
@@ -25,16 +30,6 @@ export type AreaRect = {
     y1: number;
     x2: number;
     y2: number;
-}
-
-export interface ChangedElements {
-    added: Array<Element>;
-    removed: Array<Element>;
-}
-
-export interface LooseCoordinates {
-    x: number | null;
-    y: number | null;
 }
 
 export interface Coordinates {
@@ -70,3 +65,7 @@ export interface SelectionOptions {
     container: string | HTMLElement | ReadonlyArray<string | HTMLElement>;
 }
 
+export interface ScrollEvent extends MouseEvent {
+    deltaY: number;
+    deltaX: number;
+}
