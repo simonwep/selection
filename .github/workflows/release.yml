@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  release:
+  types: [created]
+
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - name: Build
+        run: |
+          npm ci
+          npm run lint
+          npm run build
+      - name: Publish
+      - run: npm publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

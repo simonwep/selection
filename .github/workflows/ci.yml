@@ -3,24 +3,24 @@ name: CI
 on: ["push", "pull_request"]
 
 env:
-    CI: true
+  CI: true
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            -   uses: actions/checkout@v2
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-            -   name: Use Node.js 14.x
-                uses: actions/setup-node@v1
-                with:
-                    node-version: 14.x
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
 
-            -   name: Install
-                run: npm ci
+      - name: Install
+        run: npm ci
 
-            -   name: Lint
-                run: npm run lint
+      - name: Lint
+        run: npm run lint
 
-            -   name: Build
-                run: npm run build
+      - name: Build
+        run: npm run build

@@ -13,6 +13,10 @@
         "lint": "eslint ./src/**/*.ts",
         "lint:fix": "eslint ./src/**/*.ts --fix"
     },
+    "files": [
+        "lib",
+        "src"
+    ],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Simonwep/selection.git"
