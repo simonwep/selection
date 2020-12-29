@@ -9,7 +9,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'selection.min.js',
-        library: 'Selection',
+        library: 'SelectionArea',
         libraryExport: 'default',
         libraryTarget: 'umd'
     },

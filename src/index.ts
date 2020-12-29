@@ -7,7 +7,7 @@ const {abs, max, min, round, ceil} = Math;
 const preventDefault = (e: Event) => e.preventDefault();
 
 /* eslint-disable new-cap */
-export default class Selection extends EventTarget {
+export default class SelectionArea extends EventTarget {
     public static version = VERSION;
 
     // Options
@@ -42,11 +42,6 @@ export default class Selection extends EventTarget {
     // Is getting set on movement. Varied.
     private _scrollAvailable = true;
     private _scrollSpeed: Coordinates = {x: 0, y: 0};
-
-    // Alternative way of creating an instance
-    public static create(opt: Partial<SelectionOptions>): Selection {
-        return new Selection(opt);
-    }
 
     constructor(opt: Partial<SelectionOptions>) {
         super();
@@ -333,7 +328,7 @@ export default class Selection extends EventTarget {
         this._areaRect.x2 = x;
         this._areaRect.y2 = y;
 
-        if (this._scrollAvailable && (!scrollSpeed.y || !scrollSpeed.x)) {
+        if (this._scrollAvailable && scrollSpeed.y && scrollSpeed.x) {
             const that = this;
 
             // Continous scrolling
@@ -341,6 +336,10 @@ export default class Selection extends EventTarget {
 
                 // Make sure this ss is not outdated
                 scrollSpeed = that._scrollSpeed;
+
+                if (!scrollSpeed.x && !scrollSpeed.y) {
+                    return;
+                }
 
                 /**
                  * If the value exeeds the scrollable area it will

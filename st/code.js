@@ -16,7 +16,7 @@ for (const [sel, items] of boxes) {
 }
 
 // Initialize selectionjs
-const selection = Selection.create({
+const selection = new SelectionArea({
 
     // Class for the selection-area
     class: 'selection',

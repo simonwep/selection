@@ -25,7 +25,7 @@ export default {
         {
             banner,
             file: pkg.main,
-            name: 'Selection',
+            name: 'SelectionArea',
             format: 'umd',
             sourcemap: true
         },
