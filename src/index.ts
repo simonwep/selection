@@ -450,10 +450,9 @@ export default class SelectionArea extends EventTarget {
         const {x, y, width, height} = this._areaDomRect as DOMRect;
         const areaStyle = this._area.style;
 
-        // It's generally faster to not use es6-templates
-        // It's also faster to manually change the properties instead of calling Object.assign
-        /* eslint prefer-template: "off" */
-        areaStyle.transform = 'translate3d(' + x + 'px,' + y + 'px, 0)';
+        // Using transform will make the area's borders look blurry
+        areaStyle.left = x + 'px';
+        areaStyle.top = y + 'px';
         areaStyle.width = width + 'px';
         areaStyle.height = height + 'px';
     }
