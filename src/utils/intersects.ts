@@ -1,3 +1,5 @@
+export type Intersection = 'center' | 'cover' | 'touch'
+
 /**
  * Check if two DOM-Elements intersects each other.
  * @param a BoundingClientRect of the first element.
@@ -5,7 +7,7 @@
  * @param mode Options are center, cover or touch.
  * @returns {boolean} If both elements intersects each other.
  */
-export function intersects(a: DOMRect, b: DOMRect, mode: 'center' | 'cover' | 'touch' = 'touch'): boolean {
+export function intersects(a: DOMRect, b: DOMRect, mode: Intersection = 'touch'): boolean {
     switch (mode) {
         case 'center': {
             const bxc = b.left + b.width / 2;

@@ -1,3 +1,5 @@
+import {Intersection} from '@utils';
+
 interface SelectionSimpleEvent {
     event: MouseEvent | TouchEvent | null;
 }
@@ -40,24 +42,31 @@ export interface Coordinates {
     y: number;
 }
 
-type Mode = 'touch' | 'center' | 'cover';
 type TapMode = 'touch' | 'native';
+
+interface Scrolling {
+    speedDivider: number;
+    manualSpeed: number;
+}
+
+interface SingleTap {
+    allow: boolean;
+    intersect: TapMode;
+}
 
 export interface SelectionOptions {
     class: string;
     frame: Document;
-    mode: Mode;
-    tapMode: TapMode;
+    intersect: Intersection;
+    singleTap: SingleTap;
     startThreshold: number | Coordinates;
-    singleClick: boolean;
-    disableTouch: boolean;
+    allowTouch: boolean;
 
     selectables: ReadonlyArray<string>;
-    scrollSpeedDivider: number;
-    manualScrollSpeed: number;
+    scrolling: Scrolling;
 
     startareas: ReadonlyArray<string>;
     boundaries: ReadonlyArray<string>;
-    selectionAreaContainer: string | HTMLElement | ReadonlyArray<string | HTMLElement>;
+    container: string | HTMLElement | ReadonlyArray<string | HTMLElement>;
 }
 

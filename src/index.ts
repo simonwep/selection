@@ -49,19 +49,25 @@ export default class SelectionArea extends EventTarget {
         this.options = Object.assign({
             class: 'selection-area',
             frame: document,
-            mode: 'touch',
-            tapMode: 'native',
+            intersect: 'touch',
             startThreshold: 10,
             singleClick: true,
-            disableTouch: false,
-
+            allowTouch: true,
             selectables: [],
-            scrollSpeedDivider: 10,
-            manualScrollSpeed: 750,
+
+            singleTap: {
+                allow: true,
+                intersect: 'native'
+            },
+
+            scrolling: {
+                speedDivider: 10,
+                manualSpeed: 750
+            },
 
             startareas: ['html'],
             boundaries: ['html'],
-            selectionAreaContainer: 'body'
+            container: 'body'
         }, opt);
 
         // Bind locale functions to instance
@@ -99,11 +105,11 @@ export default class SelectionArea extends EventTarget {
     }
 
     _bindStartEvents(activate = true) {
-        const {frame, disableTouch} = this.options;
+        const {frame, allowTouch} = this.options;
         const fn = activate ? on : off;
 
         fn(frame, 'mousedown', this._onTapStart);
-        !disableTouch && fn(frame, 'touchstart', this._onTapStart, {
+        allowTouch && fn(frame, 'touchstart', this._onTapStart, {
             passive: false
         });
     }
@@ -154,13 +160,13 @@ export default class SelectionArea extends EventTarget {
     }
 
     _onSingleTap(evt: MouseEvent | TouchEvent) {
-        const {tapMode} = this.options;
+        const {intersect} = this.options.singleTap;
         const spl = simplifyEvent(evt);
         let target = null;
 
-        if (tapMode === 'native') {
+        if (intersect === 'native') {
             target = spl.target;
-        } else if (tapMode === 'touch') {
+        } else if (intersect === 'touch') {
             this.resolveSelectables();
 
             const {x, y} = spl;
@@ -210,7 +216,7 @@ export default class SelectionArea extends EventTarget {
         } else {
 
             if (this._stored.includes(target)) {
-                this.unSelect(target);
+                this.deselect(target);
             } else {
                 this.select(target);
             }
@@ -242,7 +248,7 @@ export default class SelectionArea extends EventTarget {
             css(this._area, 'display', 'block');
 
             // Apppend selection-area to the dom
-            selectAll(this.options.selectionAreaContainer, frame)[0].appendChild(this._clippingElement);
+            selectAll(this.options.container, frame)[0].appendChild(this._clippingElement);
 
             // Now after the threshold is reached resolve all selectables
             this.resolveSelectables();
@@ -321,7 +327,7 @@ export default class SelectionArea extends EventTarget {
 
     _onTapMove(evt: MouseEvent | TouchEvent) {
         const {x, y} = simplifyEvent(evt);
-        const {scrollSpeedDivider} = this.options;
+        const {speedDivider} = this.options.scrolling;
         const scon = this._targetContainer as Element;
         let scrollSpeed = this._scrollSpeed;
 
@@ -349,12 +355,12 @@ export default class SelectionArea extends EventTarget {
 
                 // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
                 if (scrollSpeed.y) {
-                    scon.scrollTop += ceil(scrollSpeed.y / scrollSpeedDivider);
+                    scon.scrollTop += ceil(scrollSpeed.y / speedDivider);
                     that._areaRect.y1 -= scon.scrollTop - scrollTop;
                 }
 
                 if (scrollSpeed.x) {
-                    scon.scrollLeft += ceil(scrollSpeed.x / scrollSpeedDivider);
+                    scon.scrollLeft += ceil(scrollSpeed.x / speedDivider);
                     that._areaRect.x1 -= scon.scrollLeft - scrollLeft;
                 }
 
@@ -388,13 +394,13 @@ export default class SelectionArea extends EventTarget {
     }
 
     _manualScroll(evt: any) {
-        const {manualScrollSpeed} = this.options;
+        const {manualSpeed} = this.options.scrolling;
 
         // Consistent scrolling speed on all browsers
         const deltaY = evt.deltaY ? (evt.deltaY > 0 ? 1 : -1) : 0;
         const deltaX = evt.deltaX ? (evt.deltaX > 0 ? 1 : -1) : 0;
-        this._scrollSpeed.y += deltaY * manualScrollSpeed;
-        this._scrollSpeed.x += deltaX * manualScrollSpeed;
+        this._scrollSpeed.y += deltaY * manualSpeed;
+        this._scrollSpeed.x += deltaX * manualSpeed;
         this._onTapMove(evt);
 
         // Prevent defaul scrolling behaviour, eg. page scrolling
@@ -452,14 +458,14 @@ export default class SelectionArea extends EventTarget {
     }
 
     _onTapStop(evt: MouseEvent | TouchEvent | null, silent: boolean) {
-        const {frame, singleClick} = this.options;
+        const {frame, singleTap} = this.options;
 
         // Remove event handlers
         off(frame, ['mousemove', 'touchmove'], this._delayedTapMove);
         off(frame, ['touchmove', 'mousemove'], this._onTapMove);
         off(frame, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
 
-        if (evt && this._singleClick && singleClick) {
+        if (evt && this._singleClick && singleTap.allow) {
             this._onSingleTap(evt);
         } else if (!this._singleClick && !silent) {
             this._updatedTouchingElements();
@@ -482,7 +488,7 @@ export default class SelectionArea extends EventTarget {
 
     _updatedTouchingElements() {
         const {_selected, _selectables, options, _areaDomRect} = this;
-        const {mode} = options;
+        const {intersect} = options;
 
         // Update
         const touched = [];
@@ -494,7 +500,7 @@ export default class SelectionArea extends EventTarget {
             const node = _selectables[i];
 
             // Check if area intersects element
-            if (intersects(_areaDomRect as DOMRect, node.getBoundingClientRect(), mode)) {
+            if (intersects(_areaDomRect as DOMRect, node.getBoundingClientRect(), intersect)) {
 
                 // Check if the element wasn't present in the last selection.
                 if (!_selected.includes(node)) {
@@ -639,7 +645,7 @@ export default class SelectionArea extends EventTarget {
      * @param quiet - If this should not trigger the move event
      * @returns boolean - true if the element was successfully removed
      */
-    unSelect(el: Element, quiet = false): boolean {
+    deselect(el: Element, quiet = false): boolean {
         if (this._selected.includes(el)) {
             this._changed.removed.push(el);
             removeElement(this._stored, el);

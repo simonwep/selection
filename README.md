@@ -70,30 +70,14 @@ import {SelectionArea} from "https://cdn.jsdelivr.net/npm/@simonwep/selection-js
 ```javascript
 const selection = new SelectionArea({
 
-    // Class for the selection-area-element
-    class: 'selection-area',
-
     // document object - if you want to use it within an embed document (or iframe)
     frame: document,
 
-    // px, how many pixels the point should move before starting the selection (combined distance).
-    // Or specifiy the threshold for each axis by passing an object like {x: <number>, y: <number>}.
-    startThreshold: 10,
+    // Class for the selection-area-element
+    class: 'selection-area',
 
-    // Enable / disable touch support
-    touch: true,
-
-    // On which point an element should be selected.
-    // Available modes are cover (cover the entire element), center (touch the center) or
-    // the default mode is touch (just touching it).
-    mode: 'touch',
-
-    // Behaviour on single-click
-    // Available modes are 'native' (element was mouse-event target) or 'touch' (element got touched)
-    tapMode: 'native',
-
-    // Enable single-click selection (Also disables range-selection via shift + ctrl)
-    singleClick: true,
+    // Query selector or dom node to set up container for selection-area-element
+    container: 'body',
 
     // Query selectors from elements which can be selected
     selectables: [],
@@ -104,8 +88,27 @@ const selection = new SelectionArea({
     // Query selectors for elements which will be used as boundaries for the selection
     boundaries: ['html'],
 
-    // Query selector or dom node to set up container for selection-area-element
-    container: 'body',
+    // px, how many pixels the point should move before starting the selection (combined distance).
+    // Or specifiy the threshold for each axis by passing an object like {x: <number>, y: <number>}.
+    startThreshold: 10,
+
+    // Enable / disable touch support
+    allowTouch: true,
+
+    // On which point an element should be selected.
+    // Available modes are cover (cover the entire element), center (touch the center) or
+    // the default mode is touch (just touching it).
+    intersect: 'touch',
+
+    // Configuration in case a selectable gets just clicked
+    singleTap: {
+
+        // Enable single-click selection (Also disables range-selection via shift + ctrl)
+        allow: true,
+
+        // 'native' (element was mouse-event target) or 'touch' (element visually touched)
+        intersect: 'native'
+    },
 
     // Scroll configuration
     scrolling: {
