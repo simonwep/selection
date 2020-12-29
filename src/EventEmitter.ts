@@ -1,4 +1,5 @@
 import {SelectionEvents} from './types';
+
 type UnknownFunction = (...args: unknown[]) => unknown;
 
 

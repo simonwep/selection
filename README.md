@@ -36,6 +36,8 @@
     </a>
 </p>
 
+> This README is always up-to-date with the **lastest version**. Check out [releases](https://github.com/Simonwep/selection/releases) if you want to check out the documentation for your version.
+
 ### Features
 * Tiny (only ~4kb)
 * Simple usage
@@ -56,7 +58,7 @@ Via yarn:
 $ yarn add @simonwep/selection-js
 ```
 
-Include via [jsdelivr.net](https://www.jsdelivr.com/)
+Include via [jsdelivr.net](https://www.jsdelivr.com/package/npm/@simonwep/selection-js):
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js"></script>
 ```
@@ -139,12 +141,12 @@ Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-li
 
 > You may want to checkout the [source](https://gist.github.com/Simonwep/b0c25725a4715c1c5aab501d6a782a71) used in the demo-page, it's easier than reading through the manual.
 
-| Event      | Description
+| Event          | Description |
 | -------------- | ----------- | 
-| `beforestart`  | The `mousedown` / `touchstart` got called inside a valid boundary. Return `false` to cancel selection immediatly.  |
-| `start`        | User started the selection, the `startThreshold` got fulfilled. | 
-| `move`         | The user is selecting elements / moving the mouse around. |
-| `stop`         | The user stopped the selection, called on `mouseup` and `touchend` / `touchcancel` after a selection. |
+| `beforestart` | The user tapped one of the areas within the specified boundaries. Return `false` to cancel selection immediatly.  |
+| `start` | Selection started, here you can decide if you want to keep your previously selected elements. | 
+| `move` | Selection is active, user is moving the pointer around. |
+| `stop` | Selection has stopped. |
 
 Check out [types.ts](https://github.com/Simonwep/selection/blob/v2/src/types.ts) to see what kind of data is passed to each event.
 

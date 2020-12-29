@@ -7,10 +7,10 @@ module.exports = {
     entry: './src/index.ts',
 
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'lib'),
         filename: 'selection.min.js',
         library: 'SelectionArea',
-        libraryExport: 'default',
+        libraryExport: 'SelectionArea',
         libraryTarget: 'umd'
     },
 
@@ -38,9 +38,7 @@ module.exports = {
     },
 
     devServer: {
-        dev: {
-            publicPath: '/dist'
-        },
+        dev: {publicPath: '/lib'},
         host: '0.0.0.0',
         port: 3003
     },
