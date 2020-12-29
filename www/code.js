@@ -18,9 +18,6 @@ for (const [sel, items] of boxes) {
 // Initialize selectionjs
 const selection = new SelectionArea({
 
-    // Class for the selection-area
-    class: 'selection',
-
     // All elements in this container can be selected
     selectables: ['.box-wrap > div'],
 

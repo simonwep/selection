@@ -24,8 +24,8 @@
     <a href="https://www.npmjs.com/package/@simonwep/selection-js"><img
         alt="downloads per week"
         src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
-    <img alt="gzip size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=gzip">
-    <img alt="brotli size" src="https://img.badgesize.io/https://raw.githubusercontent.com/Simonwep/selection-js/master/dist/selection.min.js?compression=brotli">
+    <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js?compression=gzip">
+    <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js?compression=brotli">
     <img alt="Current version"
         src="https://img.shields.io/github/tag/Simonwep/selection.svg?color=23AD62&label=version">
 </p>
@@ -58,12 +58,21 @@ $ yarn add @simonwep/selection-js
 
 Include via [jsdelivr.net](https://www.jsdelivr.com/)
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js/dist/selection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js"></script>
 ```
 
 Or using ES6 modules:
 ```js
-import {SelectionArea} from "https://cdn.jsdelivr.net/npm/@simonwep/selection-js/dist/selection.min.mjs"
+import {SelectionArea} from "https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.mjs"
+```
+
+Last but not least you'll need to add some basic styles to make your selection-area visible:
+```css
+.selection-area {
+    background: rgba(46, 115, 252, 0.11);
+    border: 2px solid rgba(98, 155, 255, 0.81);
+    border-radius: 0.1em;
+}
 ```
 
 ## Usage
