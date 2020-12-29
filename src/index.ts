@@ -1,6 +1,6 @@
 import {css, eventPath, intersects, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
 import {EventTarget} from './EventEmitter';
-import {AreaRect, ChangedElements, Coordinates, LooseCoordinates, SelectionOptions} from './types';
+import {AreaRect, ChangedElements, Coordinates, SelectionOptions} from './types';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
@@ -22,18 +22,26 @@ export default class Selection extends EventTarget {
         removed: [] // Removed elements since last selection
     };
 
-    // Create area element
-    private _area: HTMLElement;
-    private _areaDomRect?: DOMRect; // Caches the position of the selection-area
-    private _clippingElement: HTMLElement;
+    // Area element and clipping element
+    private readonly _area: HTMLElement;
+    private readonly _clippingElement: HTMLElement;
+
+    // Caches the position of the selection-area
+    private readonly _areaDomRect = new DOMRect();
+
+    // Target container (element) and boundary (cached)
     private _targetContainer?: Element;
     private _targetBoundary?: DOMRect;
-    private _areaRect?: AreaRect;
+
+    // Dynamically constructed area rect
+    private _areaRect: AreaRect = {y1: 0, x2: 0, y2: 0, x1: 0};
+
+    // If a single click is being performed
     private _singleClick?: boolean;
 
     // Is getting set on movement. Varied.
-    private _scrollAvailable: boolean = true;
-    private _scrollSpeed: LooseCoordinates = {x: null, y: null};
+    private _scrollAvailable = true;
+    private _scrollSpeed: Coordinates = {x: 0, y: 0};
 
     // Alternative way of creating an instance
     public static create(opt: Partial<SelectionOptions>): Selection {
@@ -95,16 +103,14 @@ export default class Selection extends EventTarget {
         this.enable();
     }
 
-    _bindStartEvents(type: 'on' | 'off') {
-        const {frame} = this.options;
-        const fn = type === 'on' ? on : off;
-        fn(frame, 'mousedown', this._onTapStart);
+    _bindStartEvents(activate = true) {
+        const {frame, disableTouch} = this.options;
+        const fn = activate ? on : off;
 
-        if (!this.options.disableTouch) {
-            fn(frame, 'touchstart', this._onTapStart, {
-                passive: false
-            });
-        }
+        fn(frame, 'mousedown', this._onTapStart);
+        !disableTouch && fn(frame, 'touchstart', this._onTapStart, {
+            passive: false
+        });
     }
 
     _onTapStart(evt: MouseEvent | TouchEvent, silent = false) {
@@ -209,7 +215,7 @@ export default class Selection extends EventTarget {
         } else {
 
             if (this._stored.includes(target)) {
-                this.removeFromSelection(target);
+                this.unSelect(target);
             } else {
                 this.select(target);
             }
@@ -220,13 +226,14 @@ export default class Selection extends EventTarget {
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent) {
-        const {x, y} = simplifyEvent(evt);
         const {startThreshold, frame} = this.options;
-        const {x1, y1} = this._areaRect as AreaRect; // Coordinates of first "tap"
+        const {x1, y1} = this._areaRect; // Coordinates of first "tap"
+        const {x, y} = simplifyEvent(evt);
 
         // Check pixel threshold
         const thresholdType = typeof startThreshold;
         if (
+
             // Single number
             (thresholdType === 'number' && abs((x + y) - (x1 + y1)) >= startThreshold) ||
 
@@ -321,26 +328,19 @@ export default class Selection extends EventTarget {
         const {x, y} = simplifyEvent(evt);
         const {scrollSpeedDivider} = this.options;
         const scon = this._targetContainer as Element;
-        let ss = this._scrollSpeed;
+        let scrollSpeed = this._scrollSpeed;
 
-        (this._areaRect as AreaRect).x2 = x;
-        (this._areaRect as AreaRect).y2 = y;
+        this._areaRect.x2 = x;
+        this._areaRect.y2 = y;
 
-        if (this._scrollAvailable && (ss.y !== null || ss.x !== null)) {
+        if (this._scrollAvailable && (!scrollSpeed.y || !scrollSpeed.x)) {
             const that = this;
 
             // Continous scrolling
             requestAnimationFrame(function scroll() {
 
                 // Make sure this ss is not outdated
-                ss = that._scrollSpeed;
-                const scrollY = ss.y !== null;
-                const scrollX = ss.x !== null;
-
-                // Scrolling is not anymore required
-                if (!scrollY && !scrollX) {
-                    return;
-                }
+                scrollSpeed = that._scrollSpeed;
 
                 /**
                  * If the value exeeds the scrollable area it will
@@ -349,14 +349,14 @@ export default class Selection extends EventTarget {
                 const {scrollTop, scrollLeft} = scon;
 
                 // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
-                if (scrollY && ss.y) {
-                    scon.scrollTop += ceil(ss.y / scrollSpeedDivider);
-                    (that._areaRect as AreaRect).y1 -= scon.scrollTop - scrollTop;
+                if (scrollSpeed.y) {
+                    scon.scrollTop += ceil(scrollSpeed.y / scrollSpeedDivider);
+                    that._areaRect.y1 -= scon.scrollTop - scrollTop;
                 }
 
-                if (scrollX && ss.x) {
-                    scon.scrollLeft += ceil(ss.x / scrollSpeedDivider);
-                    (that._areaRect as AreaRect).x1 -= scon.scrollLeft - scrollLeft;
+                if (scrollSpeed.x) {
+                    scon.scrollLeft += ceil(scrollSpeed.x / scrollSpeedDivider);
+                    that._areaRect.x1 -= scon.scrollLeft - scrollLeft;
                 }
 
                 /**
@@ -394,8 +394,8 @@ export default class Selection extends EventTarget {
         // Consistent scrolling speed on all browsers
         const deltaY = evt.deltaY ? (evt.deltaY > 0 ? 1 : -1) : 0;
         const deltaX = evt.deltaX ? (evt.deltaX > 0 ? 1 : -1) : 0;
-        (this._scrollSpeed.y as number) += deltaY * manualScrollSpeed;
-        (this._scrollSpeed.x as number) += deltaX * manualScrollSpeed;
+        this._scrollSpeed.y += deltaY * manualScrollSpeed;
+        this._scrollSpeed.x += deltaX * manualScrollSpeed;
         this._onTapMove(evt);
 
         // Prevent defaul scrolling behaviour, eg. page scrolling
@@ -404,36 +404,40 @@ export default class Selection extends EventTarget {
 
     _recalcAreaRect() {
         const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = this._targetContainer as Element;
-        const arect = this._areaRect as AreaRect;
+        const arect = this._areaRect;
         const brect = this._targetBoundary as DOMRect;
         const ss = this._scrollSpeed;
         let {x2, y2} = arect;
 
         if (x2 < brect.left) {
-            ss.x = scrollLeft ? -abs(brect.left - x2) : null;
+            ss.x = scrollLeft ? -abs(brect.left - x2) : 0;
             x2 = brect.left;
         } else if (x2 > brect.left + brect.width) {
-            ss.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x2) : null;
+            ss.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x2) : 0;
             x2 = brect.left + brect.width;
         } else {
-            ss.x = null;
+            ss.x = 0;
         }
 
         if (y2 < brect.top) {
-            ss.y = scrollTop ? -abs(brect.top - y2) : null;
+            ss.y = scrollTop ? -abs(brect.top - y2) : 0;
             y2 = brect.top;
         } else if (y2 > brect.top + brect.height) {
-            ss.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2) : null;
+            ss.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2) : 0;
             y2 = brect.top + brect.height;
         } else {
-            ss.y = null;
+            ss.y = 0;
         }
 
         const x3 = min(arect.x1, x2);
         const y3 = min(arect.y1, y2);
         const x4 = max(arect.x1, x2);
         const y4 = max(arect.y1, y2);
-        this._areaDomRect = new DOMRect(x3, y3, x4 - x3, y4 - y3);
+
+        this._areaDomRect.x = x3;
+        this._areaDomRect.y = y3;
+        this._areaDomRect.width = x4 - x3;
+        this._areaDomRect.height = y4 - y3;
     }
 
     _redrawArea() {
@@ -464,7 +468,7 @@ export default class Selection extends EventTarget {
         }
 
         // Reset scroll speed
-        this._scrollSpeed = {x: null, y: null};
+        this._scrollSpeed = {x: 0, y: 0};
 
         // Unbind mouse scrolling listener
         off(window, 'wheel', this._manualScroll);
@@ -567,17 +571,7 @@ export default class Selection extends EventTarget {
     clearSelection(store = true) {
         store && (this._stored = []);
         this._selected = [];
-        this._changed.added = [];
-        this._changed.removed = [];
-    }
-
-    /**
-     * Removes an particular element from the selection.
-     */
-    removeFromSelection(el: Element) {
-        this._changed.removed.push(el);
-        removeElement(this._stored, el);
-        removeElement(this._selected, el);
+        this._changed = {added: [], removed: []};
     }
 
     /**
@@ -603,13 +597,6 @@ export default class Selection extends EventTarget {
     }
 
     /**
-     * Disable the selection functinality.
-     */
-    disable() {
-        this._bindStartEvents('off');
-    }
-
-    /**
      * Unbinds all events and removes the area-element
      */
     destroy() {
@@ -620,16 +607,19 @@ export default class Selection extends EventTarget {
     /**
      * Disable the selection functinality.
      */
-    enable() {
-        this._bindStartEvents('on');
-    }
+    disable = this._bindStartEvents.bind(this, false);
 
     /**
-     * Manually select elements
+     * Disable the selection functinality.
+     */
+    enable = this._bindStartEvents;
+
+    /**
+     * Adds elements to the selection
      * @param query - CSS Query, can be an array of queries
      * @param quiet - If this should not trigger the move event
      */
-    select(query: SelectAllSelectors, quiet = false) {
+    select(query: SelectAllSelectors, quiet = false): Array<Element> {
         const {_changed, _selected, _stored, options} = this;
         const elements = selectAll(query, options.frame).filter(el =>
             !_selected.includes(el) &&
@@ -640,8 +630,27 @@ export default class Selection extends EventTarget {
         _selected.push(...elements);
         _changed.added.push(...elements);
 
-        // Fire event
-        this._emitMoveEvent(null);
+        !quiet && this._emitMoveEvent(null);
         return elements;
+    }
+
+    /**
+     * Removes an particular element from the selection.
+     * @param el - Element to remove.
+     * @param quiet - If this should not trigger the move event
+     * @returns boolean - true if the element was successfully removed
+     */
+    unSelect(el: Element, quiet = false): boolean {
+        if (this._selected.includes(el)) {
+            this._changed.removed.push(el);
+            removeElement(this._stored, el);
+            removeElement(this._selected, el);
+
+            // Fire event
+            !quiet && this._emitMoveEvent(null);
+            return true;
+        }
+
+        return false;
     }
 }
