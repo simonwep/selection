@@ -40,7 +40,7 @@ module.exports = {
     devServer: {
         dev: {publicPath: '/lib'},
         host: '0.0.0.0',
-        port: 3003
+        port: 3005
     },
 
     plugins: [

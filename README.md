@@ -27,7 +27,7 @@
     <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js?compression=gzip">
     <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js?compression=brotli">
     <img alt="Current version"
-        src="https://img.shields.io/github/tag/Simonwep/selection.svg?color=23AD62&label=version">
+        src="https://img.shields.io/github/v/tag/Simonwep/selection.svg?color=23AD62&label=version">
 </p>
 
 <p align="center">
