@@ -10,7 +10,7 @@ export default class SelectionArea extends EventTarget {
     public static version = VERSION;
 
     // Options
-    public options: SelectionOptions;
+    private readonly _options: SelectionOptions;
 
     // Selection store
     private _selection: SelectionStore = {
@@ -48,7 +48,7 @@ export default class SelectionArea extends EventTarget {
     constructor(opt: Partial<SelectionOptions>) {
         super();
 
-        this.options = Object.assign({
+        this._options = Object.assign({
             class: 'selection-area',
             document: window.document,
             intersect: 'touch',
@@ -81,13 +81,13 @@ export default class SelectionArea extends EventTarget {
             }
         }
 
-        const {document} = this.options;
+        const {document} = this._options;
         this._area = document.createElement('div');
         this._clippingElement = document.createElement('div');
         this._clippingElement.appendChild(this._area);
 
         // Add class to the area element
-        this._area.classList.add(this.options.class);
+        this._area.classList.add(this._options.class);
 
         // Apply basic styles to the area element
         css(this._area as HTMLElement, {
@@ -109,7 +109,7 @@ export default class SelectionArea extends EventTarget {
     }
 
     _bindStartEvents(activate = true): void {
-        const {document, allowTouch} = this.options;
+        const {document, allowTouch} = this._options;
         const fn = activate ? on : off;
 
         fn(document, 'mousedown', this._onTapStart);
@@ -120,13 +120,13 @@ export default class SelectionArea extends EventTarget {
 
     _onTapStart(evt: MouseEvent | TouchEvent, silent = false): void {
         const {x, y, target} = simplifyEvent(evt);
-        const {options} = this;
-        const {document} = this.options;
+        const {_options} = this;
+        const {document} = this._options;
         const targetBoundingClientRect = target.getBoundingClientRect();
 
         // Find start-areas and boundaries
-        const startAreas = selectAll(options.startareas, options.document);
-        const resolvedBoundaries = selectAll(options.boundaries, options.document);
+        const startAreas = selectAll(_options.startareas, _options.document);
+        const resolvedBoundaries = selectAll(_options.boundaries, _options.document);
 
         // Check in which container the user currently acts
         this._targetContainer = resolvedBoundaries.find(el =>
@@ -164,7 +164,7 @@ export default class SelectionArea extends EventTarget {
     }
 
     _onSingleTap(evt: MouseEvent | TouchEvent): void {
-        const {intersect} = this.options.singleTap;
+        const {intersect} = this._options.singleTap;
         const spl = simplifyEvent(evt);
         let target = null;
 
@@ -231,7 +231,7 @@ export default class SelectionArea extends EventTarget {
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {
-        const {startThreshold, document} = this.options;
+        const {startThreshold, document} = this._options;
         const {x1, y1} = this._areaRect; // Coordinates of first "tap"
         const {x, y} = simplifyEvent(evt);
 
@@ -252,7 +252,7 @@ export default class SelectionArea extends EventTarget {
             css(this._area, 'display', 'block');
 
             // Apppend selection-area to the dom
-            selectAll(this.options.container, document)[0].appendChild(this._clippingElement);
+            selectAll(this._options.container, document)[0].appendChild(this._clippingElement);
 
             // Now after the threshold is reached resolve all selectables
             this.resolveSelectables();
@@ -331,7 +331,7 @@ export default class SelectionArea extends EventTarget {
 
     _onTapMove(evt: MouseEvent | TouchEvent): void {
         const {x, y} = simplifyEvent(evt);
-        const {speedDivider} = this.options.scrolling;
+        const {speedDivider} = this._options.scrolling;
         const scon = this._targetContainer as Element;
         let scrollSpeed = this._scrollSpeed;
 
@@ -398,7 +398,7 @@ export default class SelectionArea extends EventTarget {
     }
 
     _manualScroll(evt: ScrollEvent): void {
-        const {manualSpeed} = this.options.scrolling;
+        const {manualSpeed} = this._options.scrolling;
 
         // Consistent scrolling speed on all browsers
         const deltaY = evt.deltaY ? (evt.deltaY > 0 ? 1 : -1) : 0;
@@ -461,7 +461,7 @@ export default class SelectionArea extends EventTarget {
     }
 
     _onTapStop(evt: MouseEvent | TouchEvent | null, silent: boolean): void {
-        const {document, singleTap} = this.options;
+        const {document, singleTap} = this._options;
 
         // Remove event handlers
         off(document, ['mousemove', 'touchmove'], this._delayedTapMove);
@@ -490,9 +490,9 @@ export default class SelectionArea extends EventTarget {
     }
 
     _updatedTouchingElements(): void {
-        const {_selectables, options, _selection, _areaDomRect} = this;
+        const {_selectables, _options, _selection, _areaDomRect} = this;
         const {stored, selected, touched} = _selection;
-        const {intersect, overlap} = options;
+        const {intersect, overlap} = _options;
 
         // Update
         const newlyTouched = [];
@@ -571,7 +571,7 @@ export default class SelectionArea extends EventTarget {
     resolveSelectables(): void {
 
         // Resolve selectors
-        this._selectables = selectAll(this.options.selectables, this.options.document);
+        this._selectables = selectAll(this._options.selectables, this._options.document);
     }
 
     /**
@@ -579,13 +579,13 @@ export default class SelectionArea extends EventTarget {
      * Allows multiple selections.
      */
     keepSelection(): void {
-        const {options, _selection} = this;
+        const {_options, _selection} = this;
         const {selected, changed, touched, stored} = _selection;
 
         // Newly added elements
         const addedElements = selected.filter(el => !stored.includes(el));
 
-        switch (options.overlap) {
+        switch (_options.overlap) {
             case 'drop': {
                 _selection.stored = addedElements.concat(
 
@@ -678,7 +678,7 @@ export default class SelectionArea extends EventTarget {
      */
     select(query: SelectAllSelectors, quiet = false): Array<Element> {
         const {changed, selected, stored} = this._selection;
-        const elements = selectAll(query, this.options.document).filter(el =>
+        const elements = selectAll(query, this._options.document).filter(el =>
             !selected.includes(el) &&
             !stored.includes(el)
         );
