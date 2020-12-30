@@ -38,6 +38,7 @@ export interface Coordinates {
 }
 
 export type TapMode = 'touch' | 'native';
+export type OverlapMode = 'keep' | 'drop' | 'invert';
 
 export interface Scrolling {
     speedDivider: number;
@@ -56,6 +57,7 @@ export interface SelectionOptions {
     singleTap: SingleTap;
     startThreshold: number | Coordinates;
     allowTouch: boolean;
+    overlap: OverlapMode;
 
     selectables: ReadonlyArray<string>;
     scrolling: Scrolling;

@@ -13,6 +13,7 @@ export default class SelectionArea extends EventTarget {
     public options: SelectionOptions;
 
     // Store for keepSelection
+    private _touched: Array<Element> = [];
     private _stored: Array<Element> = [];
     private _selectables: Array<Element> = [];
     private _selected: Array<Element> = []; // Currently touched elements
@@ -52,6 +53,7 @@ export default class SelectionArea extends EventTarget {
             startThreshold: 10,
             singleClick: true,
             allowTouch: true,
+            overlap: 'invert',
             selectables: [],
 
             singleTap: {
@@ -486,8 +488,8 @@ export default class SelectionArea extends EventTarget {
     }
 
     _updatedTouchingElements(): void {
-        const {_selected, _selectables, options, _areaDomRect} = this;
-        const {intersect} = options;
+        const {_selected, _selectables, _stored, _touched, options, _areaDomRect} = this;
+        const {intersect, overlap} = options;
 
         // Update
         const touched = [];
@@ -503,18 +505,38 @@ export default class SelectionArea extends EventTarget {
 
                 // Check if the element wasn't present in the last selection.
                 if (!_selected.includes(node)) {
-                    added.push(node);
+
+                    // Check if user wants to invert the selection for already selected elements
+                    if (overlap === 'invert' && _stored.includes(node)) {
+                        removed.push(node);
+                        continue;
+                    } else {
+                        added.push(node);
+                    }
+                } else if (_stored.includes(node) && !_touched.includes(node)) {
+                    _touched.push(node);
                 }
 
                 touched.push(node);
             }
         }
 
+        // Re-select elements which were previously stored
+        if (overlap === 'invert') {
+            added.push(..._stored.filter(v => !_selected.includes(v)));
+        }
+
         // Check which elements where removed since last selection
         for (let i = 0; i < _selected.length; i++) {
-            const el = _selected[i];
-            if (!touched.includes(el)) {
-                removed.push(el);
+            const node = _selected[i];
+
+            if (!touched.includes(node) && !(
+
+                // Check if user wants to keep previously selected elements, e.g.
+                // not make them part of the current selection as soon as they're touched.
+                overlap === 'keep' && _stored.includes(node)
+            )) {
+                removed.push(node);
             }
         }
 
@@ -562,10 +584,37 @@ export default class SelectionArea extends EventTarget {
      * Allows multiple selections.
      */
     keepSelection(): void {
-        const {_selected, _stored} = this;
-        _stored.push(
-            ..._selected.filter(el => !_stored.includes(el))
-        );
+        const {_selected, _changed, _touched, _stored, options} = this;
+
+        // Newly added elements
+        const addedElements = _selected.filter(el => !_stored.includes(el));
+
+        switch (options.overlap) {
+            case 'drop': {
+                this._stored = addedElements.concat(
+
+                    // Elements not touched
+                    _stored.filter(el => !_touched.includes(el))
+                );
+                break;
+            }
+            case 'invert': {
+                this._stored = addedElements.concat(
+
+                    // Elements not removed from selection
+                    _stored.filter(el => !_changed.removed.includes(el))
+                );
+                break;
+            }
+            case 'keep': {
+                this._stored = _stored.concat(
+
+                    // Newly added
+                    _selected.filter(el => !_stored.includes(el))
+                );
+                break;
+            }
+        }
     }
 
     /**

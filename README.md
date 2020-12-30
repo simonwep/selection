@@ -111,6 +111,12 @@ const selection = new SelectionArea({
     // the default mode is touch (just touching it).
     intersect: 'touch',
 
+    // Specifies what should be done if already selected elements get selected again.
+    //   invert: Invert selection for elements which were already selected
+    //   keep: Make stored elements (by keepSelectio()) 'fix'
+    //   drop: Remove stored elements after they have been touched
+    overlap: 'invert',
+
     // Configuration in case a selectable gets just clicked.
     singleTap: {
 
