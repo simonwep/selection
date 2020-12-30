@@ -154,9 +154,7 @@ Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-li
 | `move` | Selection is active, user is moving the pointer around. |
 | `stop` | Selection has stopped. |
 
-Check out [types.ts](https://github.com/Simonwep/selection/blob/v2/src/types.ts) to see what kind of data is passed to each event.
-
-> Example:
+### Example:
 
 ```js
 selection.on('beforestart', evt => {
@@ -185,6 +183,33 @@ selection.on('beforestart', evt => {
     console.log('stop', evt);
 });
 ```
+
+### Event data
+Each `evt` object will yield the following data:
+
+````ts
+{
+    // The original event, can be null in cases like select() or deselect()
+    event: MouseEvent | TouchEvent | null;
+    store: {
+
+        // All elements touched
+        touched: Array<Element>;
+
+        // Elements currently stored, can be retrived all the time using getSelection()
+        stored: Array<Element>;
+
+        // Elements selection during the current selection
+        selected: Array<Element>;
+
+        // Changes between the previous user-action and the current one
+        changed: {
+            added: Array<Element>; // Elements added to the selection
+            removed: Array<Element>; // Elements removed from the selection
+        };
+    };
+}
+````
 
 > You can find event-related examples [here](EXAMPLES.md).
 

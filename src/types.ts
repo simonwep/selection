@@ -1,5 +1,10 @@
 import {Intersection} from '@utils';
 
+export interface ChangedElements {
+    added: Array<Element>;
+    removed: Array<Element>;
+}
+
 export interface SelectionStore {
     touched: Array<Element>;
     stored: Array<Element>;
@@ -7,29 +12,16 @@ export interface SelectionStore {
     changed: ChangedElements;
 }
 
-export interface ChangedElements {
-    added: Array<Element>;
-    removed: Array<Element>;
-}
-
-export interface SelectionSimpleEvent {
+export interface SelectionEvent {
     event: MouseEvent | TouchEvent | null;
-}
-
-export interface SelectionStartEvent extends SelectionSimpleEvent {
-    stored: ReadonlyArray<Element>;
-}
-
-export interface SelectionMoveEvent extends SelectionSimpleEvent {
-    selected: ReadonlyArray<Element>;
-    changed: ChangedElements;
+    store: SelectionStore;
 }
 
 export interface SelectionEvents {
-    beforestart: (e: SelectionSimpleEvent) => boolean;
-    start: (e: SelectionStartEvent) => void;
-    move: (e: SelectionMoveEvent) => void
-    stop: (e: SelectionSimpleEvent) => void;
+    beforestart: (e: SelectionEvent) => boolean;
+    start: (e: SelectionEvent) => void;
+    move: (e: SelectionEvent) => void
+    stop: (e: SelectionEvent) => void;
 }
 
 export type AreaRect = {

@@ -1,6 +1,6 @@
 import {css, eventPath, intersects, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
 import {EventTarget} from './EventEmitter';
-import {AreaRect, Coordinates, ScrollEvent, SelectionOptions, SelectionStore} from './types';
+import {AreaRect, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
@@ -141,7 +141,7 @@ export default class SelectionArea extends EventTarget {
             return;
         }
 
-        if (!silent && this.emit('beforestart', {event: evt}) === false) {
+        if (!silent && this._emitEvent('beforestart', evt) === false) {
             return;
         }
 
@@ -201,7 +201,7 @@ export default class SelectionArea extends EventTarget {
             target = target.parentElement;
         }
 
-        this._emitStartEvent(evt);
+        this._emitEvent('start', evt);
         const {stored} = this._selection;
         if (evt.shiftKey && stored.length) {
             const reference = stored[stored.length - 1];
@@ -215,8 +215,8 @@ export default class SelectionArea extends EventTarget {
             ), target];
 
             this.select(rangeItems);
-            this._emitMoveEvent(evt);
-            this.emit('stop', {event: evt});
+            this._emitEvent('move', evt);
+            this._emitEvent('stop', evt);
         } else {
 
             if (stored.includes(target)) {
@@ -225,8 +225,8 @@ export default class SelectionArea extends EventTarget {
                 this.select(target);
             }
 
-            this._emitMoveEvent(evt);
-            this.emit('stop', {event: evt});
+            this._emitEvent('move', evt);
+            this._emitEvent('stop', evt);
         }
     }
 
@@ -322,7 +322,7 @@ export default class SelectionArea extends EventTarget {
             }
 
             // Trigger recalc and fire event
-            this._emitStartEvent(evt);
+            this._emitEvent('start', evt);
             this._onTapMove(evt);
         }
 
@@ -372,7 +372,7 @@ export default class SelectionArea extends EventTarget {
                  */
                 this._recalcAreaRect();
                 this._updatedTouchingElements();
-                this._emitMoveEvent(evt);
+                this._emitEvent('move', evt);
                 this._redrawArea();
 
                 // Keep scrolling even if the user stops to move his pointer
@@ -390,7 +390,7 @@ export default class SelectionArea extends EventTarget {
              */
             this._recalcAreaRect();
             this._updatedTouchingElements();
-            this._emitMoveEvent(evt);
+            this._emitEvent('move', evt);
             this._redrawArea();
         }
 
@@ -472,7 +472,7 @@ export default class SelectionArea extends EventTarget {
             this._onSingleTap(evt);
         } else if (!this._singleClick && !silent) {
             this._updatedTouchingElements();
-            this.emit('stop', {event: evt});
+            this._emitEvent('stop', evt);
         }
 
         // Reset scroll speed
@@ -548,18 +548,10 @@ export default class SelectionArea extends EventTarget {
         this._selection.changed = {added, removed};
     }
 
-    _emitMoveEvent(evt: MouseEvent | TouchEvent | null): void {
-        this.emit('move', {
+    _emitEvent(name: keyof SelectionEvents, evt: MouseEvent | TouchEvent | null): unknown {
+        return this.emit(name, {
             event: evt,
-            changed: this._selection.changed,
-            selected: this._selection.selected
-        });
-    }
-
-    _emitStartEvent(evt: MouseEvent | TouchEvent): void {
-        this.emit('start', {
-            event: evt,
-            stored: this._selection.stored
+            store: this._selection
         });
     }
 
@@ -695,7 +687,7 @@ export default class SelectionArea extends EventTarget {
         selected.push(...elements);
         changed.added.push(...elements);
 
-        !quiet && this._emitMoveEvent(null);
+        !quiet && this._emitEvent('move', null);
         return elements;
     }
 
@@ -713,7 +705,7 @@ export default class SelectionArea extends EventTarget {
             removeElement(_selection.selected, el);
 
             // Fire event
-            !quiet && this._emitMoveEvent(null);
+            !quiet && this._emitEvent('move', null);
             return true;
         }
 

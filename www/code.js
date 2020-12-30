@@ -23,13 +23,13 @@ const selection = new SelectionArea({
 
     // The container is also the boundary in this case
     boundaries: ['.box-wrap']
-}).on('start', ({stored, event}) => {
+}).on('start', ({store, event}) => {
 
     // Remove class if the user isn't pressing the control key or ⌘ key
     if (!event.ctrlKey && !event.metaKey) {
 
         // Unselect all elements
-        for (const el of stored) {
+        for (const el of store.stored) {
             el.classList.remove('selected');
         }
 
@@ -37,7 +37,7 @@ const selection = new SelectionArea({
         selection.clearSelection();
     }
 
-}).on('move', ({changed: {removed, added}}) => {
+}).on('move', ({store: {changed: {added, removed}}}) => {
 
     // Add a custom class to the elements that where selected.
     for (const el of added) {
