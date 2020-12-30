@@ -1,6 +1,6 @@
 {
     "name": "@simonwep/selection-js",
-    "version": "2.0.0-beta.1",
+    "version": "2.0.0-beta.2",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "main": "./lib/selection.min.js",
     "module": "./lib/selection.min.mjs",
@@ -11,7 +11,8 @@
         "build": "rollup -c rollup.config.js",
         "dev": "webpack serve",
         "lint": "eslint ./src/**/*.ts",
-        "lint:fix": "eslint ./src/**/*.ts --fix"
+        "lint:fix": "eslint ./src/**/*.ts --fix",
+        "ci:dryrun": "npm run lint:fix && npm run build"
     },
     "files": [
         "lib",
