@@ -1,6 +1,6 @@
 import {css, eventPath, intersects, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
 import {EventTarget} from './EventEmitter';
-import {AreaRect, ChangedElements, Coordinates, ScrollEvent, SelectionOptions} from './types';
+import {AreaRect, Coordinates, ScrollEvent, SelectionOptions, SelectionStore} from './types';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
@@ -12,14 +12,15 @@ export default class SelectionArea extends EventTarget {
     // Options
     public options: SelectionOptions;
 
-    // Store for keepSelection
-    private _touched: Array<Element> = [];
-    private _stored: Array<Element> = [];
-    private _selectables: Array<Element> = [];
-    private _selected: Array<Element> = []; // Currently touched elements
-    private _changed: ChangedElements = {
-        added: [], // Added elements since last selection
-        removed: [] // Removed elements since last selection
+    // Selection store
+    private _selection: SelectionStore = {
+        touched: [],
+        stored: [],
+        selected: [],
+        changed: {
+            added: [], // Added elements since last selection
+            removed: [] // Removed elements since last selection
+        }
     };
 
     // Area element and clipping element
@@ -32,6 +33,7 @@ export default class SelectionArea extends EventTarget {
     // Target container (element) and boundary (cached)
     private _targetContainer?: Element;
     private _targetBoundary?: DOMRect;
+    private _selectables: Array<Element> = [];
 
     // Dynamically constructed area rect
     private _areaRect: AreaRect = {y1: 0, x2: 0, y2: 0, x1: 0};
@@ -200,7 +202,7 @@ export default class SelectionArea extends EventTarget {
         }
 
         this._emitStartEvent(evt);
-        const stored = this._stored;
+        const {stored} = this._selection;
         if (evt.shiftKey && stored.length) {
             const reference = stored[stored.length - 1];
 
@@ -217,7 +219,7 @@ export default class SelectionArea extends EventTarget {
             this.emit('stop', {event: evt});
         } else {
 
-            if (this._stored.includes(target)) {
+            if (stored.includes(target)) {
                 this.deselect(target);
             } else {
                 this.select(target);
@@ -488,11 +490,12 @@ export default class SelectionArea extends EventTarget {
     }
 
     _updatedTouchingElements(): void {
-        const {_selected, _selectables, _stored, _touched, options, _areaDomRect} = this;
+        const {_selectables, options, _selection, _areaDomRect} = this;
+        const {stored, selected, touched} = _selection;
         const {intersect, overlap} = options;
 
         // Update
-        const touched = [];
+        const newlyTouched = [];
         const added = [];
         const removed = [];
 
@@ -504,59 +507,59 @@ export default class SelectionArea extends EventTarget {
             if (intersects(_areaDomRect as DOMRect, node.getBoundingClientRect(), intersect)) {
 
                 // Check if the element wasn't present in the last selection.
-                if (!_selected.includes(node)) {
+                if (!selected.includes(node)) {
 
                     // Check if user wants to invert the selection for already selected elements
-                    if (overlap === 'invert' && _stored.includes(node)) {
+                    if (overlap === 'invert' && stored.includes(node)) {
                         removed.push(node);
                         continue;
                     } else {
                         added.push(node);
                     }
-                } else if (_stored.includes(node) && !_touched.includes(node)) {
-                    _touched.push(node);
+                } else if (stored.includes(node) && !touched.includes(node)) {
+                    touched.push(node);
                 }
 
-                touched.push(node);
+                newlyTouched.push(node);
             }
         }
 
         // Re-select elements which were previously stored
         if (overlap === 'invert') {
-            added.push(..._stored.filter(v => !_selected.includes(v)));
+            added.push(...stored.filter(v => !selected.includes(v)));
         }
 
         // Check which elements where removed since last selection
-        for (let i = 0; i < _selected.length; i++) {
-            const node = _selected[i];
+        for (let i = 0; i < selected.length; i++) {
+            const node = selected[i];
 
-            if (!touched.includes(node) && !(
+            if (!newlyTouched.includes(node) && !(
 
                 // Check if user wants to keep previously selected elements, e.g.
                 // not make them part of the current selection as soon as they're touched.
-                overlap === 'keep' && _stored.includes(node)
+                overlap === 'keep' && stored.includes(node)
             )) {
                 removed.push(node);
             }
         }
 
         // Save
-        this._selected = touched;
-        this._changed = {added, removed};
+        this._selection.selected = newlyTouched;
+        this._selection.changed = {added, removed};
     }
 
     _emitMoveEvent(evt: MouseEvent | TouchEvent | null): void {
         this.emit('move', {
             event: evt,
-            changed: this._changed,
-            selected: this._selected
+            changed: this._selection.changed,
+            selected: this._selection.selected
         });
     }
 
     _emitStartEvent(evt: MouseEvent | TouchEvent): void {
         this.emit('start', {
             event: evt,
-            stored: this._stored
+            stored: this._selection.stored
         });
     }
 
@@ -584,33 +587,34 @@ export default class SelectionArea extends EventTarget {
      * Allows multiple selections.
      */
     keepSelection(): void {
-        const {_selected, _changed, _touched, _stored, options} = this;
+        const {options, _selection} = this;
+        const {selected, changed, touched, stored} = _selection;
 
         // Newly added elements
-        const addedElements = _selected.filter(el => !_stored.includes(el));
+        const addedElements = selected.filter(el => !stored.includes(el));
 
         switch (options.overlap) {
             case 'drop': {
-                this._stored = addedElements.concat(
+                _selection.stored = addedElements.concat(
 
                     // Elements not touched
-                    _stored.filter(el => !_touched.includes(el))
+                    stored.filter(el => !touched.includes(el))
                 );
                 break;
             }
             case 'invert': {
-                this._stored = addedElements.concat(
+                _selection.stored = addedElements.concat(
 
                     // Elements not removed from selection
-                    _stored.filter(el => !_changed.removed.includes(el))
+                    stored.filter(el => !changed.removed.includes(el))
                 );
                 break;
             }
             case 'keep': {
-                this._stored = _stored.concat(
+                _selection.stored = stored.concat(
 
                     // Newly added
-                    _selected.filter(el => !_stored.includes(el))
+                    selected.filter(el => !stored.includes(el))
                 );
                 break;
             }
@@ -622,16 +626,22 @@ export default class SelectionArea extends EventTarget {
      * @param store If the store should also get cleared
      */
     clearSelection(store = true): void {
-        store && (this._stored = []);
-        this._selected = [];
-        this._changed = {added: [], removed: []};
+        this._selection = {
+            stored: store ? [] : this._selection.stored,
+            selected: [],
+            touched: [],
+            changed: {
+                added: [],
+                removed: []
+            }
+        };
     }
 
     /**
      * @returns {Array} Selected elements
      */
     getSelection(): Array<Element> {
-        return this._stored;
+        return this._selection.stored;
     }
 
     /**
@@ -675,15 +685,15 @@ export default class SelectionArea extends EventTarget {
      * @param quiet - If this should not trigger the move event
      */
     select(query: SelectAllSelectors, quiet = false): Array<Element> {
-        const {_changed, _selected, _stored, options} = this;
-        const elements = selectAll(query, options.document).filter(el =>
-            !_selected.includes(el) &&
-            !_stored.includes(el)
+        const {changed, selected, stored} = this._selection;
+        const elements = selectAll(query, this.options.document).filter(el =>
+            !selected.includes(el) &&
+            !stored.includes(el)
         );
 
         // Update stores
-        _selected.push(...elements);
-        _changed.added.push(...elements);
+        selected.push(...elements);
+        changed.added.push(...elements);
 
         !quiet && this._emitMoveEvent(null);
         return elements;
@@ -696,10 +706,11 @@ export default class SelectionArea extends EventTarget {
      * @returns boolean - true if the element was successfully removed
      */
     deselect(el: Element, quiet = false): boolean {
-        if (this._selected.includes(el)) {
-            this._changed.removed.push(el);
-            removeElement(this._stored, el);
-            removeElement(this._selected, el);
+        const {_selection} = this;
+        if (_selection.selected.includes(el)) {
+            _selection.changed.removed.push(el);
+            removeElement(_selection.stored, el);
+            removeElement(_selection.selected, el);
 
             // Fire event
             !quiet && this._emitMoveEvent(null);

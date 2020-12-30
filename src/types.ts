@@ -1,5 +1,12 @@
 import {Intersection} from '@utils';
 
+export interface SelectionStore {
+    touched: Array<Element>;
+    stored: Array<Element>;
+    selected: Array<Element>;
+    changed: ChangedElements;
+}
+
 export interface ChangedElements {
     added: Array<Element>;
     removed: Array<Element>;
