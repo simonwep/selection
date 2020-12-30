@@ -3,7 +3,7 @@ import ts from '@wessberg/rollup-plugin-ts';
 import replace from '@rollup/plugin-replace';
 import pkg from './package.json';
 
-const banner = `/* Selectionjs ${pkg.version} MIT | https://github.com/Simonwep/selection */`;
+const banner = `/*! Selectionjs ${pkg.version} MIT | https://github.com/Simonwep/selection */`;
 
 export default {
     input: 'src/index.ts',
