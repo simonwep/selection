@@ -331,20 +331,16 @@ export default class SelectionArea extends EventTarget {
 
     _onTapMove(evt: MouseEvent | TouchEvent): void {
         const {x, y} = simplifyEvent(evt);
-        const {speedDivider} = this._options.scrolling;
+        const {_scrollSpeed, _options} = this;
+        const {speedDivider} = _options.scrolling;
         const scon = this._targetContainer as Element;
-        let scrollSpeed = this._scrollSpeed;
 
         this._areaRect.x2 = x;
         this._areaRect.y2 = y;
 
-        if (this._scrollAvailable && scrollSpeed.y && scrollSpeed.x) {
+        if (this._scrollAvailable && (_scrollSpeed.y || _scrollSpeed.x)) {
             const scroll = () => {
-
-                // Make sure this ss is not outdated
-                scrollSpeed = this._scrollSpeed;
-
-                if (!scrollSpeed.x && !scrollSpeed.y) {
+                if (!_scrollSpeed.x && !_scrollSpeed.y) {
                     return;
                 }
 
@@ -355,13 +351,13 @@ export default class SelectionArea extends EventTarget {
                 const {scrollTop, scrollLeft} = scon;
 
                 // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
-                if (scrollSpeed.y) {
-                    scon.scrollTop += ceil(scrollSpeed.y / speedDivider);
+                if (_scrollSpeed.y) {
+                    scon.scrollTop += ceil(_scrollSpeed.y / speedDivider);
                     this._areaRect.y1 -= scon.scrollTop - scrollTop;
                 }
 
-                if (scrollSpeed.x) {
-                    scon.scrollLeft += ceil(scrollSpeed.x / speedDivider);
+                if (_scrollSpeed.x) {
+                    scon.scrollLeft += ceil(_scrollSpeed.x / speedDivider);
                     this._areaRect.x1 -= scon.scrollLeft - scrollLeft;
                 }
 
@@ -413,35 +409,34 @@ export default class SelectionArea extends EventTarget {
 
     _recalcAreaRect(): void {
         const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = this._targetContainer as Element;
-        const arect = this._areaRect;
+        const {_scrollSpeed, _areaRect} = this;
         const brect = this._targetBoundary as DOMRect;
-        const ss = this._scrollSpeed;
-        let {x2, y2} = arect;
+        let {x1, y1, x2, y2} = _areaRect;
 
         if (x2 < brect.left) {
-            ss.x = scrollLeft ? -abs(brect.left - x2) : 0;
+            _scrollSpeed.x = scrollLeft ? -abs(brect.left - x2) : 0;
             x2 = brect.left;
         } else if (x2 > brect.left + brect.width) {
-            ss.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x2) : 0;
+            _scrollSpeed.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x2) : 0;
             x2 = brect.left + brect.width;
         } else {
-            ss.x = 0;
+            _scrollSpeed.x = 0;
         }
 
         if (y2 < brect.top) {
-            ss.y = scrollTop ? -abs(brect.top - y2) : 0;
+            _scrollSpeed.y = scrollTop ? -abs(brect.top - y2) : 0;
             y2 = brect.top;
         } else if (y2 > brect.top + brect.height) {
-            ss.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2) : 0;
+            _scrollSpeed.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2) : 0;
             y2 = brect.top + brect.height;
         } else {
-            ss.y = 0;
+            _scrollSpeed.y = 0;
         }
 
-        const x3 = min(arect.x1, x2);
-        const y3 = min(arect.y1, y2);
-        const x4 = max(arect.x1, x2);
-        const y4 = max(arect.y1, y2);
+        const x3 = min(x1, x2);
+        const y3 = min(y1, y2);
+        const x4 = max(x1, x2);
+        const y4 = max(y1, y2);
 
         this._areaDomRect.x = x3;
         this._areaDomRect.y = y3;
