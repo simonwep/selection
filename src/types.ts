@@ -24,7 +24,7 @@ export interface SelectionEvents {
     stop: (e: SelectionEvent) => void;
 }
 
-export type AreaRect = {
+export type AreaLocation = {
     x1: number;
     y1: number;
     x2: number;

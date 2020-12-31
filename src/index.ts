@@ -1,6 +1,6 @@
 import {css, eventPath, intersects, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
 import {EventTarget} from './EventEmitter';
-import {AreaRect, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
+import {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, round, ceil} = Math;
@@ -27,16 +27,17 @@ export default class SelectionArea extends EventTarget {
     private readonly _area: HTMLElement;
     private readonly _clippingElement: HTMLElement;
 
-    // Caches the position of the selection-area
-    private readonly _areaDomRect = new DOMRect();
 
     // Target container (element) and boundary (cached)
-    private _targetContainer?: Element;
-    private _targetBoundary?: DOMRect;
+    private _targetElement?: Element;
+    private _targetRect?: DOMRect;
     private _selectables: Array<Element> = [];
 
+    // Caches the position of the selection-area
+    private readonly _areaRect = new DOMRect();
+
     // Dynamically constructed area rect
-    private _areaRect: AreaRect = {y1: 0, x2: 0, y2: 0, x1: 0};
+    private _areaLocation: AreaLocation = {y1: 0, x2: 0, y2: 0, x1: 0};
 
     // If a single click is being performed
     private _singleClick?: boolean;
@@ -129,13 +130,13 @@ export default class SelectionArea extends EventTarget {
         const resolvedBoundaries = selectAll(_options.boundaries, _options.document);
 
         // Check in which container the user currently acts
-        this._targetContainer = resolvedBoundaries.find(el =>
+        this._targetElement = resolvedBoundaries.find(el =>
             intersects(el.getBoundingClientRect(), targetBoundingClientRect)
         );
 
         // Check if area starts in one of the start areas / boundaries
         const evtpath = eventPath(evt);
-        if (!this._targetContainer ||
+        if (!this._targetElement ||
             !startAreas.find(el => evtpath.includes(el)) ||
             !resolvedBoundaries.find(el => evtpath.includes(el))) {
             return;
@@ -146,7 +147,7 @@ export default class SelectionArea extends EventTarget {
         }
 
         // Area rect
-        this._areaRect = {x1: x, y1: y, x2: 0, y2: 0};
+        this._areaLocation = {x1: x, y1: y, x2: 0, y2: 0};
 
         // To detect single-click
         this._singleClick = true;
@@ -231,8 +232,8 @@ export default class SelectionArea extends EventTarget {
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {
-        const {startThreshold, document} = this._options;
-        const {x1, y1} = this._areaRect; // Coordinates of first "tap"
+        const {startThreshold, container, document} = this._options;
+        const {x1, y1} = this._areaLocation; // Coordinates of first "tap"
         const {x, y} = simplifyEvent(evt);
 
         // Check pixel threshold
@@ -252,7 +253,7 @@ export default class SelectionArea extends EventTarget {
             css(this._area, 'display', 'block');
 
             // Apppend selection-area to the dom
-            selectAll(this._options.container, document)[0].appendChild(this._clippingElement);
+            selectAll(container, document)[0].appendChild(this._clippingElement);
 
             // Now after the threshold is reached resolve all selectables
             this.resolveSelectables();
@@ -261,17 +262,17 @@ export default class SelectionArea extends EventTarget {
             this._singleClick = false;
 
             // Just saving the boundaries of this container for later
-            const tb = this._targetBoundary = (this._targetContainer as HTMLElement).getBoundingClientRect();
+            const tb = this._targetRect = (this._targetElement as HTMLElement).getBoundingClientRect();
 
             // Find container and check if it's scrollable
-            if (round((this._targetContainer as HTMLElement).scrollHeight) !== round(tb.height) ||
-                round((this._targetContainer as HTMLElement).scrollWidth) !== round(tb.width)) {
+            if (round((this._targetElement as HTMLElement).scrollHeight) !== round(tb.height) ||
+                round((this._targetElement as HTMLElement).scrollWidth) !== round(tb.width)) {
 
                 // Indenticates if the user is currently in a scrollable area
                 this._scrollAvailable = true;
 
                 // Detect mouse scrolling
-                on(window, 'wheel', this._manualScroll, {passive: false});
+                on(document, 'wheel', this._manualScroll, {passive: false});
 
                 /**
                  * The selection-area will also cover other element which are
@@ -279,7 +280,7 @@ export default class SelectionArea extends EventTarget {
                  * which are in the current scrollable element. Later these are
                  * the only selectables instead of all.
                  */
-                this._selectables = this._selectables.filter(s => (this._targetContainer as HTMLElement).contains(s));
+                this._selectables = this._selectables.filter(s => (this._targetElement as HTMLElement).contains(s));
 
                 /**
                  * To clip the area, the selection area has a parent
@@ -333,10 +334,10 @@ export default class SelectionArea extends EventTarget {
         const {x, y} = simplifyEvent(evt);
         const {_scrollSpeed, _options} = this;
         const {speedDivider} = _options.scrolling;
-        const scon = this._targetContainer as Element;
+        const scon = this._targetElement as Element;
 
-        this._areaRect.x2 = x;
-        this._areaRect.y2 = y;
+        this._areaLocation.x2 = x;
+        this._areaLocation.y2 = y;
 
         if (this._scrollAvailable && (_scrollSpeed.y || _scrollSpeed.x)) {
             const scroll = () => {
@@ -353,12 +354,12 @@ export default class SelectionArea extends EventTarget {
                 // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
                 if (_scrollSpeed.y) {
                     scon.scrollTop += ceil(_scrollSpeed.y / speedDivider);
-                    this._areaRect.y1 -= scon.scrollTop - scrollTop;
+                    this._areaLocation.y1 -= scon.scrollTop - scrollTop;
                 }
 
                 if (_scrollSpeed.x) {
                     scon.scrollLeft += ceil(_scrollSpeed.x / speedDivider);
-                    this._areaRect.x1 -= scon.scrollLeft - scrollLeft;
+                    this._areaLocation.x1 -= scon.scrollLeft - scrollLeft;
                 }
 
                 /**
@@ -408,10 +409,10 @@ export default class SelectionArea extends EventTarget {
     }
 
     _recalcAreaRect(): void {
-        const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = this._targetContainer as Element;
-        const {_scrollSpeed, _areaRect} = this;
-        const brect = this._targetBoundary as DOMRect;
-        let {x1, y1, x2, y2} = _areaRect;
+        const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = this._targetElement as Element;
+        const {_scrollSpeed, _areaLocation} = this;
+        const brect = this._targetRect as DOMRect;
+        let {x1, y1, x2, y2} = _areaLocation;
 
         if (x2 < brect.left) {
             _scrollSpeed.x = scrollLeft ? -abs(brect.left - x2) : 0;
@@ -438,14 +439,14 @@ export default class SelectionArea extends EventTarget {
         const x4 = max(x1, x2);
         const y4 = max(y1, y2);
 
-        this._areaDomRect.x = x3;
-        this._areaDomRect.y = y3;
-        this._areaDomRect.width = x4 - x3;
-        this._areaDomRect.height = y4 - y3;
+        this._areaRect.x = x3;
+        this._areaRect.y = y3;
+        this._areaRect.width = x4 - x3;
+        this._areaRect.height = y4 - y3;
     }
 
     _redrawArea(): void {
-        const {x, y, width, height} = this._areaDomRect as DOMRect;
+        const {x, y, width, height} = this._areaRect as DOMRect;
         const areaStyle = this._area.style;
 
         // Using transform will make the area's borders look blurry
@@ -485,7 +486,7 @@ export default class SelectionArea extends EventTarget {
     }
 
     _updatedTouchingElements(): void {
-        const {_selectables, _options, _selection, _areaDomRect} = this;
+        const {_selectables, _options, _selection, _areaRect} = this;
         const {stored, selected, touched} = _selection;
         const {intersect, overlap} = _options;
 
@@ -499,7 +500,7 @@ export default class SelectionArea extends EventTarget {
             const node = _selectables[i];
 
             // Check if area intersects element
-            if (intersects(_areaDomRect as DOMRect, node.getBoundingClientRect(), intersect)) {
+            if (intersects(_areaRect as DOMRect, node.getBoundingClientRect(), intersect)) {
 
                 // Check if the element wasn't present in the last selection.
                 if (!selected.includes(node)) {
