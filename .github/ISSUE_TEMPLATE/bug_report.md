@@ -10,18 +10,21 @@ assignees: ''
 <!-- Before creating an issue please make sure you are using the latest version of Selection.js -->
 <!-- DO NOT DELETE THIS TEMPLATE - OTHERWISE YOUR ISSUE WILL GET CLOSED IMMEDIATELY -->
 
-#### Do you want to request a **feature** or report a **bug**?
+#### What is the problem?
+<!-- Describe briefly what is happening -->
 
 #### What is the current behavior?
+<-- What happens in your situation -->
 
-#### If the current behavior is a bug, please provide the steps to reproduce and create a [JSFiddle](https://jsfiddle.net/Simonwep/40sLhjqp/ ).
-<!-- Use this fiddle as template: https://jsfiddle.net/Simonwep/40sLhjqp/ -->
+#### Please provide the steps to reproduce and create a [JSFiddle](https://jsfiddle.net/Simonwep/wez9o7cu/).
+<!-- Use this fiddle as template: https://jsfiddle.net/Simonwep/wez9o7cu/ -->
 
 #### What is the expected behavior?
+<!-- What do you expect to happen? -->
 
 #### Your environment:
 ```
-Selection-version:
-Browser-version:  
-Operating-system:  
+Version (SelectionArea.version):
+Browser:  
+OS:  
 ```
