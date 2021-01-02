@@ -265,12 +265,11 @@ export default class SelectionArea extends EventTarget {
             const tb = this._targetRect = (this._targetElement as HTMLElement).getBoundingClientRect();
 
             // Find container and check if it's scrollable
-            if (round((this._targetElement as HTMLElement).scrollHeight) !== round(tb.height) ||
-                round((this._targetElement as HTMLElement).scrollWidth) !== round(tb.width)) {
+            this._scrollAvailable =
+                (this._targetElement as HTMLElement).scrollHeight !== (this._targetElement as HTMLElement).clientHeight ||
+                (this._targetElement as HTMLElement).scrollWidth !== (this._targetElement as HTMLElement).clientWidth;
 
-                // Indenticates if the user is currently in a scrollable area
-                this._scrollAvailable = true;
-
+            if (this._scrollAvailable) {
                 // Detect mouse scrolling
                 on(document, 'wheel', this._manualScroll, {passive: false});
 
@@ -304,8 +303,6 @@ export default class SelectionArea extends EventTarget {
                     marginLeft: -tb.left
                 });
             } else {
-                this._scrollAvailable = false;
-
                 /**
                  * Reset margin and clipping element dimensions.
                  */
