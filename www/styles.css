@@ -96,7 +96,7 @@ main section.demo .info {
     color: var(--c-text);
 }
 
-main section.demo .box-wrap {
+main .boxes {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -107,12 +107,12 @@ main section.demo .box-wrap {
     padding: 1em 0;
 }
 
-main section.demo .box-wrap.green,
-main section.demo .box-wrap.blue {
+main .boxes.green,
+main .boxes.blue {
     margin-bottom: 3em;
 }
 
-main section.demo .box-wrap.red {
+main .boxes.red {
     display: grid;
     grid-template-columns: repeat(28, 1fr);
     grid-gap: 0.4em;
@@ -124,11 +124,11 @@ main section.demo .box-wrap.red {
     margin-bottom: 3em;
 }
 
-main section.demo .box-wrap.red > div {
+main .boxes.red > div {
     margin: 0;
 }
 
-main .box-wrap::after {
+main .boxes::after {
     display: block;
     content: '';
     clear: both;
@@ -167,6 +167,7 @@ main .boxes.red div.selected {
 
 main section.demo .info p {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
 }
@@ -203,11 +204,6 @@ main section.demo .info p {
 
 @media only screen and (max-width: 1000px) {
 
-    #fork-me {
-        height: 6em;
-        width: 6em;
-    }
-
     header {
         padding: 1em 0 0 0;
     }
@@ -224,8 +220,12 @@ main section.demo .info p {
         margin: 0 0.5em;
     }
 
+    main .boxes.green {
+        display: none !important;
+    }
+
     main .boxes div {
-        height: 1.75em;
-        width: 1.75em;
+        height: 2em;
+        width: 2em;
     }
 }

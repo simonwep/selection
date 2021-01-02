@@ -1,8 +1,8 @@
 // Generate dom elements
 const boxes = [
-    ['.box-wrap.boxes.red', 252],
-    ['.box-wrap.boxes.blue', 42],
-    ['.box-wrap.boxes.green', 42]
+    ['.boxes.red', 252],
+    ['.boxes.blue', 42],
+    ['.boxes.green', 42]
 ];
 
 for (const [sel, items] of boxes) {
@@ -19,10 +19,10 @@ for (const [sel, items] of boxes) {
 const selection = new SelectionArea({
 
     // All elements in this container can be selected
-    selectables: ['.box-wrap > div'],
+    selectables: ['.boxes > div'],
 
     // The container is also the boundary in this case
-    boundaries: ['.box-wrap']
+    boundaries: ['.boxes']
 }).on('start', ({store, event}) => {
 
     // Remove class if the user isn't pressing the control key or ⌘ key
