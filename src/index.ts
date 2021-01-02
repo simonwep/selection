@@ -91,14 +91,14 @@ export default class SelectionArea extends EventTarget {
         this._area.classList.add(this._options.class);
 
         // Apply basic styles to the area element
-        css(this._area as HTMLElement, {
+        css(this._area, {
             willChange: 'top, left, bottom, right, width, height',
             top: 0,
             left: 0,
             position: 'fixed'
         });
 
-        css(this._clippingElement as HTMLElement, {
+        css(this._clippingElement, {
             overflow: 'hidden',
             position: 'fixed',
             transform: 'translate3d(0, 0, 0)', // https://stackoverflow.com/a/38268846
@@ -247,7 +247,7 @@ export default class SelectionArea extends EventTarget {
             (thresholdType === 'number' && abs((x + y) - (x1 + y1)) >= startThreshold) ||
 
             // Different x and y threshold
-            (thresholdType === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x || abs(y - y1) >= (startThreshold as Coordinates).y)
+                (thresholdType === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x || abs(y - y1) >= (startThreshold as Coordinates).y)
         ) {
             off(document, ['mousemove', 'touchmove'], this._delayedTapMove, {passive: false});
             on(document, ['mousemove', 'touchmove'], this._onTapMove, {passive: false});
@@ -265,12 +265,12 @@ export default class SelectionArea extends EventTarget {
             this._singleClick = false;
 
             // Just saving the boundaries of this container for later
-            this._targetRect = (this._targetElement as HTMLElement).getBoundingClientRect();
+            this._targetRect = this._targetElement!.getBoundingClientRect();
 
             // Find container and check if it's scrollable
             this._scrollAvailable =
-                (this._targetElement as HTMLElement).scrollHeight !== (this._targetElement as HTMLElement).clientHeight ||
-                (this._targetElement as HTMLElement).scrollWidth !== (this._targetElement as HTMLElement).clientWidth;
+                this._targetElement!.scrollHeight !== this._targetElement!.clientHeight ||
+                this._targetElement!.scrollWidth !== this._targetElement!.clientWidth;
 
             if (this._scrollAvailable) {
 
@@ -283,7 +283,7 @@ export default class SelectionArea extends EventTarget {
                  * which are in the current scrollable element. Later these are
                  * the only selectables instead of all.
                  */
-                this._selectables = this._selectables.filter(s => (this._targetElement as HTMLElement).contains(s));
+                this._selectables = this._selectables.filter(s => (this._targetElement as Element).contains(s));
             }
 
             // Trigger recalc and fire event
@@ -296,7 +296,8 @@ export default class SelectionArea extends EventTarget {
     }
 
     _prepareSelectionArea(): void {
-        const tr = this._targetRect = (this._targetElement as HTMLElement).getBoundingClientRect();
+        const {_clippingElement, _targetElement, _area} = this;
+        const tr = this._targetRect = _targetElement!.getBoundingClientRect();
 
         if (this._scrollAvailable) {
 
@@ -305,7 +306,7 @@ export default class SelectionArea extends EventTarget {
              * which has exact the same dimensions as the scrollable elemeent.
              * Now if the area exeeds these boundaries it will be cropped.
              */
-            css(this._clippingElement, {
+            css(_clippingElement, {
                 top: tr.top,
                 left: tr.left,
                 width: tr.width,
@@ -317,7 +318,7 @@ export default class SelectionArea extends EventTarget {
              * but when this is moved or transformed we need to correct
              * the positions via a negative margin.
              */
-            css(this._area, {
+            css(_area, {
                 marginTop: -tr.top,
                 marginLeft: -tr.left
             });
@@ -326,14 +327,14 @@ export default class SelectionArea extends EventTarget {
             /**
              * Reset margin and clipping element dimensions.
              */
-            css(this._clippingElement, {
+            css(_clippingElement, {
                 top: 0,
                 left: 0,
                 width: '100%',
                 height: '100%'
             });
 
-            css(this._area, {
+            css(_area, {
                 marginTop: 0,
                 marginLeft: 0
             });
@@ -342,12 +343,12 @@ export default class SelectionArea extends EventTarget {
 
     _onTapMove(evt: MouseEvent | TouchEvent): void {
         const {x, y} = simplifyEvent(evt);
-        const {_scrollSpeed, _options} = this;
+        const {_scrollSpeed, _areaLocation, _options} = this;
         const {speedDivider} = _options.scrolling;
         const scon = this._targetElement as Element;
 
-        this._areaLocation.x2 = x;
-        this._areaLocation.y2 = y;
+        _areaLocation.x2 = x;
+        _areaLocation.y2 = y;
 
         if (this._scrollAvailable && (_scrollSpeed.y || _scrollSpeed.x)) {
             const scroll = () => {
@@ -364,12 +365,12 @@ export default class SelectionArea extends EventTarget {
                 // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
                 if (_scrollSpeed.y) {
                     scon.scrollTop += ceil(_scrollSpeed.y / speedDivider);
-                    this._areaLocation.y1 -= scon.scrollTop - scrollTop;
+                    _areaLocation.y1 -= scon.scrollTop - scrollTop;
                 }
 
                 if (_scrollSpeed.x) {
                     scon.scrollLeft += ceil(_scrollSpeed.x / speedDivider);
-                    this._areaLocation.x1 -= scon.scrollLeft - scrollLeft;
+                    _areaLocation.x1 -= scon.scrollLeft - scrollLeft;
                 }
 
                 /**
@@ -377,10 +378,10 @@ export default class SelectionArea extends EventTarget {
                  * We changed the dimensions of the area element -> re-calc selected elements
                  * The selected elements array has been changed -> fire event
                  */
-                this._recalcAreaRect();
-                this._updatedTouchingElements();
+                this._recalculateSelectionAreaRect();
+                this._updateElementSelection();
                 this._emitEvent('move', evt);
-                this._redrawArea();
+                this._redrawSelectionArea();
 
                 // Keep scrolling even if the user stops to move his pointer
                 requestAnimationFrame(scroll);
@@ -395,10 +396,10 @@ export default class SelectionArea extends EventTarget {
              * If scrolling is active this area is getting re-dragwed by the
              * anonymized scroll function.
              */
-            this._recalcAreaRect();
-            this._updatedTouchingElements();
+            this._recalculateSelectionAreaRect();
+            this._updateElementSelection();
             this._emitEvent('move', evt);
-            this._redrawArea();
+            this._redrawSelectionArea();
         }
 
         evt.preventDefault(); // Prevent swipe-down refresh
@@ -418,10 +419,10 @@ export default class SelectionArea extends EventTarget {
 
         // The area needs to be resetted as the target-container has changed in its position
         this._prepareSelectionArea();
-        this._recalcAreaRect();
-        this._updatedTouchingElements();
+        this._recalculateSelectionAreaRect();
+        this._updateElementSelection();
         this._emitEvent('move', null);
-        this._redrawArea();
+        this._redrawSelectionArea();
     }
 
     _manualScroll(evt: ScrollEvent): void {
@@ -438,8 +439,8 @@ export default class SelectionArea extends EventTarget {
         evt.preventDefault();
     }
 
-    _recalcAreaRect(): void {
-        const {_scrollSpeed, _areaLocation, _targetElement, _targetRect} = this;
+    _recalculateSelectionAreaRect(): void {
+        const {_scrollSpeed, _areaLocation, _areaRect, _targetElement, _targetRect} = this;
         const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = _targetElement as Element;
         const brect = _targetRect as DOMRect;
         let {x1, y1, x2, y2} = _areaLocation;
@@ -469,21 +470,21 @@ export default class SelectionArea extends EventTarget {
         const x4 = max(x1, x2);
         const y4 = max(y1, y2);
 
-        this._areaRect.x = x3;
-        this._areaRect.y = y3;
-        this._areaRect.width = x4 - x3;
-        this._areaRect.height = y4 - y3;
+        _areaRect.x = x3;
+        _areaRect.y = y3;
+        _areaRect.width = x4 - x3;
+        _areaRect.height = y4 - y3;
     }
 
-    _redrawArea(): void {
-        const {x, y, width, height} = this._areaRect as DOMRect;
-        const areaStyle = this._area.style;
+    _redrawSelectionArea(): void {
+        const {x, y, width, height} = this._areaRect;
+        const {style} = this._area;
 
         // Using transform will make the area's borders look blurry
-        areaStyle.left = `${x}px`;
-        areaStyle.top = `${y}px`;
-        areaStyle.width = `${width}px`;
-        areaStyle.height = `${height}px`;
+        style.left = `${x}px`;
+        style.top = `${y}px`;
+        style.width = `${width}px`;
+        style.height = `${height}px`;
     }
 
     _onTapStop(evt: MouseEvent | TouchEvent | null, silent: boolean): void {
@@ -498,7 +499,7 @@ export default class SelectionArea extends EventTarget {
         if (evt && this._singleClick && singleTap.allow) {
             this._onSingleTap(evt);
         } else if (!this._singleClick && !silent) {
-            this._updatedTouchingElements();
+            this._updateElementSelection();
             this._emitEvent('stop', evt);
         }
 
@@ -516,7 +517,7 @@ export default class SelectionArea extends EventTarget {
         css(this._area, 'display', 'none');
     }
 
-    _updatedTouchingElements(): void {
+    _updateElementSelection(): void {
         const {_selectables, _options, _selection, _areaRect} = this;
         const {stored, selected, touched} = _selection;
         const {intersect, overlap} = _options;
@@ -531,7 +532,7 @@ export default class SelectionArea extends EventTarget {
             const node = _selectables[i];
 
             // Check if area intersects element
-            if (intersects(_areaRect as DOMRect, node.getBoundingClientRect(), intersect)) {
+            if (intersects(_areaRect, node.getBoundingClientRect(), intersect)) {
 
                 // Check if the element wasn't present in the last selection.
                 if (!selected.includes(node)) {
@@ -571,8 +572,8 @@ export default class SelectionArea extends EventTarget {
         }
 
         // Save
-        this._selection.selected = newlyTouched;
-        this._selection.changed = {added, removed};
+        _selection.selected = newlyTouched;
+        _selection.changed = {added, removed};
     }
 
     _emitEvent(name: keyof SelectionEvents, evt: MouseEvent | TouchEvent | null): unknown {
