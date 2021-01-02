@@ -3,7 +3,7 @@ import {EventTarget} from './EventEmitter';
 import {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 
 // Some var shorting for better compression and readability
-const {abs, max, min, round, ceil} = Math;
+const {abs, max, min, ceil} = Math;
 const preventDefault = (e: Event) => e.preventDefault();
 
 export default class SelectionArea extends EventTarget {
@@ -27,7 +27,6 @@ export default class SelectionArea extends EventTarget {
     private readonly _area: HTMLElement;
     private readonly _clippingElement: HTMLElement;
 
-
     // Target container (element) and boundary (cached)
     private _targetElement?: Element;
     private _targetRect?: DOMRect;
@@ -45,6 +44,7 @@ export default class SelectionArea extends EventTarget {
     // Is getting set on movement. Varied.
     private _scrollAvailable = true;
     private _scrollSpeed: Coordinates = {x: 0, y: 0};
+    private _scrollDelta: Coordinates = {x: 0, y: 0};
 
     constructor(opt: Partial<SelectionOptions>) {
         super();
@@ -149,6 +149,11 @@ export default class SelectionArea extends EventTarget {
         // Area rect
         this._areaLocation = {x1: x, y1: y, x2: 0, y2: 0};
 
+        // Lock scrolling in target container
+        // Solution to preventing scrolling taken fr
+        const scrollElement = document.scrollingElement || document.body;
+        this._scrollDelta = {x: scrollElement.scrollLeft, y: scrollElement.scrollTop};
+
         // To detect single-click
         this._singleClick = true;
         this.clearSelection(false);
@@ -159,9 +164,7 @@ export default class SelectionArea extends EventTarget {
         // Add listener
         on(document, ['touchmove', 'mousemove'], this._delayedTapMove, {passive: false});
         on(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
-
-        // Firefox will scroll down the page which would break the selection.
-        evt.preventDefault();
+        on(document, 'scroll', this._onScroll);
     }
 
     _onSingleTap(evt: MouseEvent | TouchEvent): void {
@@ -262,7 +265,7 @@ export default class SelectionArea extends EventTarget {
             this._singleClick = false;
 
             // Just saving the boundaries of this container for later
-            const tb = this._targetRect = (this._targetElement as HTMLElement).getBoundingClientRect();
+            this._targetRect = (this._targetElement as HTMLElement).getBoundingClientRect();
 
             // Find container and check if it's scrollable
             this._scrollAvailable =
@@ -270,6 +273,7 @@ export default class SelectionArea extends EventTarget {
                 (this._targetElement as HTMLElement).scrollWidth !== (this._targetElement as HTMLElement).clientWidth;
 
             if (this._scrollAvailable) {
+
                 // Detect mouse scrolling
                 on(document, 'wheel', this._manualScroll, {passive: false});
 
@@ -280,51 +284,60 @@ export default class SelectionArea extends EventTarget {
                  * the only selectables instead of all.
                  */
                 this._selectables = this._selectables.filter(s => (this._targetElement as HTMLElement).contains(s));
-
-                /**
-                 * To clip the area, the selection area has a parent
-                 * which has exact the same dimensions as the scrollable elemeent.
-                 * Now if the area exeeds these boundaries it will be cropped.
-                 */
-                css(this._clippingElement, {
-                    top: tb.top,
-                    left: tb.left,
-                    width: tb.width,
-                    height: tb.height
-                });
-
-                /**
-                 * The area element is relative to the clipping element,
-                 * but when this is moved or transformed we need to correct
-                 * the positions via a negative margin.
-                 */
-                css(this._area, {
-                    marginTop: -tb.top,
-                    marginLeft: -tb.left
-                });
-            } else {
-                /**
-                 * Reset margin and clipping element dimensions.
-                 */
-                css(this._clippingElement, {
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%'
-                });
-
-                css(this._area, {
-                    marginTop: 0,
-                    marginLeft: 0
-                });
             }
 
             // Trigger recalc and fire event
+            this._prepareSelectionArea();
             this._emitEvent('start', evt);
             this._onTapMove(evt);
         }
 
         evt.preventDefault(); // Prevent swipe-down refresh
+    }
+
+    _prepareSelectionArea(): void {
+        const tr = this._targetRect = (this._targetElement as HTMLElement).getBoundingClientRect();
+
+        if (this._scrollAvailable) {
+
+            /**
+             * To clip the area, the selection area has a parent
+             * which has exact the same dimensions as the scrollable elemeent.
+             * Now if the area exeeds these boundaries it will be cropped.
+             */
+            css(this._clippingElement, {
+                top: tr.top,
+                left: tr.left,
+                width: tr.width,
+                height: tr.height
+            });
+
+            /**
+             * The area element is relative to the clipping element,
+             * but when this is moved or transformed we need to correct
+             * the positions via a negative margin.
+             */
+            css(this._area, {
+                marginTop: -tr.top,
+                marginLeft: -tr.left
+            });
+        } else {
+
+            /**
+             * Reset margin and clipping element dimensions.
+             */
+            css(this._clippingElement, {
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%'
+            });
+
+            css(this._area, {
+                marginTop: 0,
+                marginLeft: 0
+            });
+        }
     }
 
     _onTapMove(evt: MouseEvent | TouchEvent): void {
@@ -391,6 +404,26 @@ export default class SelectionArea extends EventTarget {
         evt.preventDefault(); // Prevent swipe-down refresh
     }
 
+    _onScroll(): void {
+        const {_scrollDelta, _options: {document}} = this;
+
+        // Resolve scrolling offsets
+        const {scrollTop, scrollLeft} = document.scrollingElement || document.body;
+
+        // Adjust area start location
+        this._areaLocation.x1 += _scrollDelta.x - scrollLeft;
+        this._areaLocation.y1 += _scrollDelta.y - scrollTop;
+        _scrollDelta.x = scrollLeft;
+        _scrollDelta.y = scrollTop;
+
+        // The area needs to be resetted as the target-container has changed in its position
+        this._prepareSelectionArea();
+        this._recalcAreaRect();
+        this._updatedTouchingElements();
+        this._emitEvent('move', null);
+        this._redrawArea();
+    }
+
     _manualScroll(evt: ScrollEvent): void {
         const {manualSpeed} = this._options.scrolling;
 
@@ -424,6 +457,7 @@ export default class SelectionArea extends EventTarget {
         if (y2 < brect.top) {
             _scrollSpeed.y = scrollTop ? -abs(brect.top - y2) : 0;
             y2 = brect.top;
+        } else if (y2 > brect.bottom) {
             _scrollSpeed.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2) : 0;
             y2 = brect.bottom;
         } else {
@@ -459,6 +493,7 @@ export default class SelectionArea extends EventTarget {
         off(document, ['mousemove', 'touchmove'], this._delayedTapMove);
         off(document, ['touchmove', 'mousemove'], this._onTapMove);
         off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
+        off(document, 'scroll', this._onScroll);
 
         if (evt && this._singleClick && singleTap.allow) {
             this._onSingleTap(evt);
