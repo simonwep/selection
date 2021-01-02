@@ -247,7 +247,7 @@ export default class SelectionArea extends EventTarget {
             (thresholdType === 'number' && abs((x + y) - (x1 + y1)) >= startThreshold) ||
 
             // Different x and y threshold
-                (thresholdType === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x || abs(y - y1) >= (startThreshold as Coordinates).y)
+            (thresholdType === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x || abs(y - y1) >= (startThreshold as Coordinates).y)
         ) {
             off(document, ['mousemove', 'touchmove'], this._delayedTapMove, {passive: false});
             on(document, ['mousemove', 'touchmove'], this._onTapMove, {passive: false});
@@ -283,7 +283,7 @@ export default class SelectionArea extends EventTarget {
                  * which are in the current scrollable element. Later these are
                  * the only selectables instead of all.
                  */
-                this._selectables = this._selectables.filter(s => (this._targetElement as Element).contains(s));
+                this._selectables = this._selectables.filter(s => this._targetElement!.contains(s));
             }
 
             // Trigger recalc and fire event
@@ -489,6 +489,7 @@ export default class SelectionArea extends EventTarget {
 
     _onTapStop(evt: MouseEvent | TouchEvent | null, silent: boolean): void {
         const {document, singleTap} = this._options;
+        const {_singleClick} = this;
 
         // Remove event handlers
         off(document, ['mousemove', 'touchmove'], this._delayedTapMove);
@@ -496,9 +497,9 @@ export default class SelectionArea extends EventTarget {
         off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
         off(document, 'scroll', this._onScroll);
 
-        if (evt && this._singleClick && singleTap.allow) {
+        if (evt && _singleClick && singleTap.allow) {
             this._onSingleTap(evt);
-        } else if (!this._singleClick && !silent) {
+        } else if (!_singleClick && !silent) {
             this._updateElementSelection();
             this._emitEvent('stop', evt);
         }
@@ -507,12 +508,12 @@ export default class SelectionArea extends EventTarget {
         this._scrollSpeed = {x: 0, y: 0};
 
         // Unbind mouse scrolling listener
-        off(document, 'wheel', this._manualScroll, {passive: true});
+        this._scrollAvailable && off(document, 'wheel', this._manualScroll, {passive: true});
 
         // Remove selection-area from dom
         this._clippingElement.remove();
 
-        // Enable default select event
+        // Enable default select event and hide selection area
         off(document, 'selectstart', preventDefault);
         css(this._area, 'display', 'none');
     }
