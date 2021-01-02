@@ -409,17 +409,17 @@ export default class SelectionArea extends EventTarget {
     }
 
     _recalcAreaRect(): void {
-        const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = this._targetElement as Element;
-        const {_scrollSpeed, _areaLocation} = this;
-        const brect = this._targetRect as DOMRect;
+        const {_scrollSpeed, _areaLocation, _targetElement, _targetRect} = this;
+        const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = _targetElement as Element;
+        const brect = _targetRect as DOMRect;
         let {x1, y1, x2, y2} = _areaLocation;
 
         if (x2 < brect.left) {
             _scrollSpeed.x = scrollLeft ? -abs(brect.left - x2) : 0;
             x2 = brect.left;
-        } else if (x2 > brect.left + brect.width) {
+        } else if (x2 > brect.right) {
             _scrollSpeed.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x2) : 0;
-            x2 = brect.left + brect.width;
+            x2 = brect.right;
         } else {
             _scrollSpeed.x = 0;
         }
@@ -427,9 +427,8 @@ export default class SelectionArea extends EventTarget {
         if (y2 < brect.top) {
             _scrollSpeed.y = scrollTop ? -abs(brect.top - y2) : 0;
             y2 = brect.top;
-        } else if (y2 > brect.top + brect.height) {
             _scrollSpeed.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2) : 0;
-            y2 = brect.top + brect.height;
+            y2 = brect.bottom;
         } else {
             _scrollSpeed.y = 0;
         }
