@@ -475,7 +475,7 @@ export default class SelectionArea extends EventTarget {
         this._scrollSpeed = {x: 0, y: 0};
 
         // Unbind mouse scrolling listener
-        off(window, 'wheel', this._manualScroll);
+        off(document, 'wheel', this._manualScroll, {passive: true});
 
         // Remove selection-area from dom
         this._clippingElement.remove();

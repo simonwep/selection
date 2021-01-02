@@ -184,6 +184,8 @@ selection.on('beforestart', evt => {
 });
 ```
 
+> The initialization is **always** synchronous, therefore there is no `init` event and any initilization-related work can be done immediately after creation.
+
 ### Event data
 Each `evt` object will yield the following data:
 
