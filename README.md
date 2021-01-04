@@ -193,6 +193,8 @@ Each `evt` object will yield the following data:
 {
     // The original event, can be null in cases like select() or deselect()
     event: MouseEvent | TouchEvent | null;
+
+    // Contains all selection related elements.
     store: {
 
         // All elements touched
