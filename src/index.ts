@@ -38,8 +38,9 @@ export default class SelectionArea extends EventTarget {
     // Dynamically constructed area rect
     private _areaLocation: AreaLocation = {y1: 0, x2: 0, y2: 0, x1: 0};
 
-    // If a single click is being performed
-    private _singleClick?: boolean;
+    // If a single click is being performed.
+    // It's a single-click until the user dragged the mouse.
+    private _singleClick = true;
 
     // Is getting set on movement. Varied.
     private _scrollAvailable = true;
@@ -205,8 +206,11 @@ export default class SelectionArea extends EventTarget {
             target = target.parentElement;
         }
 
-        this._emitEvent('start', evt);
+        // Grab current store first in case it gets resetted
         const {stored} = this._selection;
+
+        // Emit event and process element
+        this._emitEvent('start', evt);
         if (evt.shiftKey && stored.length) {
             const reference = stored[stored.length - 1];
 
@@ -219,19 +223,13 @@ export default class SelectionArea extends EventTarget {
             ), target];
 
             this.select(rangeItems);
-            this._emitEvent('move', evt);
-            this._emitEvent('stop', evt);
+        } else if (stored.includes(target)) {
+            this.deselect(target);
         } else {
-
-            if (stored.includes(target)) {
-                this.deselect(target);
-            } else {
-                this.select(target);
-            }
-
-            this._emitEvent('move', evt);
-            this._emitEvent('stop', evt);
+            this.select(target);
         }
+
+        this._emitEvent('stop', evt);
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {
