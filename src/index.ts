@@ -727,11 +727,15 @@ export default class SelectionArea extends EventTarget {
      * @returns boolean - true if the element was successfully removed
      */
     deselect(el: Element, quiet = false): boolean {
-        const {_selection} = this;
-        if (_selection.selected.includes(el)) {
-            _selection.changed.removed.push(el);
-            removeElement(_selection.stored, el);
-            removeElement(_selection.selected, el);
+        const {selected, stored, changed} = this._selection;
+
+        if (
+            selected.includes(el) ||
+            stored.includes(el)
+        ) {
+            changed.removed.push(el);
+            removeElement(stored, el);
+            removeElement(selected, el);
 
             // Fire event
             !quiet && this._emitEvent('move', null);
