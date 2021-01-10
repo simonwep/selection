@@ -17,7 +17,7 @@ export interface SelectionEvent {
     store: SelectionStore;
 }
 
-export interface SelectionEvents {
+export type SelectionEvents = {
     beforestart: (e: SelectionEvent) => boolean;
     start: (e: SelectionEvent) => void;
     move: (e: SelectionEvent) => void

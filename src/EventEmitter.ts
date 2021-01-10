@@ -1,24 +1,24 @@
-import {SelectionEvents} from './types';
 
-type UnknownFunction = (...args: unknown[]) => unknown;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type AnyFunction = (...args: any[]) => any;
+type EventMap = Record<string, AnyFunction>;
 
+export class EventTarget<Events extends EventMap> {
+    private readonly _listeners = new Map<keyof Events, Set<AnyFunction>>();
 
-export class EventTarget {
-    private readonly _listeners = new Map<keyof SelectionEvents, Set<UnknownFunction>>();
-
-    public addEventListener<K extends keyof SelectionEvents>(event: K, cb: SelectionEvents[K]): this {
+    public addEventListener<K extends keyof Events>(event: K, cb: Events[K]): this {
         const set = this._listeners.get(event) || new Set();
         this._listeners.set(event, set);
-        set.add(cb as UnknownFunction);
+        set.add(cb as AnyFunction);
         return this;
     }
 
-    public removeEventListener<K extends keyof SelectionEvents>(event: K, cb: SelectionEvents[K]): this {
-        this._listeners.get(event)?.delete(cb as UnknownFunction);
+    public removeEventListener<K extends keyof Events>(event: K, cb: Events[K]): this {
+        this._listeners.get(event)?.delete(cb as AnyFunction);
         return this;
     }
 
-    public dispatchEvent<K extends keyof SelectionEvents>(event: K, ...data: Parameters<SelectionEvents[K]>): unknown {
+    public dispatchEvent<K extends keyof Events>(event: K, ...data: Parameters<Events[K]>): unknown {
         let ok = true;
         for (const cb of (this._listeners.get(event) || [])) {
             ok = (cb(...data) !== false) && ok;
