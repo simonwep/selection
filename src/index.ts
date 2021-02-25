@@ -2,6 +2,9 @@ import {css, eventPath, intersects, off, on, removeElement, selectAll, SelectAll
 import {EventTarget} from './EventEmitter';
 import {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 
+// Re-export types
+export * from './types';
+
 // Some var shorting for better compression and readability
 const {abs, max, min, ceil} = Math;
 const preventDefault = (e: Event) => e.preventDefault();
