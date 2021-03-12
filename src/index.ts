@@ -162,8 +162,13 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._singleClick = true;
         this.clearSelection(false);
 
-        // Prevent default select event
-        on(document, 'selectstart', preventDefault);
+        
+        // Push this to the end of the event queue to avoid blocking other events (e.g. text input blur)
+        setTimeout(() => {
+            // Prevent unwanted text selection
+            css(window.document.body, 'userSelect', 'none')
+        }, 0);
+        
 
         // Add listener
         on(document, ['touchmove', 'mousemove'], this._delayedTapMove, {passive: false});
@@ -236,7 +241,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {
-        const {startThreshold, container, document} = this._options;
+        const {startThreshold, container, document, allowTouch} = this._options;
         const {x1, y1} = this._areaLocation; // Coordinates of first "tap"
         const {x, y} = simplifyEvent(evt);
 
@@ -293,7 +298,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._onTapMove(evt);
         }
 
-        evt.preventDefault(); // Prevent swipe-down refresh
+        if (allowTouch) {
+            evt.preventDefault(); // Prevent swipe-down refresh
+        }
     }
 
     _prepareSelectionArea(): void {
@@ -345,6 +352,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     _onTapMove(evt: MouseEvent | TouchEvent): void {
         const {x, y} = simplifyEvent(evt);
         const {_scrollSpeed, _areaLocation, _options} = this;
+        const {allowTouch} = _options
         const {speedDivider} = _options.scrolling;
         const scon = this._targetElement as Element;
 
@@ -403,7 +411,10 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._redrawSelectionArea();
         }
 
-        evt.preventDefault(); // Prevent swipe-down refresh
+        if (allowTouch) {
+            evt.preventDefault(); // Prevent swipe-down refresh
+        }
+        
     }
 
     _onScroll(): void {
@@ -515,8 +526,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         // Remove selection-area from dom
         this._clippingElement.remove();
 
-        // Enable default select event and hide selection area
-        off(document, 'selectstart', preventDefault);
+        // Enable default text selection and hide selection area
+        css(window.document.body, 'userSelect', '')
         css(this._area, 'display', 'none');
     }
 
