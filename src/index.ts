@@ -7,7 +7,6 @@ export * from './types';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, ceil} = Math;
-const preventDefault = (e: Event) => e.preventDefault();
 
 export default class SelectionArea extends EventTarget<SelectionEvents> {
     public static version = VERSION;
@@ -161,9 +160,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         // To detect single-click
         this._singleClick = true;
         this.clearSelection(false);
-
-        // Prevent default select event
-        on(document, 'selectstart', preventDefault);
 
         // Add listener
         on(document, ['touchmove', 'mousemove'], this._delayedTapMove, {passive: false});
@@ -515,8 +511,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         // Remove selection-area from dom
         this._clippingElement.remove();
 
-        // Enable default select event and hide selection area
-        off(document, 'selectstart', preventDefault);
+        // Hide selection area
         css(this._area, 'display', 'none');
     }
 
