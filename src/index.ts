@@ -8,6 +8,11 @@ export * from './types';
 // Some var shorting for better compression and readability
 const {abs, max, min, ceil} = Math;
 
+// Likely want to move this to utils
+// Determines if the device's primary input supports touch
+// See this article: https://css-tricks.com/touch-devices-not-judged-size/
+const isTouchEnabled = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
 export default class SelectionArea extends EventTarget<SelectionEvents> {
     public static version = VERSION;
 
@@ -232,7 +237,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {
-        const {startThreshold, container, document} = this._options;
+        const {startThreshold, container, document, allowTouch} = this._options;
         const {x1, y1} = this._areaLocation; // Coordinates of first "tap"
         const {x, y} = simplifyEvent(evt);
 
@@ -289,7 +294,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._onTapMove(evt);
         }
 
-        evt.preventDefault(); // Prevent swipe-down refresh
+        if (allowTouch && isTouchEnabled) {
+            evt.preventDefault(); // Prevent swipe-down refresh
+        }
     }
 
     _prepareSelectionArea(): void {
@@ -341,6 +348,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     _onTapMove(evt: MouseEvent | TouchEvent): void {
         const {x, y} = simplifyEvent(evt);
         const {_scrollSpeed, _areaLocation, _options} = this;
+        const {allowTouch} = _options;
         const {speedDivider} = _options.scrolling;
         const scon = this._targetElement as Element;
 
@@ -399,7 +407,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._redrawSelectionArea();
         }
 
-        evt.preventDefault(); // Prevent swipe-down refresh
+        if (allowTouch && isTouchEnabled) {
+            evt.preventDefault(); // Prevent swipe-down refresh
+        }
     }
 
     _onScroll(): void {
