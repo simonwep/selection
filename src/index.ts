@@ -1,4 +1,4 @@
-import {css, eventPath, intersects, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
+import {css, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
 import {EventTarget} from './EventEmitter';
 import {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 
@@ -7,11 +7,6 @@ export * from './types';
 
 // Some var shorting for better compression and readability
 const {abs, max, min, ceil} = Math;
-
-// Likely want to move this to utils
-// Determines if the device's primary input supports touch
-// See this article: https://css-tricks.com/touch-devices-not-judged-size/
-const isTouchEnabled = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
 export default class SelectionArea extends EventTarget<SelectionEvents> {
     public static version = VERSION;
@@ -294,7 +289,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._onTapMove(evt);
         }
 
-        if (allowTouch && isTouchEnabled) {
+        if (allowTouch && isTouchDevice) {
             evt.preventDefault(); // Prevent swipe-down refresh
         }
     }
@@ -407,7 +402,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._redrawSelectionArea();
         }
 
-        if (allowTouch && isTouchEnabled) {
+        if (allowTouch && isTouchDevice) {
             evt.preventDefault(); // Prevent swipe-down refresh
         }
     }
