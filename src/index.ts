@@ -1,4 +1,4 @@
-import {css, eventPath, intersects, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
+import {css, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
 import {EventTarget} from './EventEmitter';
 import {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 
@@ -232,7 +232,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {
-        const {startThreshold, container, document} = this._options;
+        const {startThreshold, container, document, allowTouch} = this._options;
         const {x1, y1} = this._areaLocation; // Coordinates of first "tap"
         const {x, y} = simplifyEvent(evt);
 
@@ -289,7 +289,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._onTapMove(evt);
         }
 
-        evt.preventDefault(); // Prevent swipe-down refresh
+        if (allowTouch && isTouchDevice) {
+            evt.preventDefault(); // Prevent swipe-down refresh
+        }
     }
 
     _prepareSelectionArea(): void {
@@ -341,6 +343,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     _onTapMove(evt: MouseEvent | TouchEvent): void {
         const {x, y} = simplifyEvent(evt);
         const {_scrollSpeed, _areaLocation, _options} = this;
+        const {allowTouch} = _options;
         const {speedDivider} = _options.scrolling;
         const scon = this._targetElement as Element;
 
@@ -399,7 +402,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._redrawSelectionArea();
         }
 
-        evt.preventDefault(); // Prevent swipe-down refresh
+        if (allowTouch && isTouchDevice) {
+            evt.preventDefault(); // Prevent swipe-down refresh
+        }
     }
 
     _onScroll(): void {
