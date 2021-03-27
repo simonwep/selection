@@ -23,3 +23,8 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: library
+          path: ./lib
