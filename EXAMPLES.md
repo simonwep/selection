@@ -51,3 +51,15 @@ selection.on('beforestart', ({event}) => {
 > Feel free to submit a [PR](https://github.com/Simonwep/selection/compare) or create
 > an [issue](https://github.com/Simonwep/selection/issues/new?assignees=Simonwep&labels=&template=feature_request.md&title=) if
 > you got any ideas for more examples!
+
+#### Preventing text-selection
+
+As of v2.1.0, it will no longer prevent text-selection. 
+If this is wanted it can be done using two of the event hooks and a bit of css:
+
+```js
+selection
+    .on('beforestart', () => document.body.style.userSelect = 'none')
+    .on('stop', () => document.body.style.userSelect = 'unset');
+```
+
