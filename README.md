@@ -12,9 +12,9 @@
         src="https://img.shields.io/badge/licence-MIT-ae15cc.svg"></a>
     <img alt="No dependencies"
         src="https://img.shields.io/badge/dependencies-none-8115cc.svg">
-    <a href="https://www.patreon.com/simonwep"><img
+    <a href="https://github.com/sponsors/Simonwep"><img
         alt="Support me"
-        src="https://img.shields.io/badge/patreon-support-6a15cc.svg"></a>
+        src="https://img.shields.io/badge/github-support-6a15cc.svg"></a>
     <a href="https://www.jsdelivr.com/package/npm/@simonwep/selection-js"><img
         alt="jsdelivr hits"
         src="https://img.shields.io/jsdelivr/npm/hm/@simonwep/selection-js"></a>
