@@ -77,6 +77,15 @@ Last but not least you'll need to add some basic styles to make your selection-a
 }
 ```
 
+Additionally, to not interfere with text-selection, selection-js won't prevent any default events anymore (as of `v2.0.3`).
+This however can cause problems with the actual selection ("introduced" by [#99](https://github.com/Simonwep/selection/pull/99), reported in [#103](https://github.com/Simonwep/selection/issues/103)).
+If you don't care about text-selection, add the following to the container where all your selectables are located:
+
+```css
+// Prevents any kind of text-selection
+user-select: none;
+```
+
 ## Usage
 ```javascript
 const selection = new SelectionArea({

@@ -105,6 +105,7 @@ main .boxes {
     border: 2px solid rgba(66, 68, 90, 0.075);
     border-radius: 0.15em;
     padding: 1em 0;
+    user-select: none;
 }
 
 main .boxes.green,
