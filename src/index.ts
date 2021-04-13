@@ -214,12 +214,13 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             const reference = stored[stored.length - 1];
 
             // Resolve correct range
-            const [preceding, following] = reference.compareDocumentPosition(target) & 4 ? [target, reference] : [reference, target];
+            const [preceding, following] = reference.compareDocumentPosition(target) & 4 ?
+                [target, reference] : [reference, target];
 
             const rangeItems = [...this._selectables.filter(el =>
                 (el.compareDocumentPosition(preceding) & 4) &&
                 (el.compareDocumentPosition(following) & 2)
-            ), target];
+            ), target, preceding, following];
 
             this.select(rangeItems);
         } else if (stored.includes(target)) {
