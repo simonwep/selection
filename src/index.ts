@@ -106,7 +106,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             position: 'fixed',
             transform: 'translate3d(0, 0, 0)', // https://stackoverflow.com/a/38268846
             pointerEvents: 'none',
-            zIndex: 1
+            zIndex: '1'
         });
 
         this.enable();
