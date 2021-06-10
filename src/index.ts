@@ -684,11 +684,13 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     /**
-     * Unbinds all events and removes the area-element
+     * Unbinds all events and removes the area-element.
      */
     destroy(): void {
+        this.cancel();
         this.disable();
         this._clippingElement.remove();
+        super.unbindAllListeners();
     }
 
     /**

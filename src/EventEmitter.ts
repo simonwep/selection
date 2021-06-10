@@ -27,6 +27,10 @@ export class EventTarget<Events extends EventMap> {
         return ok;
     }
 
+    public unbindAllListeners(): void {
+        this._listeners.clear();
+    }
+
     // Let's also support on, off and emit like node
     /* eslint-disable no-invalid-this */
     public on = this.addEventListener;
