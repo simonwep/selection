@@ -14,13 +14,6 @@
         "noImplicitReturns": true,
         "declaration": true,
         "declarationDir": "lib",
-        "noImplicitAny": true,
-        "baseUrl": ".",
-        "paths": {
-            "@utils": ["src/utils/index.ts"]
-        }
-    },
-    "include": [
-        "src/**/*.ts"
-    ]
+        "noImplicitAny": true
+    }
 }

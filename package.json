@@ -1,43 +1,16 @@
 {
-    "name": "@simonwep/selection-js",
-    "version": "2.1.2",
-    "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
-    "main": "./lib/selection.min.js",
-    "module": "./lib/selection.min.mjs",
-    "types": "./lib/selection.min.d.ts",
+    "name": "viselect",
     "author": "Simon Reinisch <trash@reinisch.io>",
+    "private": true,
     "license": "MIT",
     "scripts": {
-        "build": "rollup -c rollup.config.js",
         "dev": "vite",
-        "lint": "eslint ./src/**/*.ts",
-        "lint:fix": "eslint ./src/**/*.ts --fix",
+        "build": "lerna run build --parallel",
+        "lint": "eslint packages/**/src/**/*.ts",
+        "lint:fix": "eslint packages/**/src/**/*.ts --fix",
         "ci:dryrun": "npm run lint:fix && npm run build",
-        "release": "npm version --tag-version-prefix= --message \"Publish %s\"",
-        "preversion": "npm run lint && npm run build",
-        "postversion": "git push && git push --tags && npm publish"
+        "prepublishOnly": "npm run lint && npm run build"
     },
-    "files": [
-        "lib",
-        "src"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Simonwep/selection.git"
-    },
-    "keywords": [
-        "selection",
-        "selecting",
-        "js-utility",
-        "user-selection",
-        "ui",
-        "user-interface",
-        "ui-library"
-    ],
-    "bugs": {
-        "url": "https://github.com/Simonwep/selection/issues"
-    },
-    "homepage": "https://github.com/Simonwep/selection#readme",
     "devDependencies": {
         "@rollup/plugin-replace": "^2.4.2",
         "@typescript-eslint/eslint-plugin": "^4.26.1",
@@ -46,6 +19,7 @@
         "csstype": "^3.0.8",
         "eslint": "^7.28.0",
         "eslint-config-simon": "^2.1.0",
+        "lerna": "^4.0.0",
         "rollup": "^2.51.2",
         "rollup-plugin-terser": "^7.0.2",
         "typescript": "^4.3.2",
