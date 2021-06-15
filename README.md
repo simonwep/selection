@@ -15,19 +15,14 @@
     <a href="https://github.com/sponsors/Simonwep"><img
         alt="Support me"
         src="https://img.shields.io/badge/github-support-6a15cc.svg"></a>
-    <a href="https://www.jsdelivr.com/package/npm/@simonwep/selection-js"><img
+    <a href="https://www.jsdelivr.com/package/npm/@viselect/vanilla"><img
         alt="jsdelivr hits"
-        src="https://img.shields.io/jsdelivr/npm/hm/@simonwep/selection-js"></a>
+        src="https://img.shields.io/jsdelivr/npm/hm/@viselect/vanilla"></a>
     <a href="https://github.com/Simonwep/selection/actions?query=workflow%3ACI"><img
         alt="Build Status"
         src="https://github.com/Simonwep/selection/workflows/CI/badge.svg"></a>
-    <a href="https://www.npmjs.com/package/@simonwep/selection-js"><img
-        alt="downloads per week"
-        src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
-    <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js?compression=gzip">
-    <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js?compression=brotli">
-    <img alt="Current version"
-        src="https://img.shields.io/github/v/tag/Simonwep/selection.svg?color=23AD62&label=version">
+    <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/vanilla/lib/viselect.min.js?compression=gzip">
+    <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/vanilla/lib/viselect.min.js?compression=brotli">
 </p>
 
 <p align="center">
@@ -36,211 +31,24 @@
     </a>
 </p>
 
-> This README is always up-to-date with the **lastest version**. Check out [releases](https://github.com/Simonwep/selection/releases) if you want to check out the documentation for your version.
+### Features 🤘
+* 🔩 Ultra tiny (only ~4kb)
+* 👌 Simple usage
+* ⚡ Highly optimized
+* ✔ Zero dependencies
+* 📱 Mobile / touch support
+* 🖱 Vertical and horizontal scroll support
 
-### Features
-* Tiny (only ~4kb)
-* Simple usage
-* Highly optimized
-* Zero dependencies
-* Mobile / touch support
-* Vertical and horizontal scroll support
+##### Coming soon ✨
+* Vue wrapper
+* Preact / React wrapper
 
-### Install
+### Getting started
 
-Via npm:
-```
-$ npm install @simonwep/selection-js
-```
+Check out the documentation for the package you want to use:
 
-Via yarn:
-```
-$ yarn add @simonwep/selection-js
-```
-
-Include via [jsdelivr.net](https://www.jsdelivr.com/package/npm/@simonwep/selection-js):
-```html
-<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js"></script>
-```
-
-Or using ES6 modules:
-```js
-import SelectionArea from "https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.mjs"
-```
-
-Last but not least you'll need to add some basic styles to make your selection-area visible:
-```css
-.selection-area {
-    background: rgba(46, 115, 252, 0.11);
-    border: 2px solid rgba(98, 155, 255, 0.81);
-    border-radius: 0.1em;
-}
-```
-
-Additionally, to not interfere with text-selection, selection-js won't prevent any default events anymore (as of `v2.0.3`).
-This however can cause problems with the actual selection ("introduced" by [#99](https://github.com/Simonwep/selection/pull/99), reported in [#103](https://github.com/Simonwep/selection/issues/103)).
-If you don't care about text-selection, add the following to the container where all your selectables are located:
-
-```css
-// Prevents any kind of text-selection
-user-select: none;
-```
-
-## Usage
-```javascript
-const selection = new SelectionArea({
-
-    // document object - if you want to use it within an embed document (or iframe).
-    document: window.document,
-
-    // Class for the selection-area element.
-    class: 'selection-area',
-
-    // Query selector or dom-node to set up container for the selection-area element.
-    container: 'body',
-
-    // Query selectors for elements which can be selected.
-    selectables: [],
-
-    // Query selectors for elements from where a selection can be started from.
-    startareas: ['html'],
-
-    // Query selectors for elements which will be used as boundaries for the selection.
-    boundaries: ['html'],
-
-    // px, how many pixels the point should move before starting the selection (combined distance).
-    // Or specifiy the threshold for each axis by passing an object like {x: <number>, y: <number>}.
-    startThreshold: 10,
-
-    // Enable / disable touch support
-    allowTouch: true,
-
-    // On which point an element should be selected.
-    // Available modes are cover (cover the entire element), center (touch the center) or
-    // the default mode is touch (just touching it).
-    intersect: 'touch',
-
-    // Specifies what should be done if already selected elements get selected again.
-    //   invert: Invert selection for elements which were already selected
-    //   keep: Make stored elements (by keepSelection()) 'fix'
-    //   drop: Remove stored elements after they have been touched
-    overlap: 'invert',
-
-    // Configuration in case a selectable gets just clicked.
-    singleTap: {
-
-        // Enable single-click selection (Also disables range-selection via shift + ctrl).
-        allow: true,
-
-        // 'native' (element was mouse-event target) or 'touch' (element visually touched).
-        intersect: 'native'
-    },
-
-    // Scroll configuration.
-    scrolling: {
-
-        // On scrollable areas the number on px per frame is devided by this amount.
-        // Default is 10 to provide a enjoyable scroll experience.
-        speedDivider: 10,
-
-        // Browsers handle mouse-wheel events differently, this number will be used as 
-        // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider.
-        manualSpeed: 750
-    }
-});
-
-```
-
-## Events
-Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-listener.
-
-> You may want to checkout the [source](https://gist.github.com/Simonwep/b0c25725a4715c1c5aab501d6a782a71) used in the demo-page, it's easier than reading through the manual.
-
-| Event          | Description |
-| -------------- | ----------- | 
-| `beforestart` | The user tapped one of the areas within the specified boundaries. Return `false` to cancel selection immediatly.  |
-| `start` | Selection started, here you can decide if you want to keep your previously selected elements. | 
-| `move` | Selection is active, user is moving the pointer around. |
-| `stop` | Selection has stopped. |
-
-### Example:
-
-```js
-selection.on('beforestart', evt => {
-    
-    // Use this event to decide whether a selection should take place or not.
-    // For example if the user should be able to normally interact with input-elements you 
-    // may want to prevent a selection if the user clicks such a element:
-    // selection.on('beforestart', ({event}) => {
-    //   return event.target.tagName !== 'INPUT'; // Returning false prevents a selection
-    // });
-    
-    console.log('beforestart', evt);
-}).on('start', evt => {
-
-    // A selection got initiated, you could now clear the previous selection or
-    // keep it if in case of multi-selection.
-    console.log('start', evt);
-}).on('move', evt => {
-
-    // Here you can update elements based on their state.
-    console.log('move', evt);
-}).on('stop', evt => {
-
-    // The last event can be used to call functions like keepSelection() in case the user wants
-    // to select multiple elements.
-    console.log('stop', evt);
-});
-```
-
-> The initialization is **always** synchronous, therefore there is no `init` event and any initilization-related work can be done immediately after creation.
-
-### Event data
-Each `evt` object will yield the following data:
-
-````ts
-{
-    // The original event, can be null in cases like select() or deselect()
-    event: MouseEvent | TouchEvent | null;
-
-    // Contains all selection related elements.
-    store: {
-
-        // All elements touched
-        touched: Array<Element>;
-
-        // Elements currently stored, can be retrived all the time using getSelection()
-        stored: Array<Element>;
-
-        // Elements selection during the current selection
-        selected: Array<Element>;
-
-        // Changes between the previous user-action and the current one
-        changed: {
-            added: Array<Element>; // Elements added to the selection
-            removed: Array<Element>; // Elements removed from the selection
-        };
-    };
-}
-````
-
-> You can find event-related examples [here](EXAMPLES.md).
-
-## Methods
-
-| Method | Description |
-| ------ | ----------- |
-| **on**(event`:String`, cb`:Function`) | Adds an event listener to the given corresponding event-name (see section Events), returns the current instance, so it can be chained. |
-| **off**(event`:String`, cb`:Function`) | Removes an event listener from the given corresponding event-name (see section Events), returns the current instance, so it can be chained. |
-| **disable**() | Disable the functionality to make selections. |
-| **enable**() | Enable the functionality to make selections. |
-| **destroy**() | Unbinds all events and removes the area-element. |
-| **cancel**() | Cancels the current selection process. |
-| **trigger**(evt`:MouseEvent \| TouchEvent`, silent`: boolean` = true)  | Manually triggers the start of a selection. If `silent` is set to true, no `beforestart` event will be fired. |
-| **keepSelection**() | Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections. |
-| **clearSelection**(store`:boolean` = true) | Clear the previous selection (elements which were stored by calling `keepSelection()`). Pass false to only clear the currently selected elements. |
-| **getSelection**() | Returns currently selected elements. |
-| **resolveSelectables**() | Need to be called if during a selection elements have been added / removed. |
-| **select**(query`:(String \| Element)[]`) | Manually appends elements to the selection, can be a / an array of queries / elements. Returns actual selected elements as array. |
-| **deselect**(el`:HTMLElement`, silent`: boolean` = true) | Removes a particular element from the current selection. `silent` determines whether the `move` event should be fired. |
-
+* [@viselect/vanilla](packages/vanilla) - To be used with plain JavaScript / TypeScript without any framework.
+* @viselect/preact - Coming with [v3](https://github.com/Simonwep/selection/issues/122)!.
+* @viselect/react - Coming with [v3](https://github.com/Simonwep/selection/issues/122)!.
+* @viselect/vue - Coming with [v3](https://github.com/Simonwep/selection/issues/122)!.
+* @viselect/angular - TBA (planned).
