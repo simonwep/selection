@@ -36,7 +36,11 @@
     </a>
 </p>
 
-> This README is always up-to-date with the **lastest version**. Check out [releases](https://github.com/Simonwep/selection/releases) if you want to check out the documentation for your version.
+<p align="center">
+    <b>v3 has been <a href="https://github.com/Simonwep/selection/issues/122">announced</a>! Check out the corresponding <a href="https://github.com/Simonwep/selection/tree/v3">branch</a> for more information :)</b>
+</p>
+
+> This README is always up-to-date with the **lastest version**. Check out [releases](https://github.com/Simonwep/selection/releases) if you want to check out the documentation for your version. If you're interested in v3 check [this](https://github.com/Simonwep/selection/tree/v3) out.
 
 ### Features
 * Tiny (only ~4kb)
