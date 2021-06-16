@@ -52,3 +52,5 @@ Check out the documentation for the package you want to use:
 * @viselect/react - Coming with [v3](https://github.com/Simonwep/selection/issues/122)!.
 * @viselect/vue - Coming with [v3](https://github.com/Simonwep/selection/issues/122)!.
 * @viselect/angular - TBA (planned).
+
+> Check out [recipes](recipes.md) for commonly asked questions and how to solve them using the standart library!
