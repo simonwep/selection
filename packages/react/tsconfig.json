@@ -1,5 +1,6 @@
 {
     "extends": "../../tsconfig.json",
+    "include": ["./src"],
     "compilerOptions": {
         "allowJs": false,
         "skipLibCheck": false,
@@ -7,6 +8,5 @@
         "forceConsistentCasingInFileNames": true,
         "isolatedModules": true,
         "jsx": "react"
-    },
-    "include": ["./src"]
+    }
 }

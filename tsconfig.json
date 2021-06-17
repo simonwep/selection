@@ -14,6 +14,11 @@
         "noImplicitReturns": true,
         "declaration": true,
         "declarationDir": "lib",
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "baseUrl": ".",
+        "jsx": "react",
+        "paths": {
+            "@vanilla/*": ["packages/vanilla/src/*"]
+        }
     }
 }

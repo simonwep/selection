@@ -1,14 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-
-const App: React.FunctionComponent = () => {
-    return (
-        <div>
-            Hello world
-        </div>
-    );
-};
+import {SelectionArea} from '../src';
+import './index.css'
 
 ReactDOM.render(
     <React.StrictMode>
@@ -16,3 +9,11 @@ ReactDOM.render(
     </React.StrictMode>,
     document.getElementById('root')
 );
+
+function App() {
+    return (
+        <SelectionArea>
+
+        </SelectionArea>
+    );
+}

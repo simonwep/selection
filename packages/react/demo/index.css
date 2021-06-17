@@ -5,17 +5,18 @@
 }
 
 html,
-body {
+body,
+#root {
     height: 100%;
 }
 
-body {
+#root {
     width: 100%;
     max-width: 50em;
     margin: 1.5em auto;
 }
 
-body > h1 {
+#root > h1 {
     text-align: center;
     margin: 1rem 0;
     font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
@@ -23,7 +24,7 @@ body > h1 {
     color: var(--c-text);
 }
 
-body > section {
+#root .container {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -35,12 +36,12 @@ body > section {
     user-select: none;
 }
 
-body > section.green,
-body > section.blue {
+#root .container.green,
+#root .container.blue {
     margin-bottom: 3em;
 }
 
-body > section.red {
+#root .container.red {
     display: grid;
     grid-template-columns: repeat(28, 1fr);
     grid-gap: 0.4em;
@@ -52,11 +53,11 @@ body > section.red {
     margin-bottom: 3em;
 }
 
-body > section.red > div {
+#root .container.red > div {
     margin: 0;
 }
 
-body > section div {
+#root .container div {
     height: 3em;
     width: 3em;
     margin: 0.2em;
@@ -66,17 +67,17 @@ body > section div {
     cursor: pointer;
 }
 
-body > section.green div.selected {
+#root .container.green div.selected {
     background: hsl(100, 80%, 65%);
     border: 2px solid rgba(0, 0, 0, 0.075);
 }
 
-body > section.blue div.selected {
+#root .container.blue div.selected {
     background: hsl(150, 80%, 65%);
     border: 2px solid rgba(0, 0, 0, 0.075);
 }
 
-body > section.red div.selected {
+#root .container.red div.selected {
     background: hsl(200, 80%, 65%);
     border: 2px solid rgba(0, 0, 0, 0.075);
 }

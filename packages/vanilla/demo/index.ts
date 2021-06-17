@@ -1,4 +1,5 @@
 import SelectionArea from '../src';
+import './index.css'
 
 const boxes: [string, number][] = [
     ['section.green', 42],

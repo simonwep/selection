@@ -1,4 +1,4 @@
-import {Intersection} from '@utils';
+import {Intersection} from './utils';
 
 export interface ChangedElements {
     added: Array<Element>;
