@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="UTF-8">
+
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#57D5E3"/>
+
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#57D5E3"/>
+
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#57D5E3"/>
+
+    <!-- SEO Stuff -->
+    <meta name="audience" lang="en" content="all"/>
+    <meta name="expires" content="7 days"/>
+    <meta name="robots" content="follow"/>
+    <meta name="revisit-after" content="7 days"/>
+    <meta name="page-topic" content="Selection library"/>
+    <meta name="copyright" content="Simon Reinisch"/>
+    <meta name="author" content="Simon Reinisch"/>
+    <meta name="description"
+          content="Simple and lightweight library to realize visual DOM Selections, like on your Desktop. No jQuery. Supports any CSS library, e.g. Bootstrap. Including vertical & horizontal scroll support."/>
+    <meta name="keywords" content="selection, javascript, js design, ux-design, ui-design, web-development, programming"/>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:image" content="st/favicon.png"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://simonwep.github.io/selection/"/>
+    <meta property="og:site_name" content="Selectionjs"/>
+    <meta property="og:title" content="Selectionjs - Selection engine"/>
+    <meta property="og:description"
+          content="Simple and lightweight library to realize visual DOM Selections, like on your Desktop. No jQuery. Supports any CSS library, e.g. Bootstrap. Including vertical & horizontal scroll support."/>
+
+    <!-- Twitter -->
+    <meta property="twitter:url" content="https://simonwep.github.io/selection/">
+    <meta property="twitter:title" content="Selectionjs - Selection engine">
+    <meta property="twitter:description"
+          content="Simple and lightweight library to realize visual DOM Selections, like on your Desktop. No jQuery. Supports any CSS library, e.g. Bootstrap. Including vertical & horizontal scroll support.">
+    <meta property="twitter:image" content="st/favicon.png">
+
+    <!-- Analytics -->
+    <script async src="https://ackee.reinisch.io/tracker.js" data-ackee-server="https://ackee.reinisch.io" data-ackee-domain-id="c86e5a83-6487-4244-84c6-28b5bd66e588"></script>
+
+    <title>Selection JS</title>
+
+    <!-- Icons -->
+    <link rel="icon" href="favicon.png"/>
+    <link rel="fluid-icon" href="favicon.png"/>
+    <link rel="apple-touch-icon" href="favicon.png"/>
+    <link href="favicon.png" rel="icon"/>
+    <link href="favicon.png" rel="apple-touch-icon"/>
+
+    <!-- CSS / JS -->
+    <link href="styles.css" rel="stylesheet"/>
+</head>
+
+<body>
+<header>
+    <h1>Selection<span>JS</span></h1>
+    <a href="https://github.com/Simonwep/selection">VIEW ON GITHUB</a>
+</header>
+
+<main>
+    <section class="demo">
+        <div class="info">
+            <p>
+                <span>Click to select the boxes, use</span>
+                <span class="key">ctrl</span> /
+                <span class="key">cmd</span> +
+                <span class="key">shift</span>
+                <span> to select a range.</span>
+            </p>
+            <p>Click and drag <span class="key">left mouse</span> to make a multi-selection.</p>
+            <p>Hold <span class="key">ctrl</span> / <span class="key">cmd</span> to make multiple selections.</p>
+        </div>
+
+        <h2>Selection boundaries</h2>
+        <section class="boxes green"></section>
+        <section class="boxes blue"></section>
+
+        <h2>Full support for scrollable containers</h2>
+        <section class="boxes red"></section>
+    </section>
+
+    <h2>How it's being done...</h2>
+    <script src="https://gist.github.com/Simonwep/b0c25725a4715c1c5aab501d6a782a71.js"></script>
+</main>
+
+<script src="main.mjs" type="module"></script>
+</body>
+</html>

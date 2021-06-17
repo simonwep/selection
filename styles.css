@@ -1,0 +1,232 @@
+/**
+ * Creator: Simon R.
+ */
+
+::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.55em;
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #afafaf;
+    border-radius: 0.2em;
+}
+
+::-webkit-scrollbar-corner {
+    display: none;
+}
+
+:root {
+    --c-text: #42445a;
+    --c-primary: #6942f4;
+    --c-primary-accent: #846ce2;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    background: #ebedf7;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+}
+
+header {
+    text-align: center;
+    font-size: 2.5em;
+    padding: 1.2em 0 0.5em 0;
+}
+
+header h1 {
+    font-size: 1em;
+    font-weight: lighter;
+    color: var(--c-text);
+}
+
+header h1 span {
+    color: var(--c-primary);
+    font-weight: normal;
+}
+
+header a {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.3em;
+    color: white;
+    margin-top: 5vh;
+    padding: 0.75em 1.25em;
+    transition: 0.3s all;
+    background: var(--c-primary);
+    border-radius: 50em;
+    box-shadow: 0 2px 15px var(--c-primary-accent);
+}
+
+header a:hover {
+    filter: brightness(0.9);
+}
+
+h2 {
+    margin-bottom: 0.75em;
+    font-weight: 400;
+    text-align: center;
+    color: var(--c-text);
+}
+
+main {
+    width: 100%;
+    max-width: 50em;
+    margin: 1.5em auto;
+}
+
+/* details */
+
+main section.demo .info {
+    text-align: center;
+    margin: 1em 0 2em 0;
+    line-height: 2em;
+    color: var(--c-text);
+}
+
+main .boxes {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border: 2px solid rgba(66, 68, 90, 0.075);
+    border-radius: 0.15em;
+    padding: 1em 0;
+    user-select: none;
+}
+
+main .boxes.green,
+main .boxes.blue {
+    margin-bottom: 3em;
+}
+
+main .boxes.red {
+    display: grid;
+    grid-template-columns: repeat(28, 1fr);
+    grid-gap: 0.4em;
+    align-items: flex-start;
+    justify-content: flex-start;
+    max-height: 25em;
+    overflow: auto;
+    padding: 0.5em;
+    margin-bottom: 3em;
+}
+
+main .boxes.red > div {
+    margin: 0;
+}
+
+main .boxes::after {
+    display: block;
+    content: '';
+    clear: both;
+}
+
+main .boxes div {
+    height: 3em;
+    width: 3em;
+    margin: 0.2em;
+    background: rgba(66, 68, 90, 0.075);
+    border: 2px solid transparent;
+    border-radius: 0.15em;
+    cursor: pointer;
+}
+
+main .boxes.green div.selected {
+    background: hsl(100, 80%, 65%);
+    border: 2px solid rgba(0, 0, 0, 0.075);
+}
+
+main .boxes.blue div.selected {
+    background: hsl(150, 80%, 65%);
+    border: 2px solid rgba(0, 0, 0, 0.075);
+}
+
+main .boxes.red div.selected {
+    background: hsl(200, 80%, 65%);
+    border: 2px solid rgba(0, 0, 0, 0.075);
+}
+
+.selection-area {
+    background: rgba(46, 115, 252, 0.11);
+    border: 1px solid rgba(98, 155, 255, 0.85);
+    border-radius: 0.15em;
+}
+
+main section.demo .info p {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.key {
+    display: inline-block;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--c-primary);
+    font-size: 10px;
+    line-height: 1em;
+    padding: 0.25em 0.4em 0.2em 0.4em;
+    margin: 0 0.5em -4px;
+    border: 1px solid var(--c-primary);
+    border-bottom: 3px solid var(--c-primary);
+    border-radius: 2px;
+}
+
+.gist {
+    margin-top: 2em;
+}
+
+.gist .js-line-number {
+    opacity: 0.65;
+}
+
+.js-file-line-container,
+.gist-file,
+.gist-data,
+.gist-meta {
+    background: transparent !important;
+    border: none !important;
+}
+
+@media only screen and (max-width: 1000px) {
+
+    header {
+        padding: 1em 0 0 0;
+    }
+
+    header h1 {
+        font-size: 0.8em;
+    }
+
+    main section.demo .info {
+        font-size: 0.8em;
+    }
+
+    main .boxes {
+        margin: 0 0.5em;
+    }
+
+    main .boxes.green {
+        display: none !important;
+    }
+
+    main .boxes div {
+        height: 2em;
+        width: 2em;
+    }
+}
