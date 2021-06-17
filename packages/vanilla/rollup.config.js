@@ -1,9 +1,9 @@
 import {terser} from 'rollup-plugin-terser';
 import ts from '@wessberg/rollup-plugin-ts';
 import replace from '@rollup/plugin-replace';
-import pkg from './package.json';
+import {version, main, module} from './package.json';
 
-const banner = `/*! Selectionjs ${pkg.version} MIT | https://github.com/Simonwep/selection */`;
+const banner = `/*! @viselect/vanilla ${version} MIT | https://github.com/Simonwep/selection */`;
 
 export default {
     input: 'src/index.ts',
@@ -19,20 +19,20 @@ export default {
         }),
         replace({
             preventAssignment: true,
-            VERSION: JSON.stringify(pkg.version)
+            VERSION: JSON.stringify(version)
         })
     ],
     output: [
         {
             banner,
-            file: pkg.main,
+            file: main,
             name: 'SelectionArea',
             format: 'umd',
             sourcemap: true
         },
         {
             banner,
-            file: pkg.module,
+            file: module,
             format: 'es',
             sourcemap: true
         }

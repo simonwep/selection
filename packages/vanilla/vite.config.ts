@@ -3,10 +3,8 @@ import {defineConfig} from 'vite';
 import {version} from './package.json';
 
 export default defineConfig({
-    root: '../../',
-
     resolve: {
-        extensions: ['.ts'],
+        extensions: ['.ts', '.js'],
         alias: {
             '@utils': resolve('./src/utils')
         }

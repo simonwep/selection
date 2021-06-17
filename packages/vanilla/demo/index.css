@@ -1,0 +1,86 @@
+:root {
+    --c-text: #42445a;
+    --c-primary: #6942f4;
+    --c-primary-accent: #846ce2;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    max-width: 50em;
+    margin: 1.5em auto;
+}
+
+body > section {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border: 2px solid rgba(66, 68, 90, 0.075);
+    border-radius: 0.15em;
+    padding: 1em 0;
+    user-select: none;
+}
+
+body > section.green,
+body > section.blue {
+    margin-bottom: 3em;
+}
+
+body > section.red {
+    display: grid;
+    grid-template-columns: repeat(28, 1fr);
+    grid-gap: 0.4em;
+    align-items: flex-start;
+    justify-content: flex-start;
+    max-height: 25em;
+    overflow: auto;
+    padding: 0.5em;
+    margin-bottom: 3em;
+}
+
+body > section.red > div {
+    margin: 0;
+}
+
+body > section div {
+    height: 3em;
+    width: 3em;
+    margin: 0.2em;
+    background: rgba(66, 68, 90, 0.075);
+    border: 2px solid transparent;
+    border-radius: 0.15em;
+    cursor: pointer;
+}
+
+body > section.green div.selected {
+    background: hsl(100, 80%, 65%);
+    border: 2px solid rgba(0, 0, 0, 0.075);
+}
+
+body > section.blue div.selected {
+    background: hsl(150, 80%, 65%);
+    border: 2px solid rgba(0, 0, 0, 0.075);
+}
+
+body > section.red div.selected {
+    background: hsl(200, 80%, 65%);
+    border: 2px solid rgba(0, 0, 0, 0.075);
+}
+
+.selection-area {
+    background: rgba(46, 115, 252, 0.11);
+    border: 1px solid rgba(98, 155, 255, 0.85);
+    border-radius: 0.15em;
+}
