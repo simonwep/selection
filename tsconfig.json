@@ -13,7 +13,6 @@
         "noUnusedParameters": true,
         "noImplicitReturns": true,
         "declaration": true,
-        "declarationDir": "lib",
         "noImplicitAny": true,
         "baseUrl": ".",
         "jsx": "react",
