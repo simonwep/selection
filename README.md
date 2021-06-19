@@ -32,6 +32,7 @@
 </p>
 
 ### Features 🤘
+* 🌟 Modern bundle
 * 🔩 Ultra tiny (only ~4kb)
 * 👌 Simple usage
 * ⚡ Highly optimized
@@ -47,10 +48,16 @@
 
 Check out the documentation for the package you want to use:
 
-* [@viselect/vanilla](packages/vanilla) - To be used with plain JavaScript / TypeScript without any framework.
-* @viselect/preact - Coming with [v3](https://github.com/Simonwep/selection/issues/122)!.
-* @viselect/react - Coming with [v3](https://github.com/Simonwep/selection/issues/122)!.
-* @viselect/vue - Coming with [v3](https://github.com/Simonwep/selection/issues/122)!.
+* [@viselect/vanilla](packages/vanilla) - To be used with [plain JavaScript](http://vanilla-js.com/) / TypeScript without any framework.
+* [@viselect/preact](packages/preact) - [Preact](https://preactjs.com/) wrapper.
+* [@viselect/react](packages/react) - [React](https://reactjs.org/) wrapper.
+* [@viselect/vue](packages/vue) -  [Vue3](https://v3.vuejs.org/) wrapper.
 * @viselect/angular - TBA (planned).
 
 > Check out [recipes](recipes.md) for commonly asked questions and how to solve them using the standart library!
+
+### Browser support
+
+This library will always have `currentYear - 1` as its target. For 2021 for example the target will be ES2020. It always provides both a `UMD` (`.js`) and `.mjs` version. If you want to support legacy browsers, please use the feature of your bundler to transpile dependencie. In case of webpack and babel (give [vite](https://vitejs.dev/) a try, it's awesome) you'll have to install corresponding plugins such as [babel-plugin-proposal-optional-chaining](https://babeljs.io/docs/en/babel-plugin-proposal-optional-chaining) and include the dependency from `node_modules` which is normally entirely excluded from being processed.
+
+I do this to provide maximum flexibility and give those who target ESNext a chance to make full use of how this library is bundled. Everything else is just a matter of configuration :)

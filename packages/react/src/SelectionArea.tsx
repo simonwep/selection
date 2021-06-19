@@ -3,6 +3,7 @@ import {SelectionEvents, SelectionOptions} from '@vanilla/types';
 import React, {createRef, useEffect} from 'react';
 
 export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'container'> {
+    className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];
     onStart?: SelectionEvents['start'];
     onMove?: SelectionEvents['move'];
@@ -14,8 +15,10 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
 
     useEffect(() => {
         const {onBeforeStart, onStart, onMove, onStop, ...opt} = props;
+        const areaBoundaries = root.current as HTMLElement;
+
         const selection = new VanillaSelectionArea({
-            container: root.current as HTMLElement,
+            boundaries: areaBoundaries,
             ...opt
         });
 
@@ -24,13 +27,11 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
         onMove && selection.on('move', onMove);
         onStop && selection.on('stop', onStop);
 
-        return () => {
-
-        };
-    }, [props]);
+        return () => selection.destroy();
+    }, []);
 
     return (
-        <div ref={root}>
+        <div ref={root} className={props.className}>
             {props.children}
         </div>
     );

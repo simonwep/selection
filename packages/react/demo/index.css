@@ -21,7 +21,7 @@ body,
     margin: 1rem 0;
     font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
     font-weight: lighter;
-    color: var(--c-text);
+    color: #212128;
 }
 
 #root .container {
@@ -34,10 +34,6 @@ body,
     border-radius: 0.15em;
     padding: 1em 0;
     user-select: none;
-}
-
-#root .container.green,
-#root .container.blue {
     margin-bottom: 3em;
 }
 

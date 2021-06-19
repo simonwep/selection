@@ -583,7 +583,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     _emitEvent(name: keyof SelectionEvents, evt: MouseEvent | TouchEvent | null): unknown {
         return this.emit(name, {
             event: evt,
-            store: this._selection
+            store: this._selection,
+            selection: this
         });
     }
 
