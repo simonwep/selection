@@ -519,6 +519,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         // Hide selection area
         css(this._area, 'display', 'none');
+        this._keepSelection();
     }
 
     _updateElementSelection(): void {
@@ -588,30 +589,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         });
     }
 
-    /**
-     * Manually triggers the start of a selection
-     * @param evt A MouseEvent / TouchEvent -like object
-     * @param silent If beforestart should be fired,
-     */
-    trigger(evt: MouseEvent | TouchEvent, silent = true): void {
-        this._onTapStart(evt, silent);
-    }
-
-    /**
-     * Can be used if during a selection elements have been added.
-     * Will update everything which can be selected.
-     */
-    resolveSelectables(): void {
-
-        // Resolve selectors
-        this._selectables = selectAll(this._options.selectables, this._options.document);
-    }
-
-    /**
-     * Saves the current selection for the next selecion.
-     * Allows multiple selections.
-     */
-    keepSelection(): void {
+    _keepSelection(): void {
         const {_options, _selection} = this;
         const {selected, changed, touched, stored} = _selection;
 
@@ -644,6 +622,25 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 break;
             }
         }
+    }
+
+    /**
+     * Manually triggers the start of a selection
+     * @param evt A MouseEvent / TouchEvent -like object
+     * @param silent If beforestart should be fired,
+     */
+    trigger(evt: MouseEvent | TouchEvent, silent = true): void {
+        this._onTapStart(evt, silent);
+    }
+
+    /**
+     * Can be used if during a selection elements have been added.
+     * Will update everything which can be selected.
+     */
+    resolveSelectables(): void {
+
+        // Resolve selectors
+        this._selectables = selectAll(this._options.selectables, this._options.document);
     }
 
     /**

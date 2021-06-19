@@ -86,7 +86,7 @@ const selection = new SelectionArea({
 
     // Specifies what should be done if already selected elements get selected again.
     //   invert: Invert selection for elements which were already selected
-    //   keep: Make stored elements (by keepSelection()) 'fix'
+    //   keep: Keep selected elements (use clearSelection() to remove those)
     //   drop: Remove stored elements after they have been touched
     overlap: 'invert',
 
@@ -149,8 +149,7 @@ selection.on('beforestart', evt => {
     console.log('move', evt);
 }).on('stop', evt => {
 
-    // The last event can be used to call functions like keepSelection() in case the user wants
-    // to select multiple elements.
+    // Do something with the selected elements.
     console.log('stop', evt);
 });
 ```

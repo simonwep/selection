@@ -31,16 +31,11 @@ function SelectableArea({boxes, offset, className}: {
         });
     };
 
-    const onStop = ({selection}: SelectionEvent) => {
-        selection.keepSelection();
-    };
-
     return (
         <>
             <SelectionArea className={`container ${className}`}
                            onStart={onStart}
                            onMove={onMove}
-                           onStop={onStop}
                            selectables=".selectable">
                 {new Array(boxes).fill(0).map((_, index) => (
                     <div className={selected.has(index + offset) ? 'selected selectable' : 'selectable'}
