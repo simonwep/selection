@@ -1,4 +1,6 @@
-<br>
+<h3 align="center">
+    <img alt="Logo" src="https://user-images.githubusercontent.com/30767528/103286800-5a83fa00-49e1-11eb-8091-ef895c6f8241.png" width="300"/>
+</h3>
 
 <h3 align="center">
     Viselect - Vanilla
@@ -32,6 +34,7 @@ import SelectionArea from "https://cdn.jsdelivr.net/npm/@viselect/vanilla/lib/vi
 ### Getting started
 
 Last but not least you'll need to add some basic styles to make your selection-area visible:
+
 ```css
 .selection-area {
     background: rgba(46, 115, 252, 0.11);
@@ -45,13 +48,14 @@ This however can cause problems with the actual selection ("introduced" by [#99]
 If you don't care about text-selection, add the following to the container where all your selectables are located:
 
 ```css
-// Prevents any kind of text-selection
-user-select: none;
+.container {
+    user-select: none;
+}
 ```
 
-We can now create a new instance of it:
+### Usage
 
-```javascript
+```ts
 const selection = new SelectionArea({
 
     // document object - if you want to use it within an embed document (or iframe).
@@ -127,7 +131,7 @@ Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-li
 
 ### Example
 
-```js
+```ts
 selection.on('beforestart', evt => {
 
     // Use this event to decide whether a selection should take place or not.

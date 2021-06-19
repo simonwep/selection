@@ -1,7 +1,7 @@
 import {SelectionEvent} from '@vanilla/types';
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
-import {SelectionArea} from '../src';
+import SelectionArea from '../src';
 import './index.css';
 
 function SelectableArea({boxes, offset, className}: {

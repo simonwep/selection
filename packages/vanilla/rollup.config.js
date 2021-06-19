@@ -1,7 +1,7 @@
 import {terser} from 'rollup-plugin-terser';
 import ts from 'rollup-plugin-ts';
 import replace from '@rollup/plugin-replace';
-import {version, main, module} from './package.json';
+import {main, module, version} from './package.json';
 
 const banner = `/*! @viselect/vanilla ${version} MIT | https://github.com/Simonwep/selection */`;
 
