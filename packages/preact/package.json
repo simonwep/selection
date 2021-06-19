@@ -1,7 +1,7 @@
 {
-    "name": "@viselect/react",
+    "name": "@viselect/preact",
     "version": "2.1.2",
-    "description": "React wrapper around the viselect vanilla library",
+    "description": "Preact wrapper around the viselect vanilla library",
     "main": "./lib/viselect.min.js",
     "module": "./lib/viselect.min.mjs",
     "types": "./lib/viselect.min.d.ts",
@@ -19,7 +19,7 @@
         "src"
     ],
     "keywords": [
-        "react",
+        "preact",
         "viselect",
         "selecting",
         "js-utility",
@@ -30,14 +30,12 @@
     ],
     "devDependencies": {
         "@rollup/plugin-replace": "^2.4.2",
-        "@types/react": "^17.0.11",
-        "@types/react-dom": "^17.0.7",
         "@typescript-eslint/eslint-plugin": "^4.26.1",
         "@typescript-eslint/parser": "^4.26.1",
-        "@vitejs/plugin-react-refresh": "^1.3.3",
+        "@rollup/plugin-alias": "^3.1.2",
+        "@preact/preset-vite": "^2.1.0",
         "rollup-plugin-ts": "^1.4.0",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
+        "preact": "^10.5.13",
         "rollup": "^2.51.2",
         "rollup-plugin-terser": "^7.0.2",
         "typescript": "^4.3.2",

@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import ReactDOM from 'react-dom';
+import {render} from 'preact';
+import {useState} from 'preact/hooks';
 import SelectionArea, {SelectionEvent} from '../src';
 import './index.css';
 
@@ -44,12 +44,12 @@ function SelectableArea({boxes, offset, className}: {
     );
 }
 
-ReactDOM.render(
-    <React.StrictMode>
-        <h1>React</h1>
+render(
+    <>
+        <h1>Preact</h1>
         <SelectableArea boxes={42} offset={0} className="green"/>
         <SelectableArea boxes={42} offset={42} className="blue"/>
         <SelectableArea boxes={252} offset={82} className="red"/>
-    </React.StrictMode>,
+    </>,
     document.getElementById('root')
 );

@@ -53,7 +53,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         super();
 
         this._options = Object.assign({
-            class: 'selection-area',
+            areaClass: 'selection-area',
             document: window.document,
             intersect: 'touch',
             startThreshold: 10,
@@ -85,13 +85,14 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             }
         }
 
-        const {document} = this._options;
+        const {document, areaClass, containerClass} = this._options;
         this._area = document.createElement('div');
         this._clippingElement = document.createElement('div');
         this._clippingElement.appendChild(this._area);
 
         // Add class to the area element
-        this._area.classList.add(this._options.class);
+        this._area.classList.add(areaClass);
+        containerClass && this._clippingElement.classList.add(containerClass);
 
         // Apply basic styles to the area element
         css(this._area, {

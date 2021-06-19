@@ -54,7 +54,9 @@ export interface SingleTap {
 }
 
 export interface SelectionOptions {
-    class: string;
+    areaClass: string;
+    containerClass?: string;
+
     document: Document;
     intersect: Intersection;
     singleTap: SingleTap;
