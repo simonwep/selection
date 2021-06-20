@@ -1,8 +1,9 @@
+/* eslint-disable no-use-before-define */
 import VanillaSelectionArea from '@vanilla/index';
 import {SelectionEvents, SelectionOptions} from '@vanilla/types';
 import React, {createRef, useEffect} from 'react';
 
-export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'container'> {
+export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'> {
     className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];
     onStart?: SelectionEvents['start'];

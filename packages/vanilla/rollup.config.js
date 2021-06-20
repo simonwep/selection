@@ -8,6 +8,10 @@ const banner = `/*! @viselect/vanilla ${version} MIT | https://github.com/Simonw
 export default {
     input: 'src/index.ts',
     plugins: [
+        replace({
+            preventAssignment: true,
+            VERSION: JSON.stringify(version)
+        }),
         ts(),
         terser({
             mangle: {
@@ -16,10 +20,6 @@ export default {
                     regex: /^_/
                 }
             }
-        }),
-        replace({
-            preventAssignment: true,
-            VERSION: JSON.stringify(version)
         })
     ],
     output: [

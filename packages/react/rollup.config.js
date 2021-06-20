@@ -14,6 +14,10 @@ export default {
     input: 'src/index.tsx',
     external: Object.keys(externals),
     plugins: [
+        replace({
+            preventAssignment: true,
+            VERSION: JSON.stringify(version)
+        }),
         ts(),
         terser({
             mangle: {
@@ -22,10 +26,6 @@ export default {
                     regex: /^_/
                 }
             }
-        }),
-        replace({
-            preventAssignment: true,
-            VERSION: JSON.stringify(version)
         })
     ],
     output: [

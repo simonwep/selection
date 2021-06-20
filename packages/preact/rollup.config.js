@@ -15,6 +15,10 @@ export default {
     input: 'src/index.tsx',
     external: Object.keys(externals),
     plugins: [
+        replace({
+            preventAssignment: true,
+            VERSION: JSON.stringify(version)
+        }),
         alias({
             entries: [
                 {find: 'react', replacement: 'preact/compat'}
@@ -28,10 +32,6 @@ export default {
                     regex: /^_/
                 }
             }
-        }),
-        replace({
-            preventAssignment: true,
-            VERSION: JSON.stringify(version)
         })
     ],
     output: [
