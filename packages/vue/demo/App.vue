@@ -33,7 +33,7 @@ import SelectionArea from '../src/SelectionArea.vue';
 export default {
     components: {SelectionArea},
 
-    data() {
+    data(): {selected: Set<number>} {
         return {
             selected: new Set()
         };
@@ -47,14 +47,14 @@ export default {
                 .map(Number);
         },
 
-        onStart({event, selection}: SelectionEvent) {
+        onStart({event, selection}: SelectionEvent): void {
             if (!event?.ctrlKey && !event?.metaKey) {
                 selection.clearSelection();
                 this.selected.clear();
             }
         },
 
-        onMove({store: {changed: {added, removed}}}: SelectionEvent) {
+        onMove({store: {changed: {added, removed}}}: SelectionEvent): void {
             this.extractIds(added).forEach(id => this.selected.add(id));
             this.extractIds(removed).forEach(id => this.selected.delete(id));
         },

@@ -100,6 +100,8 @@ export function eventPath(evt: any): Array<EventTarget> {
 
     let el = evt.target.parentElement;
     path = [evt.target, el];
+
+    /* eslint-disable no-cond-assign */
     while (el = el.parentElement) {
         path.push(el);
     }

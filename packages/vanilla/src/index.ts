@@ -447,7 +447,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {_scrollSpeed, _areaLocation, _areaRect, _targetElement, _targetRect} = this;
         const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = _targetElement as Element;
         const brect = _targetRect as DOMRect;
-        let {x1, y1, x2, y2} = _areaLocation;
+        const {x1, y1} = _areaLocation;
+        let {x2, y2} = _areaLocation;
 
         if (x2 < brect.left) {
             _scrollSpeed.x = scrollLeft ? -abs(brect.left - x2) : 0;

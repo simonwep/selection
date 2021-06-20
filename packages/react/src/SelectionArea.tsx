@@ -14,6 +14,7 @@ export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'bou
 export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props => {
     const root = createRef<HTMLDivElement>();
 
+    /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
         const {onBeforeStart, onStart, onMove, onStop, ...opt} = props;
         const areaBoundaries = root.current as HTMLElement;
