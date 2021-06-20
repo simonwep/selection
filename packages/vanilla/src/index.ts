@@ -1,6 +1,6 @@
 import {css, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 import {EventTarget} from './EventEmitter';
-import {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
+import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 
 // Re-export types
 export * from './types';

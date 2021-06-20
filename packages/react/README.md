@@ -17,7 +17,7 @@
         src="https://img.shields.io/badge/github-support-6a15cc.svg"></a>
     <a href="https://www.buymeacoffee.com/aVc3krbXQ"><img
         alt="Buy me a coffee"
-        src="https://img.shields.io/badge/%F0%9F%8D%BA-Buy%20me%20a%20beer-%23FFDD00"></a>
+        src="https://img.shields.io/badge/%F0%9F%8D%BA-buy%20me%20a%20beer-%23FFDD00"></a>
     <a href="https://github.com/Simonwep/selection/actions?query=workflow%3ACI"><img
         alt="Build Status"
         src="https://github.com/Simonwep/selection/workflows/CI/badge.svg"></a>

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {Properties} from 'csstype';
+import type {Properties} from 'csstype';
 
 const unitify = (val: string | number, unit = 'px'): string => {
     return typeof val === 'number' ? val + unit : val;

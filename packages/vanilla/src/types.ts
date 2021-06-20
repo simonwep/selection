@@ -1,5 +1,5 @@
-import SelectionArea from '@vanilla/index';
-import {Intersection} from './utils';
+import type SelectionArea from '@vanilla/index';
+import type {Intersection} from './utils';
 
 type Quantify<T> = ReadonlyArray<T> | T;
 

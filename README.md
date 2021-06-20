@@ -17,7 +17,7 @@
         src="https://img.shields.io/badge/github-support-6a15cc.svg"></a>
     <a href="https://www.buymeacoffee.com/aVc3krbXQ"><img
         alt="Buy me a coffee"
-        src="https://img.shields.io/badge/%F0%9F%8D%BA-Buy%20me%20a%20beer-%23FFDD00"></a>
+        src="https://img.shields.io/badge/%F0%9F%8D%BA-buy%20me%20a%20beer-%23FFDD00"></a>
     <a href="https://github.com/Simonwep/selection/actions?query=workflow%3ACI"><img
         alt="Build Status"
         src="https://github.com/Simonwep/selection/workflows/CI/badge.svg"></a>
@@ -53,7 +53,7 @@
 
 Check out the documentation for the package you want to use:
 
-* [@viselect/vanilla](packages/vanilla) ([demo](https://codesandbox.io/s/viselectvanilla-kt332?file=/src/main.ts)) - To be used with [plain JavaScript](http://vanilla-js.com/) / TypeScript without any framework.
+* [@viselect/vanilla](packages/vanilla) ([demo](https://codesandbox.io/s/viselectvanilla-kt332?file=/src/main.ts)) - To be used with plain [JavaScript](http://vanilla-js.com/) or [TypeScript](https://www.typescriptlang.org/).
 * [@viselect/preact](packages/preact) ([demo](https://codesandbox.io/s/viselectpreact-kjo9e?file=/src/app.tsx)) - [Preact](https://preactjs.com/) wrapper.
 * [@viselect/react](packages/react) ([demo](https://codesandbox.io/s/viselectreact-sbn83?file=/src/App.tsx)) - [React](https://reactjs.org/) wrapper.
 * [@viselect/vue](packages/vue) ([demo](https://codesandbox.io/s/viselectvue-x13g6?file=/src/App.vue)) - [Vue3](https://v3.vuejs.org/) wrapper.
