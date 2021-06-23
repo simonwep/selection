@@ -1,0 +1,26 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+        "../../.eslintrc",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "plugins": [
+        "svelte3",
+        "@typescript-eslint"
+    ],
+    "parserOptions": {
+        "project": "./tsconfig.json",
+        "sourceType": "module",
+        "ecmaVersion": 2019
+    },
+    "overrides": [
+        {
+            "files": ["*.svelte"],
+            "processor": "svelte3/svelte3"
+        }
+    ],
+    "settings": {
+        "svelte3/typescript": true
+    }
+}

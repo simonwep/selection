@@ -1,0 +1,13 @@
+{
+    "extends": "@tsconfig/svelte/tsconfig.json",
+    "compilerOptions": {
+        "types": ["svelte"],
+        "declaration": true,
+        "declarationDir": "lib",
+        "skipLibCheck": true
+    },
+    "include": [
+        "demo/**/*.d.ts", "demo/**/*.ts", "demo/**/*.js", "demo/**/*.svelte",
+        "src/**/*.d.ts", "src/**/*.ts", "src/**/*.js", "src/**/*.svelte"
+    ]
+}
