@@ -1,5 +1,5 @@
 <h3 align="center">
-    <img alt="Logo" src="https://user-images.githubusercontent.com/30767528/103286800-5a83fa00-49e1-11eb-8091-ef895c6f8241.png" width="400"/>
+    <img alt="Logo" src="https://user-images.githubusercontent.com/30767528/123517467-622b0f80-d6a1-11eb-9bf3-abcb4928a89e.png" width="400"/>
 </h3>
 
 <h3 align="center">
@@ -38,6 +38,9 @@
     <a href="https://lit-element.polymer-project.org"><img
         alt="Lit-Element support"
         src="https://img.shields.io/badge/%E2%9A%99-lit--element-%233CA4F6"></a>
+    <a href="https://lit-element.polymer-project.org"><img
+        alt="Lit-Element support"
+        src="https://img.shields.io/badge/%E2%9A%99-angular-%23c3002f"></a>
 </p>
 
 ### Features 🤘
@@ -48,6 +51,7 @@
 * ✔ Zero dependencies
 * 📱 Mobile / touch support
 * 🖱 Vertical and horizontal scroll support
+* 🖼 Support for major frameworks (WIP)
 
 ### Getting started
 
@@ -68,3 +72,7 @@ Check out the documentation for the package you want to use:
 This library will always have `currentYear - 1` as its target. For 2021 for example the target will be ES2020. It always provides both a `UMD` (`.js`) and `.mjs` version. If you want to support legacy browsers, please use the feature of your bundler to transpile dependencie. In case of webpack and babel (give [vite](https://vitejs.dev/) a try, it's awesome) you'll have to install corresponding plugins such as [babel-plugin-proposal-optional-chaining](https://babeljs.io/docs/en/babel-plugin-proposal-optional-chaining) and include the dependency from `node_modules` which is normally entirely excluded from being processed.
 
 I do this to provide maximum flexibility and give those who target ESNext a chance to make full use of how this library is bundled. Everything else is just a matter of configuration :)
+
+### You want to contribute?
+
+That's awesome! Check out the [contribution guidelines](./.github/CONTRIBUTING.md) to get started :)
