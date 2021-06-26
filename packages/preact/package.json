@@ -23,12 +23,13 @@
     "keywords": [
         "preact",
         "viselect",
+        "typescript",
         "selecting",
-        "js-utility",
+        "selection",
         "user-selection",
-        "ui",
         "user-interface",
-        "ui-library"
+        "ui-library",
+        "ui"
     ],
     "devDependencies": {
         "@preact/preset-vite": "^2.1.0",

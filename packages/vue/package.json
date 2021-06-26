@@ -21,13 +21,17 @@
         "src"
     ],
     "keywords": [
+        "vue",
+        "vuejs",
+        "vue3",
         "viselect",
+        "typescript",
         "selecting",
-        "js-utility",
+        "selection",
         "user-selection",
-        "ui",
         "user-interface",
-        "ui-library"
+        "ui-library",
+        "ui"
     ],
     "devDependencies": {
         "@rollup/plugin-replace": "^2.4.2",
