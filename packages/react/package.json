@@ -1,6 +1,6 @@
 {
     "name": "@viselect/react",
-    "version": "2.1.2",
+    "version": "3.0.0-beta.0",
     "description": "React wrapper around the viselect vanilla library",
     "main": "./lib/viselect.min.js",
     "module": "./lib/viselect.min.mjs",
