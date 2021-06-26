@@ -1,7 +1,3 @@
-/**
- * Creator: Simon R.
- */
-
 ::-webkit-scrollbar {
     width: 0.5em;
     height: 0.55em;
@@ -19,8 +15,8 @@
 
 :root {
     --c-text: #42445a;
-    --c-primary: #6942f4;
-    --c-primary-accent: #846ce2;
+    --c-primary: #337bff;
+    --c-primary-accent: #5084e2;
 }
 
 * {
@@ -47,17 +43,13 @@ header {
 
 header h1 {
     font-size: 1em;
-    font-weight: lighter;
+    font-weight: normal;
     color: var(--c-text);
 }
 
-header h1 span {
-    color: var(--c-primary);
-    font-weight: normal;
-}
-
 header a {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     text-decoration: none;
     font-weight: 500;
     font-size: 0.3em;
@@ -67,11 +59,18 @@ header a {
     transition: 0.3s all;
     background: var(--c-primary);
     border-radius: 50em;
-    box-shadow: 0 2px 15px var(--c-primary-accent);
+    box-shadow: 0 1px 5px var(--c-primary-accent);
+}
+
+header a svg {
+    width: 24px;
+    height: 24px;
+    margin-right: 0.75rem;
 }
 
 header a:hover {
-    filter: brightness(0.9);
+    filter: brightness(1.1);
+    box-shadow: 0 2px 8px var(--c-primary-accent);
 }
 
 h2 {
@@ -85,9 +84,8 @@ main {
     width: 100%;
     max-width: 50em;
     margin: 1.5em auto;
+    padding-bottom: 10rem;
 }
-
-/* details */
 
 main section.demo .info {
     text-align: center;
@@ -185,48 +183,4 @@ main section.demo .info p {
     border: 1px solid var(--c-primary);
     border-bottom: 3px solid var(--c-primary);
     border-radius: 2px;
-}
-
-.gist {
-    margin-top: 2em;
-}
-
-.gist .js-line-number {
-    opacity: 0.65;
-}
-
-.js-file-line-container,
-.gist-file,
-.gist-data,
-.gist-meta {
-    background: transparent !important;
-    border: none !important;
-}
-
-@media only screen and (max-width: 1000px) {
-
-    header {
-        padding: 1em 0 0 0;
-    }
-
-    header h1 {
-        font-size: 0.8em;
-    }
-
-    main section.demo .info {
-        font-size: 0.8em;
-    }
-
-    main .boxes {
-        margin: 0 0.5em;
-    }
-
-    main .boxes.green {
-        display: none !important;
-    }
-
-    main .boxes div {
-        height: 2em;
-        width: 2em;
-    }
 }
