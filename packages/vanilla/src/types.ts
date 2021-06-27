@@ -58,7 +58,8 @@ export interface SingleTap {
 }
 
 export interface Features {
-    tap: SingleTap;
+    singleTap: SingleTap;
+    range: boolean;
     touch: boolean;
 }
 

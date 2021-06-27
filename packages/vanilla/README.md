@@ -153,8 +153,11 @@ const selection = new SelectionArea({
         // Enable / disable touch support.
         touch: true,
 
+        // Range selection.
+        range: true,
+
         // Configuration in case a selectable gets just clicked.
-        tap: {
+        singleTap: {
 
             // Enable single-click selection (Also disables range-selection via shift + ctrl).
             allow: true,

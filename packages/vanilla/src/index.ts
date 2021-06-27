@@ -71,7 +71,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             features: {
                 range: true,
                 touch: true,
-                tap: {
+                singleTap: {
                     allow: true,
                     intersect: 'native'
                 }
@@ -174,16 +174,16 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _onSingleTap(evt: MouseEvent | TouchEvent): void {
-        const {intersect} = this._options.features.tap;
-        const spl = simplifyEvent(evt);
+        const {singleTap: {intersect}, range} = this._options.features;
+        const e = simplifyEvent(evt);
         let target = null;
 
         if (intersect === 'native') {
-            target = spl.target;
+            target = e.target;
         } else if (intersect === 'touch') {
             this.resolveSelectables();
 
-            const {x, y} = spl;
+            const {x, y} = e;
             target = this._selectables.find(v => {
                 const {right, left, top, bottom} = v.getBoundingClientRect();
                 return x < right && x > left && y < bottom && y > top;
@@ -216,7 +216,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         // Emit event and process element
         this._emitEvent('start', evt);
-        if (evt.shiftKey && stored.length) {
+        if (evt.shiftKey && stored.length && range) {
             const reference = stored[stored.length - 1];
 
             // Resolve correct range
@@ -507,7 +507,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
         off(document, 'scroll', this._onScroll);
 
-        if (evt && _singleClick && features.tap.allow) {
+        if (evt && _singleClick && features.singleTap.allow) {
             this._onSingleTap(evt);
         } else if (!_singleClick && !silent) {
             this._updateElementSelection();
