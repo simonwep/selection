@@ -98,8 +98,11 @@ const selection = new SelectionArea({
     // document object - if you want to use it within an embed document (or iframe).
     document: window.document,
 
-    // Class for the selection-area element.
-    class: 'selection-area',
+    // Class for the selection-area itself (the element).
+    selectionAreaClass: 'selection-area',
+
+    // Class for the selection-area container.
+    selectionContainerClass: 'selection-area-container',
 
     // Query selector or dom-node to set up container for the selection-area element.
     container: 'body',
