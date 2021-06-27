@@ -1,6 +1,6 @@
 import {EventTarget} from './EventEmitter';
 import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
-import {DeepPartial} from './types';
+import {PartialSelectionOptions} from './types';
 import {css, deepAssign, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 
 // Re-export types
@@ -50,7 +50,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     private _scrollSpeed: Coordinates = {x: 0, y: 0};
     private _scrollDelta: Coordinates = {x: 0, y: 0};
 
-    constructor(opt: DeepPartial<SelectionOptions>) {
+    constructor(opt: PartialSelectionOptions) {
         super();
 
         this._options = deepAssign<SelectionOptions>({

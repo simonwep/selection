@@ -3,9 +3,10 @@ import type {Intersection} from './utils';
 
 export type Quantify<T> = ReadonlyArray<T> | T;
 
-export type DeepPartial<T> = {
-    [P in keyof T]?: DeepPartial<T[P]>;
-};
+export interface ScrollEvent extends MouseEvent {
+    deltaY: number;
+    deltaX: number;
+}
 
 export interface ChangedElements {
     added: Array<Element>;
@@ -85,7 +86,7 @@ export interface SelectionOptions {
     features: Features;
 }
 
-export interface ScrollEvent extends MouseEvent {
-    deltaY: number;
-    deltaX: number;
+export type PartialSelectionOptions = Partial<SelectionOptions> & {
+    behaviour?: Partial<Behaviour>;
+    features?: Partial<Features>;
 }
