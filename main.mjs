@@ -32,6 +32,4 @@ const selection = new SelectionArea({
     for (const el of removed) {
         el.classList.remove('selected');
     }
-}).on('stop', () => {
-    selection.keepSelection();
 });
