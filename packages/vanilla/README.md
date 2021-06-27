@@ -55,10 +55,10 @@ $ npm install @viselect/vanilla
 $ yarn add @viselect/vanilla
 ```
 
-
 #### Via script tags
 
 ```html
+
 <script src="https://cdn.jsdelivr.net/npm/@viselect/vanilla/lib/viselect.min.js"></script>
 ```
 
@@ -80,9 +80,9 @@ Last but not least you'll need to add some basic styles to make your selection-a
 }
 ```
 
-Additionally, to not interfere with text-selection, selection-js won't prevent any default events anymore (as of `v2.0.3`).
-This however can cause problems with the actual selection ("introduced" by [#99](https://github.com/Simonwep/selection/pull/99), reported in [#103](https://github.com/Simonwep/selection/issues/103)).
-If you don't care about text-selection, add the following to the container where all your selectables are located:
+Additionally, to not interfere with text-selection, selection-js won't prevent any default events anymore (as of `v2.0.3`). This however can cause problems with the actual
+selection ("introduced" by [#99](https://github.com/Simonwep/selection/pull/99), reported in [#103](https://github.com/Simonwep/selection/issues/103)). If you don't care about
+text-selection, add the following to the container where all your selectables are located:
 
 ```css
 .container {
@@ -95,9 +95,6 @@ If you don't care about text-selection, add the following to the container where
 ```ts
 const selection = new SelectionArea({
 
-    // document object - if you want to use it within an embed document (or iframe).
-    document: window.document,
-
     // Class for the selection-area itself (the element).
     selectionAreaClass: 'selection-area',
 
@@ -106,6 +103,9 @@ const selection = new SelectionArea({
 
     // Query selector or dom-node to set up container for the selection-area element.
     container: 'body',
+
+    // document object - if you want to use it within an embed document (or iframe).
+    document: window.document,
 
     // Query selectors for elements which can be selected.
     selectables: [],
@@ -116,50 +116,59 @@ const selection = new SelectionArea({
     // Query selectors for elements which will be used as boundaries for the selection.
     boundaries: ['html'],
 
-    // px, how many pixels the point should move before starting the selection (combined distance).
-    // Or specifiy the threshold for each axis by passing an object like {x: <number>, y: <number>}.
-    startThreshold: 10,
+    // Behaviour related options.
+    behaviour: {
 
-    // Enable / disable touch support
-    allowTouch: true,
+        // Specifies what should be done if already selected elements get selected again.
+        //   invert: Invert selection for elements which were already selected
+        //   keep: Keep selected elements (use clearSelection() to remove those)
+        //   drop: Remove stored elements after they have been touched
+        overlap: 'invert',
 
-    // On which point an element should be selected.
-    // Available modes are cover (cover the entire element), center (touch the center) or
-    // the default mode is touch (just touching it).
-    intersect: 'touch',
+        // On which point an element should be selected.
+        // Available modes are cover (cover the entire element), center (touch the center) or
+        // the default mode is touch (just touching it).
+        intersect: 'touch',
 
-    // Specifies what should be done if already selected elements get selected again.
-    //   invert: Invert selection for elements which were already selected
-    //   keep: Keep selected elements (use clearSelection() to remove those)
-    //   drop: Remove stored elements after they have been touched
-    overlap: 'invert',
+        // px, how many pixels the point should move before starting the selection (combined distance).
+        // Or specifiy the threshold for each axis by passing an object like {x: <number>, y: <number>}.
+        startThreshold: 10,
 
-    // Configuration in case a selectable gets just clicked.
-    singleTap: {
+        // Scroll configuration.
+        scrolling: {
 
-        // Enable single-click selection (Also disables range-selection via shift + ctrl).
-        allow: true,
+            // On scrollable areas the number on px per frame is devided by this amount.
+            // Default is 10 to provide a enjoyable scroll experience.
+            speedDivider: 10,
 
-        // 'native' (element was mouse-event target) or 'touch' (element visually touched).
-        intersect: 'native'
+            // Browsers handle mouse-wheel events differently, this number will be used as 
+            // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider.
+            manualSpeed: 750
+        }
     },
 
-    // Scroll configuration.
-    scrolling: {
+    // Features.
+    features: {
 
-        // On scrollable areas the number on px per frame is devided by this amount.
-        // Default is 10 to provide a enjoyable scroll experience.
-        speedDivider: 10,
+        // Enable / disable touch support.
+        touch: true,
 
-        // Browsers handle mouse-wheel events differently, this number will be used as 
-        // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider.
-        manualSpeed: 750
+        // Configuration in case a selectable gets just clicked.
+        tap: {
+
+            // Enable single-click selection (Also disables range-selection via shift + ctrl).
+            allow: true,
+
+            // 'native' (element was mouse-event target) or 'touch' (element visually touched).
+            intersect: 'native'
+        }
     }
 });
 
 ```
 
 ## Events
+
 Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-listener.
 
 | Event          | Description |

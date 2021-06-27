@@ -1,7 +1,11 @@
 import type SelectionArea from '@vanilla/index';
 import type {Intersection} from './utils';
 
-type Quantify<T> = ReadonlyArray<T> | T;
+export type Quantify<T> = ReadonlyArray<T> | T;
+
+export type DeepPartial<T> = {
+    [P in keyof T]?: DeepPartial<T[P]>;
+};
 
 export interface ChangedElements {
     added: Array<Element>;
@@ -53,23 +57,31 @@ export interface SingleTap {
     intersect: TapMode;
 }
 
+export interface Features {
+    tap: SingleTap;
+    touch: boolean;
+}
+
+export interface Behaviour {
+    intersect: Intersection;
+    startThreshold: number | Coordinates;
+    overlap: OverlapMode;
+    scrolling: Scrolling;
+}
+
 export interface SelectionOptions {
     selectionAreaClass: string;
     selectionContainerClass?: string;
+    container: Quantify<string | HTMLElement>;
 
     document: Document;
-    intersect: Intersection;
-    singleTap: SingleTap;
-    startThreshold: number | Coordinates;
-    allowTouch: boolean;
-    overlap: OverlapMode;
-
     selectables: Quantify<string>;
-    scrolling: Scrolling;
 
     startareas: Quantify<string | HTMLElement>;
     boundaries: Quantify<string | HTMLElement>;
-    container: Quantify<string | HTMLElement>;
+
+    behaviour: Behaviour;
+    features: Features;
 }
 
 export interface ScrollEvent extends MouseEvent {

@@ -1,6 +1,7 @@
-import {css, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 import {EventTarget} from './EventEmitter';
 import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
+import {DeepPartial} from './types';
+import {css, deepAssign, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 
 // Re-export types
 export * from './types';
@@ -49,27 +50,31 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     private _scrollSpeed: Coordinates = {x: 0, y: 0};
     private _scrollDelta: Coordinates = {x: 0, y: 0};
 
-    constructor(opt: Partial<SelectionOptions>) {
+    constructor(opt: DeepPartial<SelectionOptions>) {
         super();
 
-        this._options = Object.assign({
+        this._options = deepAssign<SelectionOptions>({
             selectionAreaClass: 'selection-area',
-            document: window.document,
-            intersect: 'touch',
-            startThreshold: 10,
-            singleClick: true,
-            allowTouch: true,
-            overlap: 'invert',
             selectables: [],
+            document: window.document,
 
-            singleTap: {
-                allow: true,
-                intersect: 'native'
+            behaviour: {
+                overlap: 'invert',
+                intersect: 'touch',
+                startThreshold: 10,
+                scrolling: {
+                    speedDivider: 10,
+                    manualSpeed: 750
+                }
             },
 
-            scrolling: {
-                speedDivider: 10,
-                manualSpeed: 750
+            features: {
+                range: true,
+                touch: true,
+                tap: {
+                    allow: true,
+                    intersect: 'native'
+                }
             },
 
             startareas: ['html'],
@@ -114,11 +119,11 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _bindStartEvents(activate = true): void {
-        const {document, allowTouch} = this._options;
+        const {document, features} = this._options;
         const fn = activate ? on : off;
 
         fn(document, 'mousedown', this._onTapStart);
-        allowTouch && fn(document, 'touchstart', this._onTapStart, {
+        features.touch && fn(document, 'touchstart', this._onTapStart, {
             passive: false
         });
     }
@@ -169,7 +174,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _onSingleTap(evt: MouseEvent | TouchEvent): void {
-        const {intersect} = this._options.singleTap;
+        const {intersect} = this._options.features.tap;
         const spl = simplifyEvent(evt);
         let target = null;
 
@@ -234,7 +239,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {
-        const {startThreshold, container, document, allowTouch} = this._options;
+        const {container, document, features, behaviour: {startThreshold}} = this._options;
         const {x1, y1} = this._areaLocation; // Coordinates of first "tap"
         const {x, y} = simplifyEvent(evt);
 
@@ -291,7 +296,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._onTapMove(evt);
         }
 
-        if (allowTouch && isTouchDevice) {
+        if (features.touch && isTouchDevice) {
             evt.preventDefault(); // Prevent swipe-down refresh
         }
     }
@@ -345,8 +350,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     _onTapMove(evt: MouseEvent | TouchEvent): void {
         const {x, y} = simplifyEvent(evt);
         const {_scrollSpeed, _areaLocation, _options} = this;
-        const {allowTouch} = _options;
-        const {speedDivider} = _options.scrolling;
+        const {features} = _options;
+        const {speedDivider} = _options.behaviour.scrolling;
         const scon = this._targetElement as Element;
 
         _areaLocation.x2 = x;
@@ -404,7 +409,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._redrawSelectionArea();
         }
 
-        if (allowTouch && isTouchDevice) {
+        if (features.touch && isTouchDevice) {
             evt.preventDefault(); // Prevent swipe-down refresh
         }
     }
@@ -430,7 +435,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _manualScroll(evt: ScrollEvent): void {
-        const {manualSpeed} = this._options.scrolling;
+        const {manualSpeed} = this._options.behaviour.scrolling;
 
         // Consistent scrolling speed on all browsers
         const deltaY = evt.deltaY ? (evt.deltaY > 0 ? 1 : -1) : 0;
@@ -493,7 +498,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _onTapStop(evt: MouseEvent | TouchEvent | null, silent: boolean): void {
-        const {document, singleTap} = this._options;
+        const {document, features} = this._options;
         const {_singleClick} = this;
 
         // Remove event handlers
@@ -502,7 +507,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
         off(document, 'scroll', this._onScroll);
 
-        if (evt && _singleClick && singleTap.allow) {
+        if (evt && _singleClick && features.tap.allow) {
             this._onSingleTap(evt);
         } else if (!_singleClick && !silent) {
             this._updateElementSelection();
@@ -527,7 +532,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     _updateElementSelection(): void {
         const {_selectables, _options, _selection, _areaRect} = this;
         const {stored, selected, touched} = _selection;
-        const {intersect, overlap} = _options;
+        const {intersect, overlap} = _options.behaviour;
 
         // Update
         const newlyTouched = [];
@@ -598,10 +603,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         // Newly added elements
         const addedElements = selected.filter(el => !stored.includes(el));
 
-        switch (_options.overlap) {
+        switch (_options.behaviour.overlap) {
             case 'drop': {
                 _selection.stored = addedElements.concat(
-
                     // Elements not touched
                     stored.filter(el => !touched.includes(el))
                 );
@@ -609,7 +613,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             }
             case 'invert': {
                 _selection.stored = addedElements.concat(
-
                     // Elements not removed from selection
                     stored.filter(el => !changed.removed.includes(el))
                 );
@@ -617,7 +620,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             }
             case 'keep': {
                 _selection.stored = stored.concat(
-
                     // Newly added
                     selected.filter(el => !stored.includes(el))
                 );
