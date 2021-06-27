@@ -35,14 +35,16 @@ export default {
             name: 'SelectionArea',
             format: 'umd',
             sourcemap: true,
-            globals: externals
+            globals: externals,
+            exports: 'named'
         },
         {
             banner,
             file: module,
             format: 'es',
             sourcemap: true,
-            globals: externals
+            globals: externals,
+            exports: 'named'
         }
     ]
 };

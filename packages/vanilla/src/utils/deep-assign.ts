@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const deepAssign = <O>(target: O, source: any): O => {
     const result: Record<any, unknown> = {};
 
