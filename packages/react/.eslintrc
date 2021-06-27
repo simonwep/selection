@@ -1,0 +1,30 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+        "../../.eslintrc",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended"
+    ],
+    "plugins": [
+        "react",
+        "@typescript-eslint"
+    ],
+    "parserOptions": {
+        "project": "./tsconfig.json",
+        "sourceType": "module",
+        "ecmaVersion": 2018,
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "settings": {
+        "react": {
+            "version": "latest"
+        }
+    },
+    "rules": {
+        "react/prop-types": "off"
+    }
+}

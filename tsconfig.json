@@ -13,14 +13,12 @@
         "noUnusedParameters": true,
         "noImplicitReturns": true,
         "declaration": true,
-        "declarationDir": "lib",
         "noImplicitAny": true,
         "baseUrl": ".",
+        "jsx": "react",
         "paths": {
-            "@utils": ["src/utils/index.ts"]
+            "@vanilla/*": ["packages/vanilla/src/*"],
+            "@react/*": ["packages/react/src/*"]
         }
-    },
-    "include": [
-        "src/**/*.ts"
-    ]
+    }
 }

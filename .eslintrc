@@ -1,27 +1,15 @@
 {
-    "parser": "@typescript-eslint/parser",
+    "globals": {
+        "VERSION": true
+    },
     "env": {
         "browser": true,
         "node": true
     },
     "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended",
-        "simon"
+        "eslint:recommended"
     ],
-    "plugins": [
-        "@typescript-eslint"
-    ],
-    "globals": {
-        "VERSION": true
-    },
-    "parserOptions": {
-        "project": "./tsconfig.json",
-        "sourceType": "module",
-        "ecmaVersion": 2018
-    },
     "rules": {
-        "@typescript-eslint/no-non-null-assertion": "off"
+        "no-console": "error"
     }
 }

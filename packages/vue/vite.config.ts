@@ -1,17 +1,20 @@
+import vue from '@vitejs/plugin-vue';
 import {resolve} from 'path';
 import {defineConfig} from 'vite';
 import {version} from './package.json';
 
 export default defineConfig({
+    root: './demo',
+    plugins: [vue()],
+
     resolve: {
-        extensions: ['.ts'],
         alias: {
-            '@utils': resolve('./src/utils')
+            '@vanilla': resolve(__dirname, '../vanilla/src')
         }
     },
 
     server: {
-        port: 3005
+        port: 3008
     },
 
     define: {

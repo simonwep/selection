@@ -1,6 +1,6 @@
-import {css, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from '@utils';
+import {css, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 import {EventTarget} from './EventEmitter';
-import {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
+import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 
 // Re-export types
 export * from './types';
@@ -53,7 +53,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         super();
 
         this._options = Object.assign({
-            class: 'selection-area',
+            areaClass: 'selection-area',
             document: window.document,
             intersect: 'touch',
             startThreshold: 10,
@@ -85,13 +85,14 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             }
         }
 
-        const {document} = this._options;
+        const {document, areaClass, containerClass} = this._options;
         this._area = document.createElement('div');
         this._clippingElement = document.createElement('div');
         this._clippingElement.appendChild(this._area);
 
         // Add class to the area element
-        this._area.classList.add(this._options.class);
+        this._area.classList.add(areaClass);
+        containerClass && this._clippingElement.classList.add(containerClass);
 
         // Apply basic styles to the area element
         css(this._area, {
@@ -446,7 +447,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {_scrollSpeed, _areaLocation, _areaRect, _targetElement, _targetRect} = this;
         const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = _targetElement as Element;
         const brect = _targetRect as DOMRect;
-        let {x1, y1, x2, y2} = _areaLocation;
+        const {x1, y1} = _areaLocation;
+        let {x2, y2} = _areaLocation;
 
         if (x2 < brect.left) {
             _scrollSpeed.x = scrollLeft ? -abs(brect.left - x2) : 0;
@@ -519,6 +521,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         // Hide selection area
         css(this._area, 'display', 'none');
+        this._keepSelection();
     }
 
     _updateElementSelection(): void {
@@ -583,34 +586,12 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     _emitEvent(name: keyof SelectionEvents, evt: MouseEvent | TouchEvent | null): unknown {
         return this.emit(name, {
             event: evt,
-            store: this._selection
+            store: this._selection,
+            selection: this
         });
     }
 
-    /**
-     * Manually triggers the start of a selection
-     * @param evt A MouseEvent / TouchEvent -like object
-     * @param silent If beforestart should be fired,
-     */
-    trigger(evt: MouseEvent | TouchEvent, silent = true): void {
-        this._onTapStart(evt, silent);
-    }
-
-    /**
-     * Can be used if during a selection elements have been added.
-     * Will update everything which can be selected.
-     */
-    resolveSelectables(): void {
-
-        // Resolve selectors
-        this._selectables = selectAll(this._options.selectables, this._options.document);
-    }
-
-    /**
-     * Saves the current selection for the next selecion.
-     * Allows multiple selections.
-     */
-    keepSelection(): void {
+    _keepSelection(): void {
         const {_options, _selection} = this;
         const {selected, changed, touched, stored} = _selection;
 
@@ -643,6 +624,25 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 break;
             }
         }
+    }
+
+    /**
+     * Manually triggers the start of a selection
+     * @param evt A MouseEvent / TouchEvent -like object
+     * @param silent If beforestart should be fired,
+     */
+    trigger(evt: MouseEvent | TouchEvent, silent = true): void {
+        this._onTapStart(evt, silent);
+    }
+
+    /**
+     * Can be used if during a selection elements have been added.
+     * Will update everything which can be selected.
+     */
+    resolveSelectables(): void {
+
+        // Resolve selectors
+        this._selectables = selectAll(this._options.selectables, this._options.document);
     }
 
     /**

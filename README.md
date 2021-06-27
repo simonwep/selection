@@ -1,5 +1,5 @@
 <h3 align="center">
-    <img alt="Logo" src="https://user-images.githubusercontent.com/30767528/103286800-5a83fa00-49e1-11eb-8091-ef895c6f8241.png" width="400"/>
+    <img alt="Logo" src="https://user-images.githubusercontent.com/30767528/123517467-622b0f80-d6a1-11eb-9bf3-abcb4928a89e.png" width="400"/>
 </h3>
 
 <h3 align="center">
@@ -9,242 +9,88 @@
 <p align="center">
     <a href="https://choosealicense.com/licenses/mit/"><img
         alt="License MIT"
-        src="https://img.shields.io/badge/licence-MIT-ae15cc.svg"></a>
+        src="https://img.shields.io/badge/license-MIT-ae15cc.svg"></a>
     <img alt="No dependencies"
         src="https://img.shields.io/badge/dependencies-none-8115cc.svg">
     <a href="https://github.com/sponsors/Simonwep"><img
         alt="Support me"
         src="https://img.shields.io/badge/github-support-6a15cc.svg"></a>
-    <a href="https://www.jsdelivr.com/package/npm/@simonwep/selection-js"><img
-        alt="jsdelivr hits"
-        src="https://img.shields.io/jsdelivr/npm/hm/@simonwep/selection-js"></a>
+    <a href="https://www.buymeacoffee.com/aVc3krbXQ"><img
+        alt="Buy me a coffee"
+        src="https://img.shields.io/badge/%F0%9F%8D%BA-buy%20me%20a%20beer-%23FFDD00"></a>
     <a href="https://github.com/Simonwep/selection/actions?query=workflow%3ACI"><img
         alt="Build Status"
         src="https://github.com/Simonwep/selection/workflows/CI/badge.svg"></a>
-    <a href="https://www.npmjs.com/package/@simonwep/selection-js"><img
-        alt="downloads per week"
-        src="https://img.shields.io/badge/downloads-1k%2Fweek-brightgreen.svg"></a>
-    <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js?compression=gzip">
-    <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js?compression=brotli">
-    <img alt="Current version"
-        src="https://img.shields.io/github/v/tag/Simonwep/selection.svg?color=23AD62&label=version">
+    <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/vanilla/lib/viselect.min.js?compression=gzip">
+    <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/vanilla/lib/viselect.min.js?compression=brotli">
+    <a href="https://v3.vuejs.org"><img
+        alt="Vue support"
+        src="https://img.shields.io/badge/✔-vue-%2340B581"></a>
+    <a href="https://preactjs.com/"><img
+        alt="Preact support"
+        src="https://img.shields.io/badge/✔-preact-%236337B1"></a>
+    <a href="https://reactjs.org"><img
+        alt="React support"
+        src="https://img.shields.io/badge/✔-react-%2359D7FF"></a>
+    <a href="https://svelte.dev"><img
+        alt="Svelte support"
+        src="https://img.shields.io/badge/%E2%9A%99-svelte-%23F83C00"></a>
+    <a href="https://lit-element.polymer-project.org"><img
+        alt="Lit-Element support"
+        src="https://img.shields.io/badge/%E2%9A%99-lit--element-%233CA4F6"></a>
+    <a href="https://lit-element.polymer-project.org"><img
+        alt="Lit-Element support"
+        src="https://img.shields.io/badge/%E2%9A%99-angular-%23c3002f"></a>
 </p>
 
-<p align="center">
-    <a href="https://www.buymeacoffee.com/aVc3krbXQ" target="_blank">
-        <img src="https://user-images.githubusercontent.com/30767528/63641973-9d301680-c6b7-11e9-9d29-2ad1da50fdce.png"></a>
-    </a>
-</p>
+> Version 3 is currently released under a beta, please check the [release notes](https://github.com/Simonwep/selection/releases) for changes.
+> [Feedback](https://github.com/Simonwep/selection/issues/122) is highly appreciated.
+> If you're looking for v2, you can find it [here](https://github.com/Simonwep/selection/tree/079075121a6493eddba9bc6d8013e71df15eb1c0) (depreacted).
 
-<p align="center">
-    <b>v3 has been <a href="https://github.com/Simonwep/selection/issues/122">announced</a>! Check out the corresponding <a href="https://github.com/Simonwep/selection/tree/v3">branch</a> for more information :)</b>
-</p>
+### Features 🤘
+* 🌟 Modern bundle
+* 🔩 Ultra tiny (<4kb)
+* 👌 Simple usage
+* ⚡ Highly optimized
+* ✔ Zero dependencies
+* 📱 Mobile / touch support
+* 🖱 Vertical and horizontal scroll support
+* 💪 Hardened (over 3 years old and used in many apps)
+* 🖼 Support for major frameworks (WIP)
 
-> This README is always up-to-date with the **lastest version**. Check out [releases](https://github.com/Simonwep/selection/releases) if you want to check out the documentation for your version. If you're interested in v3 check [this](https://github.com/Simonwep/selection/tree/v3) out.
+### Getting started
 
-### Features
-* Tiny (only ~4kb)
-* Simple usage
-* Highly optimized
-* Zero dependencies
-* Mobile / touch support
-* Vertical and horizontal scroll support
+Check out the documentation for the package you want to use:
 
-### Install
+* [@viselect/vanilla](packages/vanilla) ([demo](https://codesandbox.io/s/viselectvanilla-kt332?file=/src/main.ts)) - To be used with plain [JavaScript](http://vanilla-js.com/) or [TypeScript](https://www.typescriptlang.org/).
+* [@viselect/preact](packages/preact) ([demo](https://codesandbox.io/s/viselectpreact-kjo9e?file=/src/app.tsx)) - [Preact](https://preactjs.com/) wrapper.
+* [@viselect/react](packages/react) ([demo](https://codesandbox.io/s/viselectreact-sbn83?file=/src/App.tsx)) - [React](https://reactjs.org/) wrapper.
+* [@viselect/vue](packages/vue) ([demo](https://codesandbox.io/s/viselectvue-x13g6?file=/src/App.vue)) - [Vue3](https://v3.vuejs.org/) wrapper.
+* @viselect/lit - TBA (planned).
+* @viselect/svelte - TBA (planned).
+* @viselect/angular - TBA (planned).
 
-Via npm:
-```
-$ npm install @simonwep/selection-js
-```
+> Check out [recipes](packages/vanilla/recipes.md) for commonly asked questions and how to solve them using the standart library!
 
-Via yarn:
-```
-$ yarn add @simonwep/selection-js
-```
+### Browser support
 
-Include via [jsdelivr.net](https://www.jsdelivr.com/package/npm/@simonwep/selection-js):
-```html
-<script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js"></script>
-```
+This library will always have the previous year as its target. For 2021 for example the target will be ES2020.
+It always provides both a `UMD` (`.js`) and `.mjs` version. If you want to support legacy browsers, please use the feature of your bundler to transpile dependencie. In case of webpack and babel (give [vite](https://vitejs.dev/) a try, it's awesome) you'll have to install corresponding plugins such as [babel-plugin-proposal-optional-chaining](https://babeljs.io/docs/en/babel-plugin-proposal-optional-chaining) and include the dependency from `node_modules` which is normally entirely excluded from being processed.
 
-Or using ES6 modules:
-```js
-import SelectionArea from "https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.mjs"
-```
+I do this to provide maximum flexibility and give those who target ESNext a chance to make full use of how this library is bundled.
+Everything else is just a matter of configuration :)
 
-Last but not least you'll need to add some basic styles to make your selection-area visible:
-```css
-.selection-area {
-    background: rgba(46, 115, 252, 0.11);
-    border: 2px solid rgba(98, 155, 255, 0.81);
-    border-radius: 0.1em;
-}
-```
+### Development
 
-Additionally, to not interfere with text-selection, selection-js won't prevent any default events anymore (as of `v2.0.3`).
-This however can cause problems with the actual selection ("introduced" by [#99](https://github.com/Simonwep/selection/pull/99), reported in [#103](https://github.com/Simonwep/selection/issues/103)).
-If you don't care about text-selection, add the following to the container where all your selectables are located:
+Use the following commands to work on this locally (we use [lerna](https://lerna.js.org/) to manage this):
 
-```css
-// Prevents any kind of text-selection
-user-select: none;
-```
+* `npm run dev` _- Spawns a dev-server for all packages. Every framework-dependend package is bundled with the vanilla version._
+* `npm run build` _- Builds all packages in parallel._
+* `npm run lint:fix` _- Lints and fixes all errors in all packages._
 
-## Usage
-```javascript
-const selection = new SelectionArea({
+For the development servers [vite](https://vitejs.dev/) is used. It's superb, you should give it a try.
+To bundle it we use [rollup](https://rollupjs.org/) (which is btw also used by vite behind the scenes) to have full control over how the bundle looks like.
 
-    // document object - if you want to use it within an embed document (or iframe).
-    document: window.document,
+### You want to contribute?
 
-    // Class for the selection-area element.
-    class: 'selection-area',
-
-    // Query selector or dom-node to set up container for the selection-area element.
-    container: 'body',
-
-    // Query selectors for elements which can be selected.
-    selectables: [],
-
-    // Query selectors for elements from where a selection can be started from.
-    startareas: ['html'],
-
-    // Query selectors for elements which will be used as boundaries for the selection.
-    boundaries: ['html'],
-
-    // px, how many pixels the point should move before starting the selection (combined distance).
-    // Or specifiy the threshold for each axis by passing an object like {x: <number>, y: <number>}.
-    startThreshold: 10,
-
-    // Enable / disable touch support
-    allowTouch: true,
-
-    // On which point an element should be selected.
-    // Available modes are cover (cover the entire element), center (touch the center) or
-    // the default mode is touch (just touching it).
-    intersect: 'touch',
-
-    // Specifies what should be done if already selected elements get selected again.
-    //   invert: Invert selection for elements which were already selected
-    //   keep: Make stored elements (by keepSelection()) 'fix'
-    //   drop: Remove stored elements after they have been touched
-    overlap: 'invert',
-
-    // Configuration in case a selectable gets just clicked.
-    singleTap: {
-
-        // Enable single-click selection (Also disables range-selection via shift + ctrl).
-        allow: true,
-
-        // 'native' (element was mouse-event target) or 'touch' (element visually touched).
-        intersect: 'native'
-    },
-
-    // Scroll configuration.
-    scrolling: {
-
-        // On scrollable areas the number on px per frame is devided by this amount.
-        // Default is 10 to provide a enjoyable scroll experience.
-        speedDivider: 10,
-
-        // Browsers handle mouse-wheel events differently, this number will be used as 
-        // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider.
-        manualSpeed: 750
-    }
-});
-
-```
-
-## Events
-Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-listener.
-
-> You may want to checkout the [source](https://gist.github.com/Simonwep/b0c25725a4715c1c5aab501d6a782a71) used in the demo-page, it's easier than reading through the manual.
-
-| Event          | Description |
-| -------------- | ----------- | 
-| `beforestart` | The user tapped one of the areas within the specified boundaries. Return `false` to cancel selection immediatly.  |
-| `start` | Selection started, here you can decide if you want to keep your previously selected elements. | 
-| `move` | Selection is active, user is moving the pointer around. |
-| `stop` | Selection has stopped. |
-
-### Example:
-
-```js
-selection.on('beforestart', evt => {
-    
-    // Use this event to decide whether a selection should take place or not.
-    // For example if the user should be able to normally interact with input-elements you 
-    // may want to prevent a selection if the user clicks such a element:
-    // selection.on('beforestart', ({event}) => {
-    //   return event.target.tagName !== 'INPUT'; // Returning false prevents a selection
-    // });
-    
-    console.log('beforestart', evt);
-}).on('start', evt => {
-
-    // A selection got initiated, you could now clear the previous selection or
-    // keep it if in case of multi-selection.
-    console.log('start', evt);
-}).on('move', evt => {
-
-    // Here you can update elements based on their state.
-    console.log('move', evt);
-}).on('stop', evt => {
-
-    // The last event can be used to call functions like keepSelection() in case the user wants
-    // to select multiple elements.
-    console.log('stop', evt);
-});
-```
-
-> The initialization is **always** synchronous, therefore there is no `init` event and any initilization-related work can be done immediately after creation.
-
-### Event data
-Each `evt` object will yield the following data:
-
-````ts
-{
-    // The original event, can be null in cases like select() or deselect()
-    event: MouseEvent | TouchEvent | null;
-
-    // Contains all selection related elements.
-    store: {
-
-        // All elements touched
-        touched: Array<Element>;
-
-        // Elements currently stored, can be retrived all the time using getSelection()
-        stored: Array<Element>;
-
-        // Elements selection during the current selection
-        selected: Array<Element>;
-
-        // Changes between the previous user-action and the current one
-        changed: {
-            added: Array<Element>; // Elements added to the selection
-            removed: Array<Element>; // Elements removed from the selection
-        };
-    };
-}
-````
-
-> You can find event-related examples [here](EXAMPLES.md).
-
-## Methods
-
-| Method | Description |
-| ------ | ----------- |
-| **on**(event`:String`, cb`:Function`) | Adds an event listener to the given corresponding event-name (see section Events), returns the current instance, so it can be chained. |
-| **off**(event`:String`, cb`:Function`) | Removes an event listener from the given corresponding event-name (see section Events), returns the current instance, so it can be chained. |
-| **disable**() | Disable the functionality to make selections. |
-| **enable**() | Enable the functionality to make selections. |
-| **destroy**() | Unbinds all events and removes the area-element. |
-| **cancel**() | Cancels the current selection process. |
-| **trigger**(evt`:MouseEvent \| TouchEvent`, silent`: boolean` = true)  | Manually triggers the start of a selection. If `silent` is set to true, no `beforestart` event will be fired. |
-| **keepSelection**() | Will save the current selected elements and will append those to the next selection. Can be used to allow multiple selections. |
-| **clearSelection**(store`:boolean` = true) | Clear the previous selection (elements which were stored by calling `keepSelection()`). Pass false to only clear the currently selected elements. |
-| **getSelection**() | Returns currently selected elements. |
-| **resolveSelectables**() | Need to be called if during a selection elements have been added / removed. |
-| **select**(query`:(String \| Element)[]`) | Manually appends elements to the selection, can be a / an array of queries / elements. Returns actual selected elements as array. |
-| **deselect**(el`:HTMLElement`, silent`: boolean` = true) | Removes a particular element from the current selection. `silent` determines whether the `move` event should be fired. |
-
+That's awesome! Check out the [contribution guidelines](./.github/CONTRIBUTING.md) to get started :)

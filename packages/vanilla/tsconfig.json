@@ -1,0 +1,7 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": ["./src", "./demo"],
+    "compilerOptions": {
+        "declarationDir": "lib"
+    }
+}

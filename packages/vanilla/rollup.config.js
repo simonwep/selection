@@ -1,13 +1,17 @@
 import {terser} from 'rollup-plugin-terser';
-import ts from '@wessberg/rollup-plugin-ts';
+import ts from 'rollup-plugin-ts';
 import replace from '@rollup/plugin-replace';
-import pkg from './package.json';
+import {main, module, version} from './package.json';
 
-const banner = `/*! Selectionjs ${pkg.version} MIT | https://github.com/Simonwep/selection */`;
+const banner = `/*! @viselect/vanilla ${version} MIT | https://github.com/Simonwep/selection */`;
 
 export default {
     input: 'src/index.ts',
     plugins: [
+        replace({
+            preventAssignment: true,
+            VERSION: JSON.stringify(version)
+        }),
         ts(),
         terser({
             mangle: {
@@ -16,23 +20,19 @@ export default {
                     regex: /^_/
                 }
             }
-        }),
-        replace({
-            preventAssignment: true,
-            VERSION: JSON.stringify(pkg.version)
         })
     ],
     output: [
         {
             banner,
-            file: pkg.main,
+            file: main,
             name: 'SelectionArea',
             format: 'umd',
             sourcemap: true
         },
         {
             banner,
-            file: pkg.module,
+            file: module,
             format: 'es',
             sourcemap: true
         }

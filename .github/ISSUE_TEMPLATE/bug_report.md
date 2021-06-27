@@ -2,8 +2,8 @@
 name: Bug report
 about: Create a bug-report to help us improve
 title: ''
-labels: ''
-assignees: ''
+labels: unconfirmed
+assignees: Simonwep
 
 ---
 
@@ -16,15 +16,22 @@ assignees: ''
 #### What is the current behavior?
 <-- What happens in your situation -->
 
-#### Please provide the steps to reproduce and create a [JSFiddle](https://jsfiddle.net/Simonwep/wez9o7cu/).
-<!-- Use this fiddle as template: https://jsfiddle.net/Simonwep/wez9o7cu/ -->
+#### Please provide the steps to reproduce and create a [CodeSandbox](https://codesandbox.io/).
+
+<!--
+- Vue template: https://codesandbox.io/s/viselectvue-x13g6
+- Vanilla template: https://codesandbox.io/s/viselectvanilla-kt332
+- Preact template: https://codesandbox.io/s/viselectpreact-kjo9e
+- React template: https://codesandbox.io/s/viselectreact-sbn83
+-->
 
 #### What is the expected behavior?
 <!-- What do you expect to happen? -->
 
 #### Your environment:
 ```
-Version (SelectionArea.version):
+Toolset (e.g. webpack, vite, vue-cli...): 
+Version (@viselect/<insert package>):
 Browser:  
 OS:  
 ```

@@ -1,4 +1,7 @@
-import {Intersection} from '@utils';
+import type SelectionArea from '@vanilla/index';
+import type {Intersection} from './utils';
+
+type Quantify<T> = ReadonlyArray<T> | T;
 
 export interface ChangedElements {
     added: Array<Element>;
@@ -15,6 +18,7 @@ export interface SelectionStore {
 export interface SelectionEvent {
     event: MouseEvent | TouchEvent | null;
     store: SelectionStore;
+    selection: SelectionArea;
 }
 
 export type SelectionEvents = {
@@ -50,7 +54,9 @@ export interface SingleTap {
 }
 
 export interface SelectionOptions {
-    class: string;
+    areaClass: string;
+    containerClass?: string;
+
     document: Document;
     intersect: Intersection;
     singleTap: SingleTap;
@@ -58,12 +64,12 @@ export interface SelectionOptions {
     allowTouch: boolean;
     overlap: OverlapMode;
 
-    selectables: ReadonlyArray<string>;
+    selectables: Quantify<string>;
     scrolling: Scrolling;
 
-    startareas: ReadonlyArray<string>;
-    boundaries: ReadonlyArray<string>;
-    container: string | HTMLElement | ReadonlyArray<string | HTMLElement>;
+    startareas: Quantify<string | HTMLElement>;
+    boundaries: Quantify<string | HTMLElement>;
+    container: Quantify<string | HTMLElement>;
 }
 
 export interface ScrollEvent extends MouseEvent {

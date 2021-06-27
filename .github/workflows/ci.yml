@@ -26,5 +26,5 @@ jobs:
 
       - uses: actions/upload-artifact@master
         with:
-          name: library
-          path: ./lib
+          name: viselect-packages
+          path: ./packages/*/lib
