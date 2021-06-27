@@ -66,7 +66,7 @@ Check out the documentation for the package you want to use:
 * @viselect/svelte - TBA (planned).
 * @viselect/angular - TBA (planned).
 
-> Check out [recipes](recipes.md) for commonly asked questions and how to solve them using the standart library!
+> Check out [recipes](packages/vanilla/recipes.md) for commonly asked questions and how to solve them using the standart library!
 
 ### Browser support
 

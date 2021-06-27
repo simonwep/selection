@@ -9,6 +9,7 @@ import SelectionArea, {SelectionEvents} from '@vanilla/index';
 import {SelectionOptions} from '@vanilla/types';
 import {defineComponent, PropType} from 'vue';
 export * from '@vanilla/types';
+export {default as VanillaSelectionArea} from '@vanilla/index';
 
 export default defineComponent({
     props: {
