@@ -194,3 +194,5 @@ selection.on('beforestart', evt => {
     console.log('stop', evt);
 });
 ```
+
+> Common recipes can be found under [recipes](recipes.md).
