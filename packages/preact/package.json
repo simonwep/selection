@@ -1,6 +1,6 @@
 {
     "name": "@viselect/preact",
-    "version": "3.0.0-beta.1",
+    "version": "3.0.0-beta.2",
     "description": "Preact wrapper around the viselect vanilla library",
     "main": "./lib/viselect.min.js",
     "module": "./lib/viselect.min.mjs",
