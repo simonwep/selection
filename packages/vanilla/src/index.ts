@@ -296,7 +296,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._onTapMove(evt);
         }
 
-        if (features.touch && isTouchDevice) {
+        if (features.touch && isTouchDevice()) {
             evt.preventDefault(); // Prevent swipe-down refresh
         }
     }
@@ -409,7 +409,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._redrawSelectionArea();
         }
 
-        if (features.touch && isTouchDevice) {
+        if (features.touch && isTouchDevice()) {
             evt.preventDefault(); // Prevent swipe-down refresh
         }
     }
