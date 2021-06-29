@@ -217,7 +217,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         // Emit event and process element
         this._emitEvent('start', evt);
         if (evt.shiftKey && stored.length && range) {
-            const reference = stored[stored.length - 1];
+            const reference = stored[0];
 
             // Resolve correct range
             const [preceding, following] = reference.compareDocumentPosition(target) & 4 ?
