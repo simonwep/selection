@@ -1,6 +1,6 @@
 {
     "name": "@viselect/vue",
-    "version": "3.0.0-beta.4",
+    "version": "3.0.0-beta.5",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "main": "./lib/viselect.cjs.js",
     "module": "./lib/viselect.esm.js",
