@@ -15,6 +15,7 @@
     <a href="https://github.com/sponsors/Simonwep"><img
         alt="Support me"
         src="https://img.shields.io/badge/github-support-6a15cc.svg"></a>
+    <img alt="version" src="https://img.shields.io/github/lerna-json/v/Simonwep/selection?color=%233d24c9&label=version">
     <a href="https://www.buymeacoffee.com/aVc3krbXQ"><img
         alt="Buy me a coffee"
         src="https://img.shields.io/badge/%F0%9F%8D%BA-buy%20me%20a%20beer-%23FFDD00"></a>
