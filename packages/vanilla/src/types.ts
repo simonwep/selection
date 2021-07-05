@@ -86,7 +86,7 @@ export interface SelectionOptions {
     features: Features;
 }
 
-export type PartialSelectionOptions = Partial<SelectionOptions> & {
+export type PartialSelectionOptions = Partial<Omit<SelectionOptions, 'behaviour' | 'features'>> & {
     behaviour?: Partial<Behaviour>;
     features?: Partial<Features>;
 }

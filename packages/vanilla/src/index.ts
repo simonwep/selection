@@ -53,7 +53,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     constructor(opt: PartialSelectionOptions) {
         super();
 
-        this._options = deepAssign<SelectionOptions>({
+        this._options = deepAssign({
             selectionAreaClass: 'selection-area',
             selectables: [],
             document: window.document,
@@ -61,7 +61,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             behaviour: {
                 overlap: 'invert',
                 intersect: 'touch',
-                startThreshold: 10,
+                startThreshold: {x: 10, y: 10},
                 scrolling: {
                     speedDivider: 10,
                     manualSpeed: 750
