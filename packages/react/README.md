@@ -70,6 +70,9 @@ import SelectionArea from 'https://cdn.jsdelivr.net/npm/@viselect/react/lib/vise
 
 ### Getting started
 
+> If you're (still) using CRA, you may run into issues regarding the ES Version.
+> See [124](https://github.com/Simonwep/selection/issues/124) for more information.
+
 Last but not least you'll need to add some basic styles to make your selection-area visible:
 
 ```css
