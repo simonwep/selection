@@ -78,7 +78,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 }
             },
 
-            startareas: ['html'],
+            startAreas: ['html'],
             boundaries: ['html'],
             container: 'body'
         }, opt);
@@ -136,7 +136,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const targetBoundingClientRect = target.getBoundingClientRect();
 
         // Find start-areas and boundaries
-        const startAreas = selectAll(_options.startareas, _options.document);
+        const startAreas = selectAll(_options.startAreas, _options.document);
         const resolvedBoundaries = selectAll(_options.boundaries, _options.document);
 
         // Check in which container the user currently acts

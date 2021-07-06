@@ -79,7 +79,7 @@ export interface SelectionOptions {
     document: Document;
     selectables: Quantify<string>;
 
-    startareas: Quantify<string | HTMLElement>;
+    startAreas: Quantify<string | HTMLElement>;
     boundaries: Quantify<string | HTMLElement>;
 
     behaviour: Behaviour;
