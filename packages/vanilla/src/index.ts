@@ -53,8 +53,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     constructor(opt: PartialSelectionOptions) {
         super();
 
-        this._options = deepAssign({
+        this._options = deepAssign<SelectionOptions>({
             selectionAreaClass: 'selection-area',
+            selectionContainerClass: undefined,
             selectables: [],
             document: window.document,
 
