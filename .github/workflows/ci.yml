@@ -15,6 +15,14 @@ jobs:
         with:
           node-version: 14.x
 
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
       - name: Install
         run: npm ci
 
