@@ -230,7 +230,12 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             ), target, preceding, following];
 
             this.select(rangeItems);
-        } else if (stored.includes(target) && (stored.length === 1 || evt.ctrlKey)) {
+        } else if (
+            stored.includes(target) && (
+                stored.length === 1 || evt.ctrlKey ||
+                stored.every(v => this._selection.stored.includes(v))
+            )
+        ) {
             this.deselect(target);
         } else {
             this.select(target);
