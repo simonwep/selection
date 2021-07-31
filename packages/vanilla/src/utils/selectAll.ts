@@ -15,7 +15,7 @@ export function selectAll(selector: SelectAllSelectors, doc: Document = document
 
         if (typeof item === 'string') {
             nodes.push(...Array.from(doc.querySelectorAll(item)));
-        } else if (item instanceof HTMLElement) {
+        } else if (item instanceof Element) {
             nodes.push(item);
         }
     }
