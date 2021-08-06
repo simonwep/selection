@@ -51,6 +51,7 @@ export type OverlapMode = 'keep' | 'drop' | 'invert';
 export interface Scrolling {
     speedDivider: number;
     manualSpeed: number;
+    startScrollMargins: {x: number, y: number}
 }
 
 export interface SingleTap {
