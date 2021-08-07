@@ -725,7 +725,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             !stored.includes(el)
         );
 
-        // Update stores
+        stored.push(...elements);
         selected.push(...elements);
         changed.added.push(...elements);
 
