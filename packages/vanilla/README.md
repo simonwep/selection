@@ -210,4 +210,22 @@ selection.on('beforestart', evt => {
 });
 ```
 
+Every event comes with the following properties:
+
+```typescript
+{
+    selection: SelectionArea // Current instance
+    event: TouchEvent | MouseEvent | null // TouchEvent, MouseEvent or `null` if triggered manually
+    store: {
+        touched: Array<Element> // Touched elements
+        selected: Array<Element> // Elements currently selected
+        stored: Array<Element> // Elements from the previous selection / stored selection
+        changed: {
+            added: Array<Element> // Added elements since last change
+            removed: Array<Element> // Removed elements since last change
+        }
+    }
+}
+```
+
 > Common recipes can be found under [recipes](recipes.md).
