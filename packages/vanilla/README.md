@@ -143,7 +143,12 @@ const selection = new SelectionArea({
 
             // Browsers handle mouse-wheel events differently, this number will be used as 
             // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider.
-            manualSpeed: 750
+            manualSpeed: 750,
+
+            // This property defines the virtual inset margins from the borders of the container
+            // component that, when crossed by the mouse/touch, trigger the scrolling. Useful for
+            // fullscreen containers.
+            startScrollMargins: {x: 0, y: 0}
         }
     },
 
