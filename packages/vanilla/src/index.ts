@@ -65,7 +65,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 startThreshold: {x: 10, y: 10},
                 scrolling: {
                     speedDivider: 10,
-                    manualSpeed: 750
+                    manualSpeed: 750,
+                    startScrollMargins: {x: 0, y: 0}
                 }
             },
 
@@ -455,28 +456,29 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _recalculateSelectionAreaRect(): void {
-        const {_scrollSpeed, _areaLocation, _areaRect, _targetElement, _targetRect} = this;
+        const {_scrollSpeed, _areaLocation, _areaRect, _targetElement, _targetRect, _options} = this;
         const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = _targetElement as Element;
         const brect = _targetRect as DOMRect;
         const {x1, y1} = _areaLocation;
         let {x2, y2} = _areaLocation;
+        const {behaviour: {scrolling: {startScrollMargins}}} = _options
 
-        if (x2 < brect.left) {
-            _scrollSpeed.x = scrollLeft ? -abs(brect.left - x2) : 0;
-            x2 = brect.left;
-        } else if (x2 > brect.right) {
-            _scrollSpeed.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x2) : 0;
-            x2 = brect.right;
+        if (x2 < brect.left + startScrollMargins.x) {
+            _scrollSpeed.x = scrollLeft ? -abs(brect.left - x2 + startScrollMargins.x) : 0;
+            x2 = x2 < brect.left ? brect.left : x2
+        } else if (x2 > brect.right - startScrollMargins.x) {
+            _scrollSpeed.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x2 - startScrollMargins.x) : 0;
+            x2 = x2 > brect.right ? brect.right : x2
         } else {
             _scrollSpeed.x = 0;
         }
 
-        if (y2 < brect.top) {
-            _scrollSpeed.y = scrollTop ? -abs(brect.top - y2) : 0;
-            y2 = brect.top;
-        } else if (y2 > brect.bottom) {
-            _scrollSpeed.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2) : 0;
-            y2 = brect.bottom;
+        if (y2 < brect.top + startScrollMargins.y) {
+            _scrollSpeed.y = scrollTop ? -abs(brect.top - y2 + startScrollMargins.y) : 0;
+            y2 = y2 < brect.top ? brect.top : y2
+        } else if (y2 > brect.bottom - startScrollMargins.y) {
+            _scrollSpeed.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2 - startScrollMargins.y) : 0;
+            y2 = y2 > brect.bottom ? brect.bottom : y2
         } else {
             _scrollSpeed.y = 0;
         }

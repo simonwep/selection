@@ -10,6 +10,7 @@
         "eslint:recommended"
     ],
     "rules": {
-        "no-console": "error"
+        "no-console": "error",
+        "object-curly-spacing": ["error", "never"]
     }
 }
