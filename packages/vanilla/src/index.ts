@@ -461,7 +461,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const brect = _targetRect as DOMRect;
         const {x1, y1} = _areaLocation;
         let {x2, y2} = _areaLocation;
-        const { behaviour: { scrolling: { startScrollMargins } } } = _options
+        const {behaviour: {scrolling: {startScrollMargins}}} = _options
 
         if (x2 < brect.left + startScrollMargins.x) {
             _scrollSpeed.x = scrollLeft ? -abs(brect.left - x2 + startScrollMargins.x) : 0;
