@@ -28,6 +28,7 @@ export interface SelectionEvent {
 
 export type SelectionEvents = {
     beforestart: (e: SelectionEvent) => boolean | void;
+    beforedrag: (e: SelectionEvent) => boolean | void;
     start: (e: SelectionEvent) => void;
     move: (e: SelectionEvent) => void
     stop: (e: SelectionEvent) => void;

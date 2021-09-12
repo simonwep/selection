@@ -179,9 +179,10 @@ const selection = new SelectionArea({
 
 Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-listener.
 
-| Event          | Description |
-| -------------- | ----------- | 
+| Event | Description |
+| ----- | ----------- | 
 | `beforestart` | The user tapped one of the areas within the specified boundaries. Return `false` to cancel selection immediatly.  |
+| `beforedrag` | Same as `beforestart` but _before_ the user starts selecting by dragging the mouse. Can be used to conditionally allow a selection by dragging. Return `false` to cancel the selection. |
 | `start` | Selection started, here you can decide if you want to keep your previously selected elements. | 
 | `move` | Selection is active, user is moving the pointer around. |
 | `stop` | Selection has stopped. |
@@ -199,6 +200,10 @@ selection.on('beforestart', evt => {
     // });
 
     console.log('beforestart', evt);
+}).on('beforedrag', evt => {
+
+    // Same as 'beforestart' but before a selection via dragging happens.
+    console.log('beforedrag', evt);
 }).on('start', evt => {
 
     // A selection got initiated, you could now clear the previous selection or

@@ -261,6 +261,12 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             (thresholdType === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x || abs(y - y1) >= (startThreshold as Coordinates).y)
         ) {
             off(document, ['mousemove', 'touchmove'], this._delayedTapMove, {passive: false});
+
+            if (this._emitEvent('beforedrag', evt) === false) {
+                off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
+                return;
+            }
+
             on(document, ['mousemove', 'touchmove'], this._onTapMove, {passive: false});
 
             // Make area element visible
@@ -461,24 +467,24 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const brect = _targetRect as DOMRect;
         const {x1, y1} = _areaLocation;
         let {x2, y2} = _areaLocation;
-        const {behaviour: {scrolling: {startScrollMargins}}} = _options
+        const {behaviour: {scrolling: {startScrollMargins}}} = _options;
 
         if (x2 < brect.left + startScrollMargins.x) {
             _scrollSpeed.x = scrollLeft ? -abs(brect.left - x2 + startScrollMargins.x) : 0;
-            x2 = x2 < brect.left ? brect.left : x2
+            x2 = x2 < brect.left ? brect.left : x2;
         } else if (x2 > brect.right - startScrollMargins.x) {
             _scrollSpeed.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x2 - startScrollMargins.x) : 0;
-            x2 = x2 > brect.right ? brect.right : x2
+            x2 = x2 > brect.right ? brect.right : x2;
         } else {
             _scrollSpeed.x = 0;
         }
 
         if (y2 < brect.top + startScrollMargins.y) {
             _scrollSpeed.y = scrollTop ? -abs(brect.top - y2 + startScrollMargins.y) : 0;
-            y2 = y2 < brect.top ? brect.top : y2
+            y2 = y2 < brect.top ? brect.top : y2;
         } else if (y2 > brect.bottom - startScrollMargins.y) {
             _scrollSpeed.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2 - startScrollMargins.y) : 0;
-            y2 = y2 > brect.bottom ? brect.bottom : y2
+            y2 = y2 > brect.bottom ? brect.bottom : y2;
         } else {
             _scrollSpeed.y = 0;
         }
