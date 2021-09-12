@@ -27,7 +27,7 @@ export interface SelectionEvent {
 }
 
 export type SelectionEvents = {
-    beforestart: (e: SelectionEvent) => boolean;
+    beforestart: (e: SelectionEvent) => boolean | void;
     start: (e: SelectionEvent) => void;
     move: (e: SelectionEvent) => void
     stop: (e: SelectionEvent) => void;
@@ -51,7 +51,7 @@ export type OverlapMode = 'keep' | 'drop' | 'invert';
 export interface Scrolling {
     speedDivider: number;
     manualSpeed: number;
-    startScrollMargins: {x: number, y: number}
+    startScrollMargins: {x: number, y: number};
 }
 
 export interface SingleTap {
