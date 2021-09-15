@@ -228,7 +228,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             const rangeItems = [...this._selectables.filter(el =>
                 (el.compareDocumentPosition(preceding) & 4) &&
                 (el.compareDocumentPosition(following) & 2)
-            ), target, preceding, following];
+            ), preceding, following];
 
             this.select(rangeItems);
         } else if (
