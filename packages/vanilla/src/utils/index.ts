@@ -4,4 +4,4 @@ export * from './intersects';
 export * from './removeElement';
 export * from './selectAll';
 export * from './constants';
-export * from './deep-assign';
+export * from './deepAssign';
