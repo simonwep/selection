@@ -34,6 +34,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     private _targetElement?: Element;
     private _targetRect?: DOMRect;
     private _selectables: Array<Element> = [];
+    private _latestElement?: Element;
 
     // Caches the position of the selection-area
     private readonly _areaRect = new DOMRect();
@@ -219,7 +220,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         // Emit event and process element
         this._emitEvent('start', evt);
         if (evt.shiftKey && stored.length && range) {
-            const reference = stored[0];
+            const reference = this._latestElement ?? stored[0];
 
             // Resolve correct range
             const [preceding, following] = reference.compareDocumentPosition(target) & 4 ?
@@ -239,6 +240,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         ) {
             this.deselect(target);
         } else {
+            this._latestElement = target;
             this.select(target);
         }
 
@@ -600,6 +602,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         // Save
         _selection.selected = newlyTouched;
         _selection.changed = {added, removed};
+        this._latestElement = newlyTouched[newlyTouched.length - 1];
     }
 
     _emitEvent(name: keyof SelectionEvents, evt: MouseEvent | TouchEvent | null): unknown {
