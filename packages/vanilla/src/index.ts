@@ -98,11 +98,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._clippingElement = document.createElement('div');
         this._clippingElement.appendChild(this._area);
 
-        // Add class to the area element
         this._area.classList.add(selectionAreaClass);
         selectionContainerClass && this._clippingElement.classList.add(selectionContainerClass);
 
-        // Apply basic styles to the area element
         css(this._area, {
             willChange: 'top, left, bottom, right, width, height',
             top: 0,
@@ -158,7 +156,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             return;
         }
 
-        // Area rect
         this._areaLocation = {x1: x, y1: y, x2: 0, y2: 0};
 
         // Lock scrolling in target container
@@ -170,7 +167,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._singleClick = true;
         this.clearSelection(false);
 
-        // Add listener
         on(document, ['touchmove', 'mousemove'], this._delayedTapMove, {passive: false});
         on(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
         on(document, 'scroll', this._onScroll);
@@ -216,9 +212,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         // Grab current store first in case it gets resetted
         const {stored} = this._selection;
-
-        // Emit event and process element
         this._emitEvent('start', evt);
+
         if (evt.shiftKey && stored.length && range) {
             const reference = this._latestElement ?? stored[0];
 
@@ -256,7 +251,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const thresholdType = typeof startThreshold;
         if (
 
-            // Single number
+            // Single number for both coordinates
             (thresholdType === 'number' && abs((x + y) - (x1 + y1)) >= startThreshold) ||
 
             // Different x and y threshold
@@ -277,7 +272,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             // Apppend selection-area to the dom
             selectAll(container, document)[0].appendChild(this._clippingElement);
 
-            // Now after the threshold is reached resolve all selectables
             this.resolveSelectables();
 
             // An action is recognized as single-select until the user performed a mutli-selection
@@ -345,9 +339,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             });
         } else {
 
-            /**
-             * Reset margin and clipping element dimensions.
-             */
+            // "Reset" styles
             css(_clippingElement, {
                 top: 0,
                 left: 0,
@@ -431,8 +423,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     _onScroll(): void {
         const {_scrollDelta, _options: {document}} = this;
-
-        // Resolve scrolling offsets
         const {scrollTop, scrollLeft} = document.scrollingElement || document.body;
 
         // Adjust area start location
@@ -530,9 +520,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._emitEvent('stop', evt);
         }
 
-        // Reset scroll speed
-        this._scrollSpeed.x = 0;
-        this._scrollSpeed.y = 0;
+        this._scrollSpeed = {x: 0, y: 0};
 
         // Unbind mouse scrolling listener
         this._scrollAvailable && off(document, 'wheel', this._manualScroll, {passive: true});
@@ -550,12 +538,11 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {stored, selected, touched} = _selection;
         const {intersect, overlap} = _options.behaviour;
 
-        // Update
-        const newlyTouched = [];
-        const added = [];
-        const removed = [];
+        const newlyTouched: Element[] = [];
+        const added: Element[] = [];
+        const removed: Element[] = [];
 
-        // Itreate over the selectable elements
+        // Find newly selected elements
         for (let i = 0; i < _selectables.length; i++) {
             const node = _selectables[i];
 
@@ -599,7 +586,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             }
         }
 
-        // Save
         _selection.selected = newlyTouched;
         _selection.changed = {added, removed};
         this._latestElement = newlyTouched[newlyTouched.length - 1];
@@ -616,8 +602,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     _keepSelection(): void {
         const {_options, _selection} = this;
         const {selected, changed, touched, stored} = _selection;
-
-        // Newly added elements
         const addedElements = selected.filter(el => !stored.includes(el));
 
         switch (_options.behaviour.overlap) {
@@ -712,16 +696,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         super.unbindAllListeners();
     }
 
-    /**
-     * Disable the selection functinality.
-     */
     /* eslint-disable no-invalid-this */
     disable = this._bindStartEvents.bind(this, false);
-
-    /**
-     * Disable the selection functinality.
-     */
-    /* eslint-disable no-invalid-this */
     enable = this._bindStartEvents;
 
     /**
