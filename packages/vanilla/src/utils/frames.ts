@@ -1,4 +1,5 @@
-type AnyFunction = (...args: any[]) => any;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type AnyFunction = (...args: any[]) => void;
 
 export interface Frames<F extends AnyFunction = AnyFunction> {
     next(...args: Parameters<F>): void;
