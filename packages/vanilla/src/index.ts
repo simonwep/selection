@@ -1,7 +1,7 @@
 import {EventTarget} from './EventEmitter';
 import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 import {PartialSelectionOptions} from './types';
-import {css, deepAssign, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
+import {css, frames, deepAssign, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent, Frames} from './utils';
 
 // Re-export types
 export * from './types';
@@ -45,6 +45,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     // If a single click is being performed.
     // It's a single-click until the user dragged the mouse.
     private _singleClick = true;
+    private _frame: Frames;
 
     // Is getting set on movement. Varied.
     private _scrollAvailable = true;
@@ -114,6 +115,13 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             transform: 'translate3d(0, 0, 0)', // https://stackoverflow.com/a/38268846
             pointerEvents: 'none',
             zIndex: '1'
+        });
+
+        this._frame = frames((evt: MouseEvent | TouchEvent) => {
+            this._recalculateSelectionAreaRect();
+            this._updateElementSelection();
+            this._emitEvent('move', evt);
+            this._redrawSelectionArea();
         });
 
         this.enable();
@@ -356,7 +364,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     _onTapMove(evt: MouseEvent | TouchEvent): void {
         const {x, y} = simplifyEvent(evt);
-        const {_scrollSpeed, _areaLocation, _options} = this;
+        const {_scrollSpeed, _areaLocation, _options, _frame} = this;
         const {features} = _options;
         const {speedDivider} = _options.behaviour.scrolling;
         const scon = this._targetElement as Element;
@@ -392,10 +400,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                  * We changed the dimensions of the area element -> re-calc selected elements
                  * The selected elements array has been changed -> fire event
                  */
-                this._recalculateSelectionAreaRect();
-                this._updateElementSelection();
-                this._emitEvent('move', evt);
-                this._redrawSelectionArea();
+                _frame.next(evt);
 
                 // Keep scrolling even if the user stops to move his pointer
                 requestAnimationFrame(scroll);
@@ -410,10 +415,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
              * If scrolling is active this area is getting re-dragwed by the
              * anonymized scroll function.
              */
-            this._recalculateSelectionAreaRect();
-            this._updateElementSelection();
-            this._emitEvent('move', evt);
-            this._redrawSelectionArea();
+            _frame.next(evt);
         }
 
         if (features.touch && isTouchDevice()) {
@@ -433,10 +435,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         // The area needs to be resetted as the target-container has changed in its position
         this._prepareSelectionArea();
-        this._recalculateSelectionAreaRect();
-        this._updateElementSelection();
-        this._emitEvent('move', null);
-        this._redrawSelectionArea();
+        this._frame.next(null);
     }
 
     _manualScroll(evt: ScrollEvent): void {
@@ -528,6 +527,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         // Remove selection-area from dom
         this._clippingElement.remove();
 
+        // Cancel current frame
+        this._frame?.cancel();
+
         // Hide selection area
         css(this._area, 'display', 'none');
         this._keepSelection();
@@ -538,6 +540,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {stored, selected, touched} = _selection;
         const {intersect, overlap} = _options.behaviour;
 
+        const invert = overlap === 'invert';
         const newlyTouched: Element[] = [];
         const added: Element[] = [];
         const removed: Element[] = [];
@@ -553,7 +556,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 if (!selected.includes(node)) {
 
                     // Check if user wants to invert the selection for already selected elements
-                    if (overlap === 'invert' && stored.includes(node)) {
+                    if (invert && stored.includes(node)) {
                         removed.push(node);
                         continue;
                     } else {
@@ -568,11 +571,12 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         }
 
         // Re-select elements which were previously stored
-        if (overlap === 'invert') {
+        if (invert) {
             added.push(...stored.filter(v => !selected.includes(v)));
         }
 
         // Check which elements where removed since last selection
+        const keep = overlap === 'keep';
         for (let i = 0; i < selected.length; i++) {
             const node = selected[i];
 
@@ -580,7 +584,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
                 // Check if user wants to keep previously selected elements, e.g.
                 // not make them part of the current selection as soon as they're touched.
-                overlap === 'keep' && stored.includes(node)
+                keep && stored.includes(node)
             )) {
                 removed.push(node);
             }
@@ -606,24 +610,24 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         switch (_options.behaviour.overlap) {
             case 'drop': {
-                _selection.stored = addedElements.concat(
-                    // Elements not touched
-                    stored.filter(el => !touched.includes(el))
-                );
+                _selection.stored = [
+                    ...addedElements,
+                    ...stored.filter(el => !touched.includes(el))  // Elements not touched
+                ];
                 break;
             }
             case 'invert': {
-                _selection.stored = addedElements.concat(
-                    // Elements not removed from selection
-                    stored.filter(el => !changed.removed.includes(el))
-                );
+                _selection.stored = [
+                    ...addedElements,
+                    ...stored.filter(el => !changed.removed.includes(el))  // Elements not removed from selection
+                ];
                 break;
             }
             case 'keep': {
-                _selection.stored = stored.concat(
-                    // Newly added
-                    selected.filter(el => !stored.includes(el))
-                );
+                _selection.stored = [
+                    ...stored,
+                    ...selected.filter(el => !stored.includes(el)) // Newly added
+                ];
                 break;
             }
         }
