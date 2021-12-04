@@ -3,7 +3,7 @@ import VanillaSelectionArea from '@vanilla/index';
 import {SelectionEvents, SelectionOptions} from '@vanilla/types';
 import React, {createRef, useEffect} from 'react';
 
-export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'> {
+export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, React.HTMLAttributes<HTMLDivElement> {
     className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];
     onStart?: SelectionEvents['start'];
