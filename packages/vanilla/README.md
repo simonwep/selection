@@ -220,6 +220,7 @@ selection.on('beforestart', evt => {
 });
 ```
 
+### Event properties
 Every event comes with the following properties:
 
 ```typescript
@@ -228,8 +229,8 @@ Every event comes with the following properties:
     event: TouchEvent | MouseEvent | null // TouchEvent, MouseEvent or `null` if triggered manually
     store: {
         touched: Array<Element> // Touched elements
-        selected: Array<Element> // Elements currently selected
-        stored: Array<Element> // Elements from the previous selection / stored selection
+        selected: Array<Element> // Elements from the currently active selection (each click, drag counts as a single "selection") 
+        stored: Array<Element> // Elements currently selected (in total, not just an instant)
         changed: {
             added: Array<Element> // Added elements since last change
             removed: Array<Element> // Removed elements since last change

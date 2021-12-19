@@ -72,6 +72,7 @@ Check out the documentation for the package you want to use:
 * @viselect/angular - TBA (planned).
 
 > Check out [recipes](packages/vanilla/recipes.md) for commonly asked questions and how to solve them using the standart library!
+> For information about events and more check out the [vanilla readme](packages/vanilla/README.md)!
 
 ### Browser support
 
