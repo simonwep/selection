@@ -1,6 +1,6 @@
 {
     "name": "@viselect/preact",
-    "version": "3.0.0-beta.12",
+    "version": "3.0.0-beta.13",
     "description": "Preact wrapper around the viselect vanilla library",
     "main": "./lib/viselect.cjs.js",
     "module": "./lib/viselect.esm.js",
