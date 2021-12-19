@@ -519,7 +519,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._emitEvent('stop', evt);
         }
 
-        this._scrollSpeed = {x: 0, y: 0};
+        this._scrollSpeed.x = 0;
+        this._scrollSpeed.y = 0;
 
         // Unbind mouse scrolling listener
         this._scrollAvailable && off(document, 'wheel', this._manualScroll, {passive: true});
