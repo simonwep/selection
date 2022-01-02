@@ -21,8 +21,8 @@
     <a href="https://github.com/Simonwep/selection/actions?query=workflow%3ACI"><img
         alt="Build Status"
         src="https://github.com/Simonwep/selection/workflows/CI/badge.svg"></a>
-    <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/vue/lib/viselect.min.js?compression=gzip">
-    <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/vue/lib/viselect.min.js?compression=brotli">
+    <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/vue/lib/viselect.esm.js?compression=gzip">
+    <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/vue/lib/viselect.esm.js?compression=brotli">
     <a href="https://v3.vuejs.org"><img
         alt="Vue support"
         src="https://img.shields.io/badge/✔-vue-%2340B581"></a>
@@ -59,13 +59,13 @@ $ yarn add @viselect/vue
 
 ```html
 
-<script src="https://cdn.jsdelivr.net/npm/@viselect/vue/lib/viselect.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@viselect/vue/lib/viselect.cjs.js"></script>
 ```
 
 ##### Via ES6 import
 
 ```js
-import SelectionArea from 'https://cdn.jsdelivr.net/npm/@viselect/vue/lib/viselect.min.mjs';
+import SelectionArea from 'https://cdn.jsdelivr.net/npm/@viselect/vue/lib/viselect.esm.js';
 ```
 
 ### Getting started
