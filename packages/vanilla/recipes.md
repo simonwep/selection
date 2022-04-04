@@ -48,6 +48,20 @@ selection.on('beforestart', ({event}) => {
 });
 ```
 
+#### Preventing select from right click, middle mouse or left click ([#101](https://github.com/Simonwep/selection/issues/101))
+```js
+selection.on('beforestart', (event) => {
+    const allowedButtons = [
+        // See https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+        1, // left click
+        2, // right click
+        4, // mouse wheel / middle button
+    ];
+
+    return allowedButtons.includes(event.event.buttons);
+});
+```
+
 > Feel free to submit a [PR](https://github.com/Simonwep/selection/compare) or create
 > an [issue](https://github.com/Simonwep/selection/issues/new?assignees=Simonwep&labels=&template=feature_request.md&title=) if
 > you got any ideas for more examples!
