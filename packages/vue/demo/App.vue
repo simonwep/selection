@@ -2,7 +2,7 @@
     <h1>Vue</h1>
 
     <SelectionArea class="container green"
-                   :options="{selectables: '.selectable'}"
+                   :options="{selectables: '.selectable',enabled:false}"
                    :on-move="onMove"
                    :on-start="onStart">
         <div v-for="id of range(42)" :key="id" :data-key="id"

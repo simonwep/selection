@@ -56,6 +56,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         super();
 
         this._options = deepAssign<SelectionOptions>({
+            enabled:true,
             selectionAreaClass: 'selection-area',
             selectionContainerClass: undefined,
             selectables: [],
@@ -124,7 +125,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._redrawSelectionArea();
         });
 
-        this.enable();
+        if(this._options.enabled)this.enable();
     }
 
     _bindStartEvents(activate = true): void {
