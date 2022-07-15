@@ -512,6 +512,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
         off(document, 'scroll', this._onScroll);
 
+        // Keep selection until the next time
+        this._keepSelection();
+
         if (evt && _singleClick && features.singleTap.allow) {
             this._onSingleTap(evt);
         } else if (!_singleClick && !silent) {
@@ -533,7 +536,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         // Hide selection area
         css(this._area, 'display', 'none');
-        this._keepSelection();
     }
 
     _updateElementSelection(): void {
