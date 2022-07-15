@@ -21,7 +21,8 @@
     },
     "settings": {
         "react": {
-            "version": "latest"
+            "pragma": "h",
+            "version": "16.0"
         }
     },
     "rules": {
