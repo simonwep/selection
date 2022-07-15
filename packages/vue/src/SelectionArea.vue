@@ -4,56 +4,42 @@
     </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import SelectionArea, {SelectionEvents} from '@vanilla/index';
 import {SelectionOptions} from '@vanilla/types';
-import {defineComponent, PropType} from 'vue';
-export * from '@vanilla/types';
-export {default as VanillaSelectionArea} from '@vanilla/index';
+import {defineProps, onBeforeUnmount, ref, watchEffect} from 'vue';
 
-export default defineComponent({
-    props: {
-        onBeforeStart: {type: Function, default: undefined},
-        onStart: {type: Function, default: undefined},
-        onMove: {type: Function, default: undefined},
-        onStop: {type: Function, default: undefined},
-        options: {
-            type: Object as PropType<Omit<SelectionOptions, 'boundaries'>>,
-            default: () => ({})
-        }
-    },
+const props = defineProps<{
+    options: Omit<SelectionOptions, 'boundaries'>;
+    onBeforeStart?: SelectionEvents['beforestart'];
+    onStart?: SelectionEvents['start'];
+    onMove?: SelectionEvents['move'];
+    onStop?: SelectionEvents['stop'];
+}>();
 
-    setup(): {instance: SelectionArea | null} {
-        return {
-            instance: null
-        };
-    },
+const container = ref<HTMLDivElement>();
+let instance: SelectionArea;
 
-    mounted() {
-        this.instance = new SelectionArea({
-            boundaries: this.$refs.container as HTMLDivElement,
-            ...this.options
+watchEffect(() => {
+    if (container.value) {
+        instance?.destroy();
+
+        instance = new SelectionArea({
+            boundaries: container.value,
+            ...props.options
         });
 
-        const {onBeforeStart, onStart, onMove, onStop} = this;
-        onBeforeStart && this.instance.on('beforestart', onBeforeStart as SelectionEvents['beforestart']);
-        onStart && this.instance.on('start', onStart as SelectionEvents['start']);
-        onMove && this.instance.on('move', onMove as SelectionEvents['move']);
-        onStop && this.instance.on('stop', onStop as SelectionEvents['stop']);
+        const {onBeforeStart, onStart, onMove, onStop} = props;
 
-        // this.instance.on('beforestart', args => {
-        //     this.$emit('beforestart', args);
-        //     return true;
-        // });
-        //
-        // this.instance.on('start', args => this.$emit('start', args));
-        // this.instance.on('move', args => this.$emit('move', args));
-        // this.instance.on('stop', args => this.$emit('stop', args));
-    },
-
-    beforeUnmount() {
-        this.instance?.destroy();
+        onBeforeStart && instance.on('beforestart', onBeforeStart as SelectionEvents['beforestart']);
+        onStart && instance.on('start', onStart as SelectionEvents['start']);
+        onMove && instance.on('move', onMove as SelectionEvents['move']);
+        onStop && instance.on('stop', onStop as SelectionEvents['stop']);
     }
 });
 
+
+onBeforeUnmount(() => {
+    instance?.destroy();
+});
 </script>

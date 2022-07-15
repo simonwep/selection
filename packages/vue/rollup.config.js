@@ -11,7 +11,7 @@ const externals = {
 }
 
 export default {
-    input: 'src/SelectionArea.vue',
+    input: 'src/index.ts',
     external: Object.keys(externals),
     plugins: [
         replace({

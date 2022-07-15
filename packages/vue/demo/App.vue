@@ -26,44 +26,35 @@
     </SelectionArea>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {SelectionEvent} from '@vanilla/types';
+import {reactive} from 'vue';
 import SelectionArea from '../src/SelectionArea.vue';
 
-export default {
-    components: {SelectionArea},
+const selected = reactive<Set<number>>(new Set());
 
-    data(): {selected: Set<number>} {
-        return {
-            selected: new Set()
-        };
-    },
+const extractIds = (els: Element[]): number[] => {
+    return els.map(v => v.getAttribute('data-key'))
+        .filter(Boolean)
+        .map(Number);
+};
 
-    methods: {
-
-        extractIds(els: Element[]): number[] {
-            return els.map(v => v.getAttribute('data-key'))
-                .filter(Boolean)
-                .map(Number);
-        },
-
-        onStart({event, selection}: SelectionEvent): void {
-            if (!event?.ctrlKey && !event?.metaKey) {
-                selection.clearSelection();
-                this.selected.clear();
-            }
-        },
-
-        onMove({store: {changed: {added, removed}}}: SelectionEvent): void {
-            this.extractIds(added).forEach(id => this.selected.add(id));
-            this.extractIds(removed).forEach(id => this.selected.delete(id));
-        },
-
-        range(to: number, offset = 0): number[] {
-            return new Array(to).fill(0).map((_, i) => offset + i);
-        }
+const onStart = ({event, selection}: SelectionEvent): void => {
+    if (!event?.ctrlKey && !event?.metaKey) {
+        selection.clearSelection();
+        selected.clear();
     }
 };
+
+const onMove = ({store: {changed: {added, removed}}}: SelectionEvent): void => {
+    extractIds(added).forEach(id => selected.add(id));
+    extractIds(removed).forEach(id => selected.delete(id));
+};
+
+const range = (to: number, offset = 0): number[] => {
+    return new Array(to).fill(0).map((_, i) => offset + i);
+};
+
 </script>
 
 <style>
