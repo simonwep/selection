@@ -17,9 +17,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     // Selection store
     private _selection: SelectionStore = {
-        touched: [],
         stored: [],
         selected: [],
+        touched: [],
         changed: {
             added: [], // Added elements since last selection
             removed: [] // Removed elements since last selection
@@ -724,7 +724,12 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         changed.added.push(...elements);
         changed.removed = [];
 
-        !quiet && this._emitEvent('move', null);
+        // Fire event
+        if (!quiet) {
+            this._emitEvent('move', null);
+            this._emitEvent('stop', null);
+        }
+
         return elements;
     }
 
@@ -751,7 +756,11 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             );
 
             // Fire event
-            !quiet && this._emitEvent('move', null);
+            if (!quiet) {
+                this._emitEvent('move', null);
+                this._emitEvent('stop', null);
+            }
+
             return true;
         }
 
