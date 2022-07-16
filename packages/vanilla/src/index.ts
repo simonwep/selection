@@ -722,6 +722,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         stored.push(...elements);
         selected.push(...elements);
         changed.added.push(...elements);
+        changed.removed = [];
 
         !quiet && this._emitEvent('move', null);
         return elements;
@@ -744,6 +745,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         if (elements.length) {
             this._selection.stored = stored.filter(el => !elements.includes(el));
             this._selection.selected = selected.filter(el => !elements.includes(el));
+            this._selection.changed.added = [];
             this._selection.changed.removed.push(
                 ...elements.filter(el => !changed.removed.includes(el))
             );
