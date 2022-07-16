@@ -1,7 +1,7 @@
 import {EventTarget} from './EventEmitter';
 import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 import {PartialSelectionOptions} from './types';
-import {css, frames, deepAssign, eventPath, intersects, isTouchDevice, off, on, removeElement, selectAll, SelectAllSelectors, simplifyEvent, Frames} from './utils';
+import {css, deepAssign, eventPath, frames, Frames, intersects, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 
 // Re-export types
 export * from './types';
@@ -728,21 +728,25 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     /**
-     * Removes an particular element from the selection.
-     * @param el - Element to remove.
+     * Removes a particular element from the selection.
+     * @param query - CSS Query, can be an array of queries
      * @param quiet - If this should not trigger the move event
      * @returns boolean - true if the element was successfully removed
      */
-    deselect(el: Element, quiet = false): boolean {
+    deselect(query: SelectAllSelectors, quiet = false): boolean {
         const {selected, stored, changed} = this._selection;
 
-        if (
+        const elements = selectAll(query, this._options.document).filter(el =>
             selected.includes(el) ||
             stored.includes(el)
-        ) {
-            changed.removed.push(el);
-            removeElement(stored, el);
-            removeElement(selected, el);
+        );
+
+        if (elements.length) {
+            this._selection.stored = stored.filter(el => !elements.includes(el));
+            this._selection.selected = selected.filter(el => !elements.includes(el));
+            this._selection.changed.removed.push(
+                ...elements.filter(el => !changed.removed.includes(el))
+            );
 
             // Fire event
             !quiet && this._emitEvent('move', null);
