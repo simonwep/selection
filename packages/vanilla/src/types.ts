@@ -1,7 +1,7 @@
 import type SelectionArea from '@vanilla/index';
 import type {Intersection} from './utils';
 
-export type Quantify<T> = ReadonlyArray<T> | T;
+export type Quantify<T> = Readonly<T[]> | T;
 
 export interface ScrollEvent extends MouseEvent {
     deltaY: number;
@@ -9,14 +9,14 @@ export interface ScrollEvent extends MouseEvent {
 }
 
 export interface ChangedElements {
-    added: Array<Element>;
-    removed: Array<Element>;
+    added: Element[];
+    removed: Element[];
 }
 
 export interface SelectionStore {
-    touched: Array<Element>;
-    stored: Array<Element>;
-    selected: Array<Element>;
+    touched: Element[];
+    stored: Element[];
+    selected: Element[];
     changed: ChangedElements;
 }
 

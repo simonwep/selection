@@ -6,7 +6,7 @@ export type SelectAllSelectors = readonly (string | Element)[] | string | Elemen
  * @param doc
  * @returns {Array} Array of DOM-Nodes.
  */
-export function selectAll(selector: SelectAllSelectors, doc: Document = document): Array<Element> {
+export function selectAll(selector: SelectAllSelectors, doc: Document = document): Element[] {
     const list = !Array.isArray(selector) ? [selector] : selector;
 
     const nodes = [];

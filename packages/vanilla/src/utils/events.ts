@@ -4,16 +4,16 @@ type Method = 'addEventListener' | 'removeEventListener';
 type AnyFunction = (...arg: any) => any;
 
 export type EventBindingArgs = [
-        EventTarget | Array<EventTarget>,
-        string | Array<string>,
+        EventTarget | EventTarget[],
+        string | string[],
     AnyFunction,
     Record<string, unknown>?
 ];
 
 interface EventBinding {
     (
-        elements: EventTarget | Array<EventTarget>,
-        events: string | Array<string>,
+        elements: EventTarget | EventTarget[],
+        events: string | string[],
         fn: AnyFunction,
         options?: Record<string, unknown>
     ): EventBindingArgs;
@@ -22,8 +22,8 @@ interface EventBinding {
 /* eslint-disable prefer-rest-params */
 function eventListener(method: Method): EventBinding {
     return (
-        items: EventTarget | Array<EventTarget>,
-        events: string | Array<string>,
+        items: EventTarget | EventTarget[],
+        events: string | string[],
         fn: AnyFunction, options = {}
     ): EventBindingArgs => {
 
@@ -92,8 +92,8 @@ export const simplifyEvent = (evt: any): {
  * @param evt The event object.
  * @return [String] event path.
  */
-export function eventPath(evt: any): Array<EventTarget> {
-    let path: Array<EventTarget> = evt.path || (evt.composedPath && evt.composedPath());
+export function eventPath(evt: any): EventTarget[] {
+    let path: EventTarget[] = evt.path || (evt.composedPath && evt.composedPath());
     if (path) {
         return path;
     }

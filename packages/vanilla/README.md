@@ -90,7 +90,7 @@ text-selection, add the following to the container where all your selectables ar
 }
 ```
 
-### Usage
+### Configuration
 
 ```ts
 const selection = new SelectionArea({
@@ -179,13 +179,31 @@ const selection = new SelectionArea({
 
 Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-listener.
 
-| Event | Description |
-| ----- | ----------- | 
-| `beforestart` | The user tapped one of the areas within the specified boundaries. Return `false` to cancel selection immediatly.  |
-| `beforedrag` | Same as `beforestart` but _before_ the user starts selecting by dragging the mouse. Can be used to conditionally allow a selection by dragging. Return `false` to cancel the selection. |
-| `start` | Selection started, here you can decide if you want to keep your previously selected elements. | 
-| `move` | Selection is active, user is moving the pointer around. |
-| `stop` | Selection has stopped. |
+
+| Event         | Description                                                                                                                                                                             |
+|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
+| `beforestart` | The user tapped one of the areas within the specified boundaries. Return `false` to cancel selection immediatly.                                                                        |
+| `beforedrag`  | Same as `beforestart` but _before_ the user starts selecting by dragging the mouse. Can be used to conditionally allow a selection by dragging. Return `false` to cancel the selection. |
+| `start`       | Selection started, here you can decide if you want to keep your previously selected elements.                                                                                           | 
+| `move`        | Selection is active, user is moving the pointer around.                                                                                                                                 |
+| `stop`        | Selection has stopped.                                                                                                                                                                  |
+
+### Functions
+
+| Function                                                        | Description                                                                                                    |
+|-----------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| `trigger(evt: MouseEvent / TouchEvent, silent = true): void`    | Manually trigger a selection.                                                                                  |
+| `resolveSelectables(): void`                                    | Updates the list of selectables, useful if new elements have been added during a selection.                    |
+| `clearSelection(includeStored = true): void`                    | Clears the selection, pass `false` to keep previously selected elements.                                       |
+| `getSelection(): Element[]`                                     | Returns currently selected element. Use it in the `stop` event to collect selected elements.                   |
+| `getSelectionArea(): HTMLElement`                               | Returns the selection area element.                                                                            |
+| `cancel(keepEvent = false): void`                               | Cancel the currently active selection, pass true to trigger the `stop` event afterwards.                       |
+| `destroy(): void`                                               | Destroy the `SelectionArea`-instance, removes all event-listeners and the selection-area element from the DOM. |
+| `disable(): void`                                               | Disables the selection-area temporarily.                                                                       |
+| `enable(): void`                                                | Enables the selection-area.                                                                                    |
+| `select(query: SelectAllSelectors, quiet = false): Element[]`   | Manually select elements, if `quiet` is set to `true` this will not fire the `move` & `stop` event.            |                                                                                                    
+| `deselect(query: SelectAllSelectors, quiet = false): Element[]` | Manually deselect elements, if `quiet` is set to `true` this will not fire the `move` & `stop` event.          |
+
 
 ### Example
 
@@ -228,12 +246,12 @@ Every event comes with the following properties:
     selection: SelectionArea // Current instance
     event: TouchEvent | MouseEvent | null // TouchEvent, MouseEvent or `null` if triggered manually
     store: {
-        touched: Array<Element> // Touched elements
-        selected: Array<Element> // Elements from the currently active selection (each click, drag counts as a single "selection") 
-        stored: Array<Element> // Elements currently selected (in total, not just an instant)
+        touched: Element[] // Touched elements
+        selected: Element[] // Elements from the currently active selection (each click, drag counts as a single "selection") 
+        stored: Element[] // Elements currently selected (in total, not just an instant)
         changed: {
-            added: Array<Element> // Added elements since last change
-            removed: Array<Element> // Removed elements since last change
+            added: Element[] // Added elements since last change
+            removed: Element[] // Removed elements since last change
         }
     }
 }

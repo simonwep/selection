@@ -33,7 +33,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     // Target container (element) and boundary (cached)
     private _targetElement?: Element;
     private _targetRect?: DOMRect;
-    private _selectables: Array<Element> = [];
+    private _selectables: Element[] = [];
     private _latestElement?: Element;
 
     // Caches the position of the selection-area
@@ -657,11 +657,11 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     /**
      * Clear the elements which where saved by 'keepSelection()'.
-     * @param store If the store should also get cleared
+     * @param includeStored If the store should also get cleared
      */
-    clearSelection(store = true): void {
+    clearSelection(includeStored = true): void {
         this._selection = {
-            stored: store ? [] : this._selection.stored,
+            stored: includeStored ? [] : this._selection.stored,
             selected: [],
             touched: [],
             changed: {
@@ -674,7 +674,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     /**
      * @returns {Array} Selected elements
      */
-    getSelection(): Array<Element> {
+    getSelection(): Element[] {
         return this._selection.stored;
     }
 
@@ -687,7 +687,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     /**
      * Cancel the current selection process.
-     * @param keepEvent {boolean} true to fire the onStop listener after cancel.
+     * @param keepEvent {boolean} true to fire a stop event after cancel.
      */
     cancel(keepEvent = false): void {
         this._onTapStop(null, !keepEvent);
@@ -712,7 +712,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
      * @param query - CSS Query, can be an array of queries
      * @param quiet - If this should not trigger the move event
      */
-    select(query: SelectAllSelectors, quiet = false): Array<Element> {
+    select(query: SelectAllSelectors, quiet = false): Element[] {
         const {changed, selected, stored} = this._selection;
         const elements = selectAll(query, this._options.document).filter(el =>
             !selected.includes(el) &&
