@@ -44,10 +44,6 @@
         src="https://img.shields.io/badge/%E2%9A%99-angular-%23c3002f"></a>
 </p>
 
-> Version 3 is currently released under a beta, please check the [release notes](https://github.com/Simonwep/selection/releases) for changes.
-> [Feedback](https://github.com/Simonwep/selection/issues/122) is highly appreciated.
-> If you're looking for v2, you can find it [here](https://github.com/Simonwep/selection/tree/079075121a6493eddba9bc6d8013e71df15eb1c0) (depreacted).
-
 ### Features 🤘
 * 🌟 Modern bundle
 * 🔩 Ultra tiny (<4kb)
