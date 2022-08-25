@@ -153,10 +153,10 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         );
 
         // Check if area starts in one of the start areas / boundaries
-        const evtpath = eventPath(evt);
+        const evtPath = eventPath(evt);
         if (!this._targetElement ||
-            !startAreas.find(el => evtpath.includes(el)) ||
-            !resolvedBoundaries.find(el => evtpath.includes(el))) {
+            !startAreas.find(el => evtPath.includes(el)) ||
+            !resolvedBoundaries.find(el => evtPath.includes(el))) {
             return;
         }
 
@@ -167,7 +167,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._areaLocation = {x1: x, y1: y, x2: 0, y2: 0};
 
         // Lock scrolling in target container
-        // Solution to preventing scrolling taken fr
         const scrollElement = document.scrollingElement || document.body;
         this._scrollDelta = {x: scrollElement.scrollLeft, y: scrollElement.scrollTop};
 
@@ -203,7 +202,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         /**
          * Resolve selectables again.
-         * If the user starded in a scrollable area they will be reduced
+         * If the user started in a scrollable area they will be reduced
          * to the current area. Prevent the exclusion of these if a range-selection
          * gets performed.
          */
@@ -218,7 +217,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             target = target.parentElement;
         }
 
-        // Grab current store first in case it gets resetted
+        // Grab current store first in case it gets set back
         const {stored} = this._selection;
         this._emitEvent('start', evt);
 
@@ -277,12 +276,12 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             // Make area element visible
             css(this._area, 'display', 'block');
 
-            // Apppend selection-area to the dom
+            // Append selection-area to the dom
             selectAll(container, document)[0].appendChild(this._clippingElement);
 
             this.resolveSelectables();
 
-            // An action is recognized as single-select until the user performed a mutli-selection
+            // An action is recognized as single-select until the user performed a multi-selection
             this._singleClick = false;
 
             // Just saving the boundaries of this container for later
@@ -307,8 +306,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 this._selectables = this._selectables.filter(s => this._targetElement!.contains(s));
             }
 
-            // Trigger recalc and fire event
-            this._prepareSelectionArea();
+            // Re-setup selection area and fire event
+            this._setupSelectionArea();
             this._emitEvent('start', evt);
             this._onTapMove(evt);
         }
@@ -318,7 +317,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         }
     }
 
-    _prepareSelectionArea(): void {
+    _setupSelectionArea(): void {
         const {_clippingElement, _targetElement, _area} = this;
         const tr = this._targetRect = _targetElement!.getBoundingClientRect();
 
@@ -326,8 +325,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
             /**
              * To clip the area, the selection area has a parent
-             * which has exact the same dimensions as the scrollable elemeent.
-             * Now if the area exeeds these boundaries it will be cropped.
+             * which has exact the same dimensions as the scrollable element.
+             * Now if the area exceeds these boundaries it will be cropped.
              */
             css(_clippingElement, {
                 top: tr.top,
@@ -379,7 +378,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 }
 
                 /**
-                 * If the value exeeds the scrollable area it will
+                 * If the value exceeds the scrollable area it will
                  * be set to the max / min value. So change only
                  */
                 const {scrollTop, scrollLeft} = scon;
@@ -396,7 +395,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 }
 
                 /**
-                 * We changed the start coordinates -> redraw the selectiona area
+                 * We changed the start coordinates -> redraw the selection-area
                  * We changed the dimensions of the area element -> re-calc selected elements
                  * The selected elements array has been changed -> fire event
                  */
@@ -406,14 +405,14 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 requestAnimationFrame(scroll);
             };
 
-            // Continous scrolling
+            // Continuous scrolling
             requestAnimationFrame(scroll);
         } else {
 
             /**
              * Perform redraw only if scrolling is not active.
-             * If scrolling is active this area is getting re-dragwed by the
-             * anonymized scroll function.
+             * If scrolling is active this area is getting re-dragged by the
+             * anonymize scroll function.
              */
             _frame.next(evt);
         }
@@ -433,8 +432,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         _scrollDelta.x = scrollLeft;
         _scrollDelta.y = scrollTop;
 
-        // The area needs to be resetted as the target-container has changed in its position
-        this._prepareSelectionArea();
+        // The area needs to be set back as the target-container has changed in its position
+        this._setupSelectionArea();
         this._frame.next(null);
     }
 
@@ -448,7 +447,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._scrollSpeed.x += deltaX * manualSpeed;
         this._onTapMove(evt);
 
-        // Prevent defaul scrolling behaviour, eg. page scrolling
+        // Prevent default scrolling behaviour, e.g. page scrolling
         evt.preventDefault();
     }
 
