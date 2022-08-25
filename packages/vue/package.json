@@ -12,7 +12,7 @@
     "scripts": {
         "build": "rollup -c rollup.config.js",
         "dev": "vite",
-        "lint": "eslint {src,demo}/**/*.{ts,vue}",
+        "lint": "eslint '{src,demo}/**/*.{ts,vue}'",
         "lint:fix": "npm run lint -- --fix"
     },
     "files": [

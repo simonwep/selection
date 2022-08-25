@@ -7,13 +7,14 @@
 html,
 body,
 #root {
-    height: 100%;
+    height: 200vh;
 }
 
 #root {
     width: 100%;
     max-width: 50em;
     margin: 1.5em auto;
+    padding-bottom: 500px;
 }
 
 #root > h1 {
@@ -43,7 +44,7 @@ body,
     grid-gap: 0.4em;
     align-items: flex-start;
     justify-content: flex-start;
-    max-height: 25em;
+    max-height: 15em;
     overflow: auto;
     padding: 0.5em;
     margin-bottom: 3em;

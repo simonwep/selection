@@ -1,7 +1,7 @@
 import {EventTarget} from './EventEmitter';
 import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 import {PartialSelectionOptions} from './types';
-import {css, deepAssign, eventPath, frames, Frames, intersects, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
+import {css, deepAssign, eventPath, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 
 // Re-export types
 export * from './types';
@@ -47,8 +47,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     private _singleClick = true;
     private _frame: Frames;
 
-    // Is getting set on movement. Varied.
+    // Is getting set on movement.
     private _scrollAvailable = true;
+    private _scrollingActive = false;
     private _scrollSpeed: Coordinates = {x: 0, y: 0};
     private _scrollDelta: Coordinates = {x: 0, y: 0};
 
@@ -250,7 +251,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {
-        const {container, document, features, behaviour: {startThreshold}} = this._options;
+        const {container, document, behaviour: {startThreshold}} = this._options;
         const {x1, y1} = this._areaLocation; // Coordinates of first "tap"
         const {x, y} = simplifyEvent(evt);
 
@@ -312,9 +313,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._onTapMove(evt);
         }
 
-        if (features.touch && isTouchDevice()) {
-            evt.preventDefault(); // Prevent swipe-down refresh
-        }
+        this._handleMoveEvent(evt);
     }
 
     _setupSelectionArea(): void {
@@ -364,34 +363,34 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     _onTapMove(evt: MouseEvent | TouchEvent): void {
         const {x, y} = simplifyEvent(evt);
         const {_scrollSpeed, _areaLocation, _options, _frame} = this;
-        const {features} = _options;
         const {speedDivider} = _options.behaviour.scrolling;
-        const scon = this._targetElement as Element;
+        const _targetElement = this._targetElement as Element;
 
         _areaLocation.x2 = x;
         _areaLocation.y2 = y;
 
-        if (this._scrollAvailable && (_scrollSpeed.y || _scrollSpeed.x)) {
+        if (this._scrollAvailable && !this._scrollingActive && (_scrollSpeed.y || _scrollSpeed.x)) {
+
+            // Continuous scrolling
+            this._scrollingActive = true;
+
             const scroll = () => {
                 if (!_scrollSpeed.x && !_scrollSpeed.y) {
+                    this._scrollingActive = false;
                     return;
                 }
 
-                /**
-                 * If the value exceeds the scrollable area it will
-                 * be set to the max / min value. So change only
-                 */
-                const {scrollTop, scrollLeft} = scon;
-
                 // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
                 if (_scrollSpeed.y) {
-                    scon.scrollTop += ceil(_scrollSpeed.y / speedDivider);
-                    _areaLocation.y1 -= scon.scrollTop - scrollTop;
+                    const distance = ceil(_scrollSpeed.y / speedDivider);
+                    _targetElement.scrollTop += distance;
+                    _areaLocation.y1 -= distance;
                 }
 
                 if (_scrollSpeed.x) {
-                    scon.scrollLeft += ceil(_scrollSpeed.x / speedDivider);
-                    _areaLocation.x1 -= scon.scrollLeft - scrollLeft;
+                    const distance = ceil(_scrollSpeed.x / speedDivider);
+                    _targetElement.scrollLeft += distance;
+                    _areaLocation.x1 -= distance;
                 }
 
                 /**
@@ -405,7 +404,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 requestAnimationFrame(scroll);
             };
 
-            // Continuous scrolling
             requestAnimationFrame(scroll);
         } else {
 
@@ -417,7 +415,17 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             _frame.next(evt);
         }
 
-        if (features.touch && isTouchDevice()) {
+        this._handleMoveEvent(evt);
+    }
+
+    _handleMoveEvent(evt: MouseEvent | TouchEvent) {
+        const {features} = this._options;
+
+        /**
+         * - Prevent auto-refresh for when pulling down on touch devices.
+         * - Prevent auto-scroll by the browser when on safari and scrolling is handled by viselect.
+         */
+        if ((features.touch && isTouchDevice()) || (this._scrollAvailable && isSafariBrowser())) {
             evt.preventDefault(); // Prevent swipe-down refresh
         }
     }
@@ -452,29 +460,31 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _recalculateSelectionAreaRect(): void {
-        const {_scrollSpeed, _areaLocation, _areaRect, _targetElement, _targetRect, _options} = this;
+        const {_scrollSpeed, _areaLocation, _areaRect, _targetElement, _options} = this;
         const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = _targetElement as Element;
-        const brect = _targetRect as DOMRect;
+        const _targetRect = this._targetRect as DOMRect;
+
         const {x1, y1} = _areaLocation;
         let {x2, y2} = _areaLocation;
+
         const {behaviour: {scrolling: {startScrollMargins}}} = _options;
 
-        if (x2 < brect.left + startScrollMargins.x) {
-            _scrollSpeed.x = scrollLeft ? -abs(brect.left - x2 + startScrollMargins.x) : 0;
-            x2 = x2 < brect.left ? brect.left : x2;
-        } else if (x2 > brect.right - startScrollMargins.x) {
-            _scrollSpeed.x = scrollWidth - scrollLeft - clientWidth ? abs(brect.left + brect.width - x2 - startScrollMargins.x) : 0;
-            x2 = x2 > brect.right ? brect.right : x2;
+        if (x2 < _targetRect.left + startScrollMargins.x) {
+            _scrollSpeed.x = scrollLeft ? -abs(_targetRect.left - x2 + startScrollMargins.x) : 0;
+            x2 = x2 < _targetRect.left ? _targetRect.left : x2;
+        } else if (x2 > _targetRect.right - startScrollMargins.x) {
+            _scrollSpeed.x = scrollWidth - scrollLeft - clientWidth ? abs(_targetRect.left + _targetRect.width - x2 - startScrollMargins.x) : 0;
+            x2 = x2 > _targetRect.right ? _targetRect.right : x2;
         } else {
             _scrollSpeed.x = 0;
         }
 
-        if (y2 < brect.top + startScrollMargins.y) {
-            _scrollSpeed.y = scrollTop ? -abs(brect.top - y2 + startScrollMargins.y) : 0;
-            y2 = y2 < brect.top ? brect.top : y2;
-        } else if (y2 > brect.bottom - startScrollMargins.y) {
-            _scrollSpeed.y = scrollHeight - scrollTop - clientHeight ? abs(brect.top + brect.height - y2 - startScrollMargins.y) : 0;
-            y2 = y2 > brect.bottom ? brect.bottom : y2;
+        if (y2 < _targetRect.top + startScrollMargins.y) {
+            _scrollSpeed.y = scrollTop ? -abs(_targetRect.top - y2 + startScrollMargins.y) : 0;
+            y2 = y2 < _targetRect.top ? _targetRect.top : y2;
+        } else if (y2 > _targetRect.bottom - startScrollMargins.y) {
+            _scrollSpeed.y = scrollHeight - scrollTop - clientHeight ? abs(_targetRect.top + _targetRect.height - y2 - startScrollMargins.y) : 0;
+            y2 = y2 > _targetRect.bottom ? _targetRect.bottom : y2;
         } else {
             _scrollSpeed.y = 0;
         }
