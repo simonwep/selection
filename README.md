@@ -89,6 +89,14 @@ Use the following commands to work on this locally (we use [lerna](https://lerna
 For the development servers [vite](https://vitejs.dev/) is used. It's superb, you should give it a try.
 To bundle it we use [rollup](https://rollupjs.org/) (which is btw also used by vite behind the scenes) to have full control over how the bundle looks like.
 
+### Releasing a new version
+
+This project is managed via [lerna](https://lerna.js.org/).
+To bump the version and publish a new one run the following commands:
+
+* `lerna version`
+* `lerna publish from-package`
+
 ### You want to contribute?
 
 That's awesome! Check out the [contribution guidelines](./.github/CONTRIBUTING.md) to get started :)
