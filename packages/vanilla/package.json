@@ -11,9 +11,7 @@
     "license": "MIT",
     "scripts": {
         "build": "rollup -c rollup.config.js",
-        "dev": "vite",
-        "lint": "eslint '{src,demo}/**/*.ts'",
-        "lint:fix": "npm run lint -- --fix"
+        "dev": "vite"
     },
     "files": [
         "lib",
@@ -31,15 +29,12 @@
     ],
     "devDependencies": {
         "@rollup/plugin-replace": "^4.0.0",
-        "@typescript-eslint/eslint-plugin": "^5.30.6",
-        "@typescript-eslint/parser": "^5.30.6",
         "csstype": "^3.1.0",
-        "eslint": "^8.19.0",
-        "rollup": "^2.77.0",
+        "rollup": "^2.79.0",
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-ts": "^3.0.2",
-        "typescript": "^4.7.4",
-        "vite": "^3.0.0"
+        "typescript": "^4.8.3",
+        "vite": "^3.1.0"
     },
     "publishConfig": {
         "access": "public"

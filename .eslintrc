@@ -2,16 +2,66 @@
     "globals": {
         "VERSION": true
     },
-    "env": {
-        "browser": true,
-        "node": true
-    },
     "extends": [
         "eslint:recommended"
     ],
-    "rules": {
-        "semi": "error",
-        "no-console": "error",
-        "object-curly-spacing": ["error", "never"]
-    }
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "overrides": [
+        {
+            "files": "*.ts",
+            "parser": "@typescript-eslint/parser",
+            "extends": [
+                "plugin:@typescript-eslint/eslint-recommended",
+                "plugin:@typescript-eslint/recommended"
+            ],
+            "rules": {
+                "@typescript-eslint/no-non-null-assertion": "off"
+            }
+        },
+        {
+            "files": "*.tsx",
+            "parser": "@typescript-eslint/parser",
+            "parserOptions": {
+                "ecmaVersion": "latest",
+                "sourceType": "module",
+                "ecmaFeatures": {
+                    "jsx": true
+                }
+            },
+            "extends": [
+                "plugin:react/recommended",
+                "plugin:@typescript-eslint/recommended"
+            ],
+            "plugins": [
+                "react"
+            ],
+            "settings": {
+                "react": {
+                    "version": "detect"
+                }
+            },
+            "rules": {
+                "react/react-in-jsx-scope": "off"
+            }
+        },
+        {
+            "files": "*.vue",
+            "parser": "vue-eslint-parser",
+            "parserOptions": {
+                "parser": "@typescript-eslint/parser",
+                "extraFileExtensions": [".vue"]
+            },
+            "extends": [
+                "eslint:recommended",
+                "plugin:vue/vue3-essential",
+                "@vue/eslint-config-typescript/recommended"
+            ],
+            "rules": {
+                "vue/multi-word-component-names": "off",
+                "no-console": "error"
+            }
+        }
+    ]
 }

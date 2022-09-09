@@ -6,13 +6,19 @@
     "scripts": {
         "dev": "lerna run dev --parallel",
         "build": "lerna run build --parallel",
-        "lint": "lerna run lint --parallel",
-        "lint:fix": "lerna run lint:fix --parallel",
+        "lint": "eslint 'packages/**/{src,demo}/*.{ts,tsx,vue,js}'",
+        "lint:fix": "npm run lint -- --fix",
         "test:ci": "npm run lint:fix && npm run build",
         "prepublishOnly": "npm run test:ci",
         "postinstall": "lerna bootstrap"
     },
     "devDependencies": {
-        "lerna": "^5.1.8"
+        "@typescript-eslint/eslint-plugin": "^5.36.2",
+        "@typescript-eslint/parser": "^5.36.2",
+        "@vue/eslint-config-typescript": "^11.0.1",
+        "eslint": "^8.23.0",
+        "eslint-plugin-react": "^7.31.8",
+        "eslint-plugin-vue": "^9.4.0",
+        "lerna": "^5.5.0"
     }
 }
