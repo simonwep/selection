@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const deepAssign = <O>(target: O, source: any): O => {
+export const deepAssign = <O extends Record<any, any>>(target: O, source: any): O => {
     for (const [key, value] of Object.entries(target)) {
         const sourceValue = source[key];
 
