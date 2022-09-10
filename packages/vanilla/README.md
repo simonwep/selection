@@ -105,6 +105,7 @@ const selection = new SelectionArea({
     container: 'body',
 
     // document object - if you want to use it within an embed document (or iframe).
+    // If you're inside of a shadow-dom make sure to specify the shadow root here.
     document: window.document,
 
     // Query selectors for elements which can be selected.
@@ -114,6 +115,7 @@ const selection = new SelectionArea({
     startareas: ['html'],
 
     // Query selectors for elements which will be used as boundaries for the selection.
+    // The boundary will also be the scrollable container if this is the case.
     boundaries: ['html'],
 
     // Behaviour related options.
@@ -237,6 +239,12 @@ selection.on('beforestart', evt => {
     console.log('stop', evt);
 });
 ```
+
+#### Virtual / dynamic lists
+
+In some cases you may add / remove selectables during a selection.
+Especially when it comes to scrolling.
+In this case make sure to call `selection.resolveSelectables()` every time you add / remove a selectable so that viselect is aware of the change.
 
 ### Event properties
 Every event comes with the following properties:
