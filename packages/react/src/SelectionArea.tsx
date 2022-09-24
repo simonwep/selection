@@ -4,6 +4,7 @@ import {SelectionEvents, SelectionOptions} from '@vanilla/types';
 import React, {createRef, useEffect} from 'react';
 
 export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, React.HTMLAttributes<HTMLDivElement> {
+    id?: string;
     className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];
     onStart?: SelectionEvents['start'];
@@ -32,7 +33,7 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
     }, []);
 
     return (
-        <div ref={root} className={props.className}>
+        <div ref={root} className={props.className} id={props.id} >
             {props.children}
         </div>
     );
