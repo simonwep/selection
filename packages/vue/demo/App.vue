@@ -27,9 +27,8 @@
 </template>
 
 <script lang="ts" setup>
-import {SelectionEvent} from '@vanilla/types';
+import {SelectionArea, SelectionEvent} from '../src';
 import {reactive} from 'vue';
-import SelectionArea from '../src/SelectionArea.vue';
 
 const selected = reactive<Set<number>>(new Set());
 

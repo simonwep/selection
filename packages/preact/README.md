@@ -101,6 +101,7 @@ import {useState} from 'preact/hooks';
 
 const App: FunctionComponent = () => {
     const [selected, setSelected] = useState<Set<number>>(() => new Set());
+
     const extractIds = (els: Element[]): number[] =>
         els.map(v => v.getAttribute('data-key'))
             .filter(Boolean)

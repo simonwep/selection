@@ -96,52 +96,45 @@ text-selection, add the following to the container where all your selectables ar
 
 ```vue
 <template>
-    <SelectionArea class="container green"
-                   :options="{selectables: '.selectable'}"
-                   :on-move="onMove"
-                   :on-start="onStart">
-        <div v-for="id of range(42)" :key="id" :data-key="id"
-             class="selectable" :class="{selected: selected.has(id)}"/>
-    </SelectionArea>
+  <SelectionArea class="container"
+                 :options="{selectables: '.selectable'}"
+                 :on-move="onMove"
+                 :on-start="onStart">
+    <div v-for="id of range(42)"
+         class="selectable"
+         :key="id" 
+         :data-key="id"
+         :class="{selected: selected.has(id)}"/>
+  </SelectionArea>
 </template>
 
-<script lang="ts">
-import SelectionArea, {SelectionEvent} from '@viselect/vue';
+<script lang="ts" setup>
+import {SelectionArea, SelectionEvent} from '@viselect/vue';
+import {reactive} from 'vue';
 
-export default {
-    components: {SelectionArea},
+const selected = reactive<Set<number>>(new Set());
 
-    data() {
-        return {
-            selected: new Set()
-        };
-    },
-
-    methods: {
-
-        extractIds(els: Element[]): number[] {
-            return els.map(v => v.getAttribute('data-key'))
-                .filter(Boolean)
-                .map(Number);
-        },
-
-        onStart({event, selection}: SelectionEvent) {
-            if (!event?.ctrlKey && !event?.metaKey) {
-                selection.clearSelection();
-                this.selected.clear();
-            }
-        },
-
-        onMove({store: {changed: {added, removed}}}: SelectionEvent) {
-            this.extractIds(added).forEach(id => this.selected.add(id));
-            this.extractIds(removed).forEach(id => this.selected.delete(id));
-        },
-
-        range(to: number, offset = 0): number[] {
-            return new Array(to).fill(0).map((_, i) => offset + i);
-        }
-    }
+const range = (to: number, offset = 0): number[] => {
+  return new Array(to).fill(0).map((_, i) => offset + i);
 };
+
+const extractIds = (els: Element[]): number[] => {
+  return els.map(v => v.getAttribute('data-key'))
+      .filter(Boolean)
+      .map(Number);
+}
+
+const onStart = ({event, selection}: SelectionEvent) => {
+  if (!event?.ctrlKey && !event?.metaKey) {
+    selection.clearSelection();
+    selected.clear();
+  }
+}
+
+const onMove = ({store: {changed: {added, removed}}}: SelectionEvent) => {
+  extractIds(added).forEach(id => selected.add(id));
+  extractIds(removed).forEach(id => selected.delete(id));
+}
 </script>
 ```
 

@@ -33,7 +33,7 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
     }, []);
 
     return (
-        <div ref={root} className={props.className} id={props.id} >
+        <div ref={root} className={props.className} id={props.id}>
             {props.children}
         </div>
     );

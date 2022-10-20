@@ -9,6 +9,7 @@ function SelectableArea({boxes, offset, className}: {
     className: string;
 }) {
     const [selected, setSelected] = useState<Set<number>>(() => new Set());
+
     const extractIds = (els: Element[]): number[] =>
         els.map(v => v.getAttribute('data-key'))
             .filter(Boolean)

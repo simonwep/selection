@@ -103,6 +103,7 @@ import React, {FunctionComponent, useState} from 'react';
 
 const App: FunctionComponent = () => {
     const [selected, setSelected] = useState<Set<number>>(() => new Set());
+
     const extractIds = (els: Element[]): number[] =>
         els.map(v => v.getAttribute('data-key'))
             .filter(Boolean)
