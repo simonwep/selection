@@ -1,9 +1,10 @@
-import {terser} from 'rollup-plugin-terser';
+import {terser} from 'rollup-plugin-minification';
 import ts from 'rollup-plugin-ts';
 import replace from '@rollup/plugin-replace';
-import {main, module, version} from './package.json';
+import {readFileSync} from 'fs';
 
-const banner = `/*! @viselect/react ${version} MIT | https://github.com/Simonwep/selection */`;
+const pkg = JSON.parse(readFileSync('./package.json', 'utf8'));
+const banner = `/*! @viselect/react ${pkg.version} MIT | https://github.com/Simonwep/selection */`;
 
 const externals = {
     'react': 'React',
@@ -16,7 +17,7 @@ export default {
     plugins: [
         replace({
             preventAssignment: true,
-            VERSION: JSON.stringify(version)
+            VERSION: JSON.stringify(pkg.version)
         }),
         ts(),
         terser({
@@ -31,7 +32,7 @@ export default {
     output: [
         {
             banner,
-            file: main,
+            file: pkg.main,
             name: 'SelectionArea',
             format: 'umd',
             sourcemap: true,
@@ -40,7 +41,7 @@ export default {
         },
         {
             banner,
-            file: module,
+            file: pkg.module,
             format: 'es',
             sourcemap: true,
             globals: externals,

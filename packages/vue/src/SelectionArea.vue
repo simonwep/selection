@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import SelectionArea, {SelectionEvents} from '@vanilla/index';
 import {SelectionOptions} from '@vanilla/types';
-import {defineProps, onBeforeUnmount, ref, watchEffect} from 'vue';
+import {onBeforeUnmount, ref, watchEffect} from 'vue';
 
 const props = defineProps<{
     options: Omit<SelectionOptions, 'boundaries'>;

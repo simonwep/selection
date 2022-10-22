@@ -10,7 +10,7 @@
     "repository": "git+https://github.com/Simonwep/selection.git",
     "license": "MIT",
     "scripts": {
-        "build": "rollup -c rollup.config.js",
+        "build": "rollup -c rollup.config.mjs",
         "dev": "vite"
     },
     "files": [
@@ -30,14 +30,14 @@
     ],
     "devDependencies": {
         "@preact/preset-vite": "^2.4.0",
-        "@rollup/plugin-alias": "^3.1.9",
-        "@rollup/plugin-replace": "^4.0.0",
-        "preact": "^10.10.6",
-        "rollup": "^2.79.0",
-        "rollup-plugin-terser": "^7.0.2",
+        "@rollup/plugin-alias": "^4.0.2",
+        "@rollup/plugin-replace": "^5.0.1",
+        "preact": "^10.11.2",
+        "rollup": "^3.2.3",
+        "rollup-plugin-minification": "^0.1.0",
         "rollup-plugin-ts": "^3.0.2",
-        "typescript": "^4.8.3",
-        "vite": "^3.1.0"
+        "typescript": "^4.8.4",
+        "vite": "^3.1.8"
     },
     "peerDependencies": {
         "preact": ">=10.5.15"

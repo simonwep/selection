@@ -1,29 +1,25 @@
-import {terser} from 'rollup-plugin-terser';
+import {terser} from 'rollup-plugin-minification';
 import ts from 'rollup-plugin-ts';
 import replace from '@rollup/plugin-replace';
-import {main, module, version} from './package.json';
-import alias from '@rollup/plugin-alias';
+import vue from 'rollup-plugin-vue';
+import {readFileSync} from 'fs';
 
-const banner = `/*! @viselect/preact ${version} MIT | https://github.com/Simonwep/selection */`;
+const pkg = JSON.parse(readFileSync('./package.json', 'utf8'));
+const banner = `/*! @viselect/vue ${pkg.version} MIT | https://github.com/Simonwep/selection */`;
 
 const externals = {
-    'preact': 'Preact',
-    'preact/compat': 'preact/compat'
-};
+    'vue': 'vue'
+}
 
 export default {
-    input: 'src/index.tsx',
+    input: 'src/index.ts',
     external: Object.keys(externals),
     plugins: [
         replace({
             preventAssignment: true,
-            VERSION: JSON.stringify(version)
+            VERSION: JSON.stringify(pkg.version)
         }),
-        alias({
-            entries: [
-                {find: 'react', replacement: 'preact/compat'}
-            ]
-        }),
+        vue(),
         ts(),
         terser({
             mangle: {
@@ -37,7 +33,7 @@ export default {
     output: [
         {
             banner,
-            file: main,
+            file: pkg.main,
             name: 'SelectionArea',
             format: 'umd',
             sourcemap: true,
@@ -46,7 +42,7 @@ export default {
         },
         {
             banner,
-            file: module,
+            file: pkg.module,
             format: 'es',
             sourcemap: true,
             globals: externals,

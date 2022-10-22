@@ -17,8 +17,12 @@
         "baseUrl": ".",
         "jsx": "react",
         "paths": {
-            "@vanilla/*": ["packages/vanilla/src/*"],
-            "@react/*": ["packages/react/src/*"]
+            "@react/*": [
+                "packages/react/src/*"
+            ],
+            "@vanilla/*": [
+                "packages/vanilla/src/*"
+            ]
         }
     }
 }
