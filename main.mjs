@@ -33,3 +33,6 @@ const selection = new SelectionArea({
         el.classList.remove('selected');
     }
 });
+
+// Prevent flickering
+document.body.style.display = 'unset';
