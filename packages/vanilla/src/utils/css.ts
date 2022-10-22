@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type {Properties} from 'csstype';
-
 const unitify = (val: string | number, unit = 'px'): string => {
     return typeof val === 'number' ? val + unit : val;
 };
@@ -10,23 +7,23 @@ const unitify = (val: string | number, unit = 'px'): string => {
  * value of a property.
  *
  * @param el The Element.
- * @param attr The attribute or a object which holds css key-properties.
+ * @param attr The attribute or an object which holds css key-properties.
  * @param val The value for a single attribute.
  * @returns {*}
  */
 export function css(
     {style}: HTMLElement,
-    attr: Partial<Record<keyof Properties, string | number>> | keyof Properties,
+    attr: Partial<Record<string, string | number>> | string,
     val?: string | number
 ): void {
     if (typeof attr === 'object') {
 
         for (const [key, value] of Object.entries(attr)) {
-            style[key as any] = unitify(value as string | number);
+            value !== undefined && style.setProperty(key, unitify(value));
         }
 
     } else if (val !== undefined) {
-        style[attr as any] = unitify(val);
+        style.setProperty(attr, unitify(val));
     }
 }
 

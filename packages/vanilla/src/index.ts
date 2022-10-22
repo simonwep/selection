@@ -1,7 +1,7 @@
 import {EventTarget} from './EventEmitter';
 import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 import {PartialSelectionOptions} from './types';
-import {css, deepAssign, eventPath, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
+import {css, deepAssign, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 
 // Re-export types
 export * from './types';
@@ -154,7 +154,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         );
 
         // Check if area starts in one of the start areas / boundaries
-        const evtPath = eventPath(evt);
+        const evtPath = evt.composedPath();
         if (!this._targetElement ||
             !startAreas.find(el => evtPath.includes(el)) ||
             !resolvedBoundaries.find(el => evtPath.includes(el))) {

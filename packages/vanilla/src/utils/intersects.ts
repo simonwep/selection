@@ -30,8 +30,5 @@ export function intersects(a: DOMRect, b: DOMRect, mode: Intersection = 'touch')
                 a.bottom >= b.top &&
                 a.top <= b.bottom;
         }
-        default: {
-            throw new Error(`Unkown intersection mode: ${mode}`);
-        }
     }
 }
