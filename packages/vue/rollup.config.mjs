@@ -1,7 +1,7 @@
 import {terser} from 'rollup-plugin-minification';
 import ts from 'rollup-plugin-ts';
 import replace from '@rollup/plugin-replace';
-import vue from 'rollup-plugin-vue';
+import vue from '@vitejs/plugin-vue';
 import {readFileSync} from 'fs';
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf8'));
@@ -9,7 +9,7 @@ const banner = `/*! @viselect/vue ${pkg.version} MIT | https://github.com/Simonw
 
 const externals = {
     'vue': 'vue'
-}
+};
 
 export default {
     input: 'src/index.ts',
