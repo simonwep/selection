@@ -1,4 +1,4 @@
-import reactRefresh from '@vitejs/plugin-react-refresh';
+import react from '@vitejs/plugin-react';
 import {resolve} from 'path';
 import {defineConfig} from 'vite';
 import {version} from './package.json';
@@ -6,7 +6,7 @@ import {version} from './package.json';
 export default defineConfig({
     root: './demo',
 
-    plugins: [reactRefresh()],
+    plugins: [react()],
 
     resolve: {
         alias: {

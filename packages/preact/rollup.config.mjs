@@ -1,4 +1,4 @@
-import {terser} from 'rollup-plugin-minification';
+import terser from '@rollup/plugin-terser';
 import ts from 'rollup-plugin-ts';
 import replace from '@rollup/plugin-replace';
 import alias from '@rollup/plugin-alias';
