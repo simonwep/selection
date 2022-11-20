@@ -183,7 +183,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     _onSingleTap(evt: MouseEvent | TouchEvent): void {
         const {singleTap: {intersect}, range} = this._options.features;
         const e = simplifyEvent(evt);
-        let target = null;
+        let target;
 
         if (intersect === 'native') {
             target = e.target;
@@ -669,6 +669,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
      * @param includeStored If the store should also get cleared
      */
     clearSelection(includeStored = true): void {
+        this._latestElement = undefined;
         this._selection = {
             stored: includeStored ? [] : this._selection.stored,
             selected: [],
@@ -728,10 +729,14 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             !stored.includes(el)
         );
 
+        // Update element lists
         stored.push(...elements);
         selected.push(...elements);
         changed.added.push(...elements);
         changed.removed = [];
+
+        // We don't know which element was "selected" first so clear it
+        this._latestElement = undefined;
 
         // Fire event
         if (!quiet) {
@@ -763,6 +768,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this._selection.changed.removed.push(
                 ...elements.filter(el => !changed.removed.includes(el))
             );
+
+            // We don't know which element was "selected" first so clear it
+            this._latestElement = undefined;
 
             // Fire event
             if (!quiet) {
