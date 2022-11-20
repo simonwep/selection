@@ -36,12 +36,6 @@
     <a href="https://svelte.dev"><img
         alt="Svelte support"
         src="https://img.shields.io/badge/%E2%9A%99-svelte-%23F83C00"></a>
-    <a href="https://lit-element.polymer-project.org"><img
-        alt="Lit-Element support"
-        src="https://img.shields.io/badge/%E2%9A%99-lit--element-%233CA4F6"></a>
-    <a href="https://lit-element.polymer-project.org"><img
-        alt="Lit-Element support"
-        src="https://img.shields.io/badge/%E2%9A%99-angular-%23c3002f"></a>
 </p>
 
 ### Features 🤘
