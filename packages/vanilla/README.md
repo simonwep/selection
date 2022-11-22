@@ -194,7 +194,6 @@ Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-li
 
 | Function                                                        | Description                                                                                                                                         |
 |-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `trigger(evt: MouseEvent / TouchEvent, silent = true): void`    | Manually trigger a selection.                                                                                                                       |
 | `resolveSelectables(): void`                                    | Updates the list of selectables, useful if new elements have been added during a selection.                                                         |
 | `getSelection(): Element[]`                                     | Returns currently selected element. Use it in the `stop` event to collect selected elements.                                                        |
 | `getSelectionArea(): HTMLElement`                               | Returns the selection area element.                                                                                                                 |
