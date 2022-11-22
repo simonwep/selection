@@ -688,7 +688,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             stored: includeStored ? [] : stored,
             selected: [],
             touched: [],
-            changed: { added: [], removed: [] }
+            changed: {added: [], removed: []}
         };
     }
 
@@ -762,9 +762,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
      * Removes a particular element from the selection.
      * @param query - CSS Query, can be an array of queries
      * @param quiet - If this should not trigger the move event
-     * @returns boolean - true if the element was successfully removed
      */
-    deselect(query: SelectAllSelectors, quiet = false): boolean {
+    deselect(query: SelectAllSelectors, quiet = false) {
         const {selected, stored, changed} = this._selection;
 
         const elements = selectAll(query, this._options.document).filter(el =>
@@ -772,26 +771,24 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             stored.includes(el)
         );
 
-        if (elements.length) {
-            this._selection.stored = stored.filter(el => !elements.includes(el));
-            this._selection.selected = selected.filter(el => !elements.includes(el));
-            this._selection.changed.added = [];
-            this._selection.changed.removed.push(
-                ...elements.filter(el => !changed.removed.includes(el))
-            );
-
-            // We don't know which element was "selected" first so clear it
-            this._latestElement = undefined;
-
-            // Fire event
-            if (!quiet) {
-                this._emitEvent('move', null);
-                this._emitEvent('stop', null);
-            }
-
-            return true;
+        if (!elements.length) {
+            return;
         }
 
-        return false;
+        this._selection.stored = stored.filter(el => !elements.includes(el));
+        this._selection.selected = selected.filter(el => !elements.includes(el));
+        this._selection.changed.added = [];
+        this._selection.changed.removed.push(
+            ...elements.filter(el => !changed.removed.includes(el))
+        );
+
+        // We don't know which element was "selected" first so clear it
+        this._latestElement = undefined;
+
+        // Fire event
+        if (!quiet) {
+            this._emitEvent('move', null);
+            this._emitEvent('stop', null);
+        }
     }
 }
