@@ -192,19 +192,19 @@ Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-li
 
 ### Functions
 
-| Function                                                        | Description                                                                                                    |
-|-----------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| `trigger(evt: MouseEvent / TouchEvent, silent = true): void`    | Manually trigger a selection.                                                                                  |
-| `resolveSelectables(): void`                                    | Updates the list of selectables, useful if new elements have been added during a selection.                    |
-| `clearSelection(includeStored = true): void`                    | Clears the selection, pass `false` to keep previously selected elements.                                       |
-| `getSelection(): Element[]`                                     | Returns currently selected element. Use it in the `stop` event to collect selected elements.                   |
-| `getSelectionArea(): HTMLElement`                               | Returns the selection area element.                                                                            |
-| `cancel(keepEvent = false): void`                               | Cancel the currently active selection, pass true to trigger the `stop` event afterwards.                       |
-| `destroy(): void`                                               | Destroy the `SelectionArea`-instance, removes all event-listeners and the selection-area element from the DOM. |
-| `disable(): void`                                               | Disables the selection-area temporarily.                                                                       |
-| `enable(): void`                                                | Enables the selection-area.                                                                                    |
-| `select(query: SelectAllSelectors, quiet = false): Element[]`   | Manually select elements, if `quiet` is set to `true` this will not fire the `move` & `stop` event.            |                                                                                                    
-| `deselect(query: SelectAllSelectors, quiet = false): Element[]` | Manually deselect elements, if `quiet` is set to `true` this will not fire the `move` & `stop` event.          |
+| Function                                                        | Description                                                                                                                                         |
+|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `trigger(evt: MouseEvent / TouchEvent, silent = true): void`    | Manually trigger a selection.                                                                                                                       |
+| `resolveSelectables(): void`                                    | Updates the list of selectables, useful if new elements have been added during a selection.                                                         |
+| `getSelection(): Element[]`                                     | Returns currently selected element. Use it in the `stop` event to collect selected elements.                                                        |
+| `getSelectionArea(): HTMLElement`                               | Returns the selection area element.                                                                                                                 |
+| `cancel(keepEvent = false): void`                               | Cancel the currently active selection, pass true to trigger the `stop` event afterwards.                                                            |
+| `destroy(): void`                                               | Destroy the `SelectionArea`-instance, removes all event-listeners and the selection-area element from the DOM.                                      |
+| `disable(): void`                                               | Disables the selection-area temporarily.                                                                                                            |
+| `enable(): void`                                                | Enables the selection-area.                                                                                                                         |
+| `select(query: SelectAllSelectors, quiet = false): Element[]`   | Manually select elements, if `quiet` is set to `true` this will not fire the `move` & `stop` event.                                                 |                                                                                                    
+| `deselect(query: SelectAllSelectors, quiet = false): Element[]` | Manually deselect elements, if `quiet` is set to `true` this will not fire the `move` & `stop` event.                                               |
+| `clearSelection(includeStored = true, quiet = false): void`     | Clears the selection, pass `false` to keep previously selected elements.  If `quiet` is set to `true` this will not fire the `move` & `stop` event. |
 
 
 ### Example

@@ -659,25 +659,36 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
      * Will update everything which can be selected.
      */
     resolveSelectables(): void {
-
-        // Resolve selectors
         this._selectables = selectAll(this._options.selectables, this._options.document);
     }
 
     /**
-     * Clear the elements which where saved by 'keepSelection()'.
+     * Same as deselect, but for all elements currently selected.
      * @param includeStored If the store should also get cleared
+     * @param quiet If move / stop events should be fired
      */
-    clearSelection(includeStored = true): void {
+    clearSelection(includeStored = true, quiet = false): void {
+        const {selected, stored, changed} = this._selection;
+
+        changed.added = [];
+        changed.removed.push(
+            ...selected,
+            ...(includeStored ? stored : [])
+        );
+
+        // Fire event
+        if (!quiet) {
+            this._emitEvent('move', null);
+            this._emitEvent('stop', null);
+        }
+
+        // Reset state
         this._latestElement = undefined;
         this._selection = {
-            stored: includeStored ? [] : this._selection.stored,
+            stored: includeStored ? [] : stored,
             selected: [],
             touched: [],
-            changed: {
-                added: [],
-                removed: []
-            }
+            changed: { added: [], removed: [] }
         };
     }
 
