@@ -1,6 +1,6 @@
 {
     "name": "@viselect/vanilla",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "main": "./lib/viselect.cjs.js",
     "module": "./lib/viselect.esm.js",
