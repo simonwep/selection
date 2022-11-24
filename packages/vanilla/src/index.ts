@@ -173,7 +173,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         // To detect single-click
         this._singleClick = true;
-        this.clearSelection(false);
+        this.clearSelection(false, true);
 
         on(document, ['touchmove', 'mousemove'], this._delayedTapMove, {passive: false});
         on(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
