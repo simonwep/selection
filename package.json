@@ -1,5 +1,5 @@
 {
-    "name": "viselect",
+    "name": "viselect-root",
     "author": "Simon Reinisch <contact@reinisch.io>",
     "private": true,
     "license": "MIT",
@@ -9,8 +9,12 @@
         "lint": "eslint 'packages/**/{src,demo}/*.{ts,tsx,vue,js}'",
         "lint:fix": "npm run lint -- --fix",
         "test:ci": "npm run lint:fix && npm run build",
-        "prepublishOnly": "npm run test:ci",
-        "postinstall": "lerna bootstrap"
+        "prepublishOnly": "npm run test:ci"
+    },
+    "workspaces": {
+        "packages": [
+            "packages/*"
+        ]
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.40.1",
