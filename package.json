@@ -11,18 +11,34 @@
         "test:ci": "npm run lint:fix && npm run build",
         "prepublishOnly": "npm run test:ci"
     },
-    "workspaces": {
-        "packages": [
-            "packages/*"
-        ]
-    },
+    "workspaces": [
+        "packages/*"
+    ],
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.40.1",
-        "@typescript-eslint/parser": "^5.40.1",
+        "@typescript-eslint/eslint-plugin": "^5.47.1",
+        "@typescript-eslint/parser": "^5.47.1",
         "@vue/eslint-config-typescript": "^11.0.2",
-        "eslint": "^8.26.0",
-        "eslint-plugin-react": "^7.31.10",
-        "eslint-plugin-vue": "^9.6.0",
-        "lerna": "^6.0.1"
+        "@rollup/plugin-replace": "^5.0.2",
+        "@rollup/plugin-terser": "^0.2.1",
+        "@rollup/plugin-alias": "^4.0.2",
+        "@vitejs/plugin-vue": "^4.0.0",
+        "@vitejs/plugin-react": "^3.0.0",
+        "@preact/preset-vite": "^2.5.0",
+        "@vue/compiler-sfc": "^3.2.45",
+        "@types/react": "^18.0.26",
+        "@types/react-dom": "^18.0.10",
+        "eslint": "^8.30.0",
+        "eslint-plugin-react": "^7.31.11",
+        "eslint-plugin-vue": "^9.8.0",
+        "lerna": "^6.3.0",
+        "rollup": "^3.9.0",
+        "rollup-plugin-ts": "^3.0.2",
+        "typescript": "^4.9.4",
+        "vite": "^4.0.3",
+        "vue": "^3.2.45",
+        "vue-tsc": "^1.0.18",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "preact": "^10.11.3"
     }
 }
