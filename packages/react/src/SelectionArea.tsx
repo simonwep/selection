@@ -7,6 +7,7 @@ export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'bou
     id?: string;
     className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];
+    onBeforeDrag?: SelectionEvents['beforedrag'];
     onStart?: SelectionEvents['start'];
     onMove?: SelectionEvents['move'];
     onStop?: SelectionEvents['stop'];
@@ -16,7 +17,7 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
     const root = createRef<HTMLDivElement>();
 
     useEffect(() => {
-        const {onBeforeStart, onStart, onMove, onStop, ...opt} = props;
+        const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;
         const areaBoundaries = root.current as HTMLElement;
 
         const selection = new VanillaSelectionArea({
@@ -25,6 +26,7 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
         });
 
         onBeforeStart && selection.on('beforestart', onBeforeStart);
+        onBeforeDrag && selection.on('beforedrag', onBeforeDrag);
         onStart && selection.on('start', onStart);
         onMove && selection.on('move', onMove);
         onStop && selection.on('stop', onStop);
