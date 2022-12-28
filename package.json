@@ -8,8 +8,7 @@
         "build": "lerna run build",
         "lint": "eslint 'packages/**/{src,demo}/*.{ts,tsx,vue,js}'",
         "lint:fix": "npm run lint -- --fix",
-        "test:ci": "npm run lint:fix && npm run build",
-        "prepublishOnly": "npm run test:ci"
+        "test:ci": "npm run lint:fix && npm run build"
     },
     "workspaces": [
         "packages/*"
