@@ -1,27 +1,46 @@
 import preact from '@preact/preset-vite';
-import {resolve} from 'path';
 import {defineConfig} from 'vite';
+import banner from 'vite-plugin-banner';
+import dts from 'vite-plugin-dts';
 import {version} from './package.json';
 
-export default defineConfig({
-    root: './demo',
+const header = `/*! @viselect/preact v${version} MIT | https://github.com/Simonwep/selection/tree/master/packages/preact */`;
 
-    plugins: [preact()],
+export default defineConfig(env => ({
+    root: env.mode === 'production' ? '.' : './demo',
+
+    plugins: [preact(), banner(header), dts()],
 
     resolve: {
         alias: {
-            '@vanilla': resolve(__dirname, '../vanilla/src'),
-            '@react': resolve(__dirname, '../react/src'),
-            'react': 'preact',
-            'react-dom': 'preact/compat'
+            'react': 'preact/compat'
         }
     },
 
+    build: {
+        sourcemap: true,
+        minify: 'esbuild',
+        lib: {
+            entry: 'src/index.tsx',
+            name: 'SelectionArea',
+            fileName: 'viselect',
+        },
+        rollupOptions: {
+            external: ['preact', '@viselect/react'],
+            output: {
+                globals: {
+                    preact: 'Preact',
+                    '@viselect/react': 'SelectionArea'
+                },
+            },
+        },
+    },
+
     server: {
-        port: 3007
+        port: 3006
     },
 
     define: {
         'VERSION': JSON.stringify(version)
     }
-});
+}));

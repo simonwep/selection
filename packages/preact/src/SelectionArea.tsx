@@ -1,9 +1,11 @@
 /* eslint-disable no-use-before-define */
 import VanillaSelectionArea from '@viselect/vanilla';
 import {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
-import React, {createRef, useEffect} from 'react';
+import {createRef, FunctionalComponent} from 'preact';
+import {HTMLAttributes} from 'preact/compat';
+import {useEffect} from 'preact/hooks';
 
-export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, React.HTMLAttributes<HTMLDivElement> {
+export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, HTMLAttributes<HTMLDivElement> {
     id?: string;
     className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];
@@ -13,8 +15,8 @@ export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'bou
     onStop?: SelectionEvents['stop'];
 }
 
-export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props => {
-    const root = createRef<HTMLDivElement>();
+export const SelectionArea: FunctionalComponent<SelectionAreaProps> = props => {
+    const root = createRef();
 
     useEffect(() => {
         const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;

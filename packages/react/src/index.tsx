@@ -1,4 +1,4 @@
 import {SelectionArea} from './SelectionArea';
-export {default as VanillaSelectionArea} from '@vanilla/index';
-export * from '@vanilla/types';
+export {default as VanillaSelectionArea} from '@viselect/vanilla';
+export * from '@viselect/vanilla';
 export default SelectionArea;

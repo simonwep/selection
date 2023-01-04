@@ -21,8 +21,8 @@
     <a href="https://github.com/Simonwep/selection/actions?query=workflow%3ACI"><img
         alt="Build Status"
         src="https://github.com/Simonwep/selection/workflows/CI/badge.svg"></a>
-    <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/react/lib/viselect.esm.js?compression=gzip">
-    <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/react/lib/viselect.esm.js?compression=brotli">
+    <img alt="gzip size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/react/dist/viselect.mjs?compression=gzip">
+    <img alt="brotli size" src="https://img.badgesize.io/https://cdn.jsdelivr.net/npm/@viselect/react/dist/viselect.mjs?compression=brotli">
     <a href="https://v3.vuejs.org"><img
         alt="Vue support"
         src="https://img.shields.io/badge/✔-vue-%2340B581"></a>
@@ -47,28 +47,11 @@
 
 ### Installation
 
-#### Via package manager
+Install using your package manager of choice:
 
 ```
-$ npm install @viselect/react
-# or 
-$ yarn add @viselect/react
+npm install @viselect/react
 ```
-
-#### Via script tags
-
-```html
-
-<script src="https://cdn.jsdelivr.net/npm/@viselect/react/lib/viselect.cjs.js"></script>
-```
-
-##### Via ES6 import
-
-```js
-import SelectionArea from 'https://cdn.jsdelivr.net/npm/@viselect/react/lib/viselect.esm.js';
-```
-
-### Getting started
 
 > If you're (still) using CRA, you may run into issues while using the bundle provided.
 > See [this comment](https://github.com/facebook/create-react-app/issues/8445#issuecomment-588545858) for how to fix it.

@@ -2,20 +2,26 @@
     "name": "@viselect/preact",
     "version": "3.2.3",
     "description": "Preact wrapper around the viselect vanilla library",
-    "main": "./lib/viselect.cjs.js",
-    "module": "./lib/viselect.esm.js",
     "author": "Simon Reinisch <contact@reinisch.io>",
     "bugs": "https://github.com/Simonwep/selection/issues",
     "homepage": "https://github.com/Simonwep/selection#readme",
     "repository": "git+https://github.com/Simonwep/selection.git",
     "license": "MIT",
+    "main": "./dist/viselect.umd.js",
+    "module": "./dist/viselect.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/viselect.mjs",
+            "require": "./dist/viselect.umd.js"
+        }
+    },
     "scripts": {
-        "build": "rollup -c rollup.config.mjs",
+        "build": "vite build",
         "dev": "vite"
     },
     "files": [
-        "lib",
-        "src"
+        "dist"
     ],
     "keywords": [
         "preact",
@@ -30,6 +36,9 @@
     ],
     "peerDependencies": {
         "preact": ">=10.5.15"
+    },
+    "dependencies": {
+        "@viselect/react": "~3.2.3"
     },
     "publishConfig": {
         "access": "public"

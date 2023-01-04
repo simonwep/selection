@@ -5,8 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import SelectionArea, {SelectionEvents} from '@vanilla/index';
-import {SelectionOptions} from '@vanilla/types';
+import SelectionArea, {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
 import {onBeforeUnmount, ref, watchEffect} from 'vue';
 
 const props = defineProps<{

@@ -1,4 +1,4 @@
-import type SelectionArea from '@vanilla/index';
+import type SelectionArea from './index';
 import type {Intersection} from './utils';
 
 export type Quantify<T> = Readonly<T[]> | T;
