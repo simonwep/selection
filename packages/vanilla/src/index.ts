@@ -381,16 +381,16 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 }
 
                 // Reduce velocity, use ceil in both directions to scroll at least 1px per frame
+                const {scrollTop, scrollLeft} = _targetElement;
+
                 if (_scrollSpeed.y) {
-                    const distance = ceil(_scrollSpeed.y / speedDivider);
-                    _targetElement.scrollTop += distance;
-                    _areaLocation.y1 -= distance;
+                    _targetElement.scrollTop += ceil(_scrollSpeed.y / speedDivider);
+                    _areaLocation.y1 -= _targetElement.scrollTop - scrollTop;
                 }
 
                 if (_scrollSpeed.x) {
-                    const distance = ceil(_scrollSpeed.x / speedDivider);
-                    _targetElement.scrollLeft += distance;
-                    _areaLocation.x1 -= distance;
+                    _targetElement.scrollLeft += ceil(_scrollSpeed.x / speedDivider);
+                    _areaLocation.x1 -= _targetElement.scrollLeft - scrollLeft;
                 }
 
                 /**
