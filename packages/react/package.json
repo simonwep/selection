@@ -1,6 +1,6 @@
 {
     "name": "@viselect/react",
-    "version": "3.2.3",
+    "version": "3.2.4",
     "description": "React wrapper around the viselect vanilla library",
     "author": "Simon Reinisch <contact@reinisch.io>",
     "bugs": "https://github.com/Simonwep/selection/issues",
@@ -38,7 +38,7 @@
         "react": ">=17.0.2"
     },
     "dependencies": {
-        "@viselect/vanilla": "~3.2.3"
+        "@viselect/vanilla": "^3.2.4"
     },
     "publishConfig": {
         "access": "public"
