@@ -1,4 +1,4 @@
-import SelectionArea from 'https://cdn.jsdelivr.net/npm/@viselect/vanilla/lib/viselect.esm.js';
+import SelectionArea from 'https://cdn.jsdelivr.net/npm/@viselect/vanilla/dist/viselect.mjs';
 
 [
     ['.boxes.red', 252],
