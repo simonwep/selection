@@ -124,13 +124,3 @@ const App: FunctionComponent = () => {
     );
 }
 ```
-
-
-#### Accessing the vanilla version
-
-It's better to access the underlying vanilla version than installing the `@viselect/vanilla` package separately.
-
-```ts
-import {VanillaSelectionArea} from '@viselect/react';
-// ...
-```

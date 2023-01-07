@@ -121,11 +121,44 @@ const onMove = ({store: {changed: {added, removed}}}: SelectionEvent) => {
 </script>
 ```
 
-#### Accessing the vanilla version
+#### Component exposed API
 
-It's better to access the underlying vanilla version than installing the `@viselect/vanilla` package separately.
+##### `selection`
 
-```ts
-import {VanillaSelectionArea} from '@viselect/vue';
-// ...
+It's possible to get the current `SelectionArea`-instance via [template refs](https://vuejs.
+org/guide/essentials/template-refs.html).
+
+```vue
+<template>
+  <SelectionArea 
+    class="container"
+    :options="{selectables: '.selectable'}"
+    ref="selectionAreaRef"
+  >
+    <div 
+        v-for="id of range(42)"
+        class="selectable"
+        :key="id" 
+        :data-key="id"
+        :class="{selected: selected.has(id)}"
+    />
+  </SelectionArea>
+</template>
+
+<script lang="ts" setup>
+import type {SelectionAreaInstance} from '@viselect/vue';
+import {ref, reactive, onMounted} from 'vue';
+
+const selected = reactive<Set<number>>(new Set());
+const selectionAreaRef = ref<SelectionAreaInstance>()
+
+const range = (to: number, offset = 0): number[] => {
+  return new Array(to).fill(0).map((_, i) => offset + i);
+};
+
+onMounted(() => {
+    // log current selection
+    console.log(selectionAreaRef.value?.selection)
+})
+</script>
 ```

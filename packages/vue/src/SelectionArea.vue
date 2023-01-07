@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import SelectionArea, {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
-import {onBeforeUnmount, ref, watchEffect} from 'vue';
+import {onBeforeUnmount, ref, watchEffect, shallowRef} from 'vue';
 
 const props = defineProps<{
   options: Omit<SelectionOptions, 'boundaries'>;
@@ -18,29 +18,33 @@ const props = defineProps<{
 }>();
 
 const container = ref<HTMLDivElement>();
-let instance: SelectionArea;
+const instance = shallowRef<SelectionArea | undefined>();
 
 watchEffect(() => {
   if (container.value) {
-    instance?.destroy();
+    instance.value?.destroy();
 
-    instance = new SelectionArea({
+    instance.value = new SelectionArea({
       boundaries: container.value,
       ...props.options
     });
 
     const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop} = props;
 
-    onBeforeStart && instance.on('beforestart', onBeforeStart);
-    onBeforeDrag && instance.on('beforedrag', onBeforeDrag);
-    onStart && instance.on('start', onStart as SelectionEvents['start']);
-    onMove && instance.on('move', onMove as SelectionEvents['move']);
-    onStop && instance.on('stop', onStop as SelectionEvents['stop']);
+    onBeforeStart && instance.value.on('beforestart', onBeforeStart);
+    onBeforeDrag && instance.value.on('beforedrag', onBeforeDrag);
+    onStart && instance.value.on('start', onStart as SelectionEvents['start']);
+    onMove && instance.value.on('move', onMove as SelectionEvents['move']);
+    onStop && instance.value.on('stop', onStop as SelectionEvents['stop']);
   }
 });
 
 
 onBeforeUnmount(() => {
-  instance?.destroy();
+  instance.value?.destroy();
 });
+
+defineExpose({
+  selection: instance
+})
 </script>
