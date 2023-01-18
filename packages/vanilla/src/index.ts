@@ -148,7 +148,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const startAreas = selectAll(_options.startAreas, _options.document);
         const resolvedBoundaries = selectAll(_options.boundaries, _options.document);
 
-        // Check in which container the user started the selection
+        // Check in which container the user currently acts
         this._targetElement = resolvedBoundaries.find(el =>
             intersects(el.getBoundingClientRect(), targetBoundingClientRect)
         );
@@ -643,6 +643,15 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 break;
             }
         }
+    }
+
+    /**
+     * Manually triggers the start of a selection
+     * @param evt A MouseEvent / TouchEvent -like object
+     * @param silent If beforestart should be fired,
+     */
+    trigger(evt: MouseEvent | TouchEvent, silent = true): void {
+        this._onTapStart(evt, silent);
     }
 
     /**
