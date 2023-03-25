@@ -14,7 +14,7 @@ assignees: Simonwep
 <!-- Describe briefly what is happening -->
 
 #### What is the current behavior?
-<-- What happens in your situation -->
+<!-- What happens in your situation -->
 
 #### Please provide the steps to reproduce and create a [CodeSandbox](https://codesandbox.io/).
 
