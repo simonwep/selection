@@ -1,6 +1,6 @@
 {
     "name": "@viselect/vue",
-    "version": "3.2.5",
+    "version": "3.2.6",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "author": "Simon Reinisch <contact@reinisch.io>",
     "bugs": "https://github.com/Simonwep/selection/issues",
@@ -40,7 +40,7 @@
         "vue": ">=3.0.0"
     },
     "dependencies": {
-        "@viselect/vanilla": "^3.2.5"
+        "@viselect/vanilla": "^3.2.6"
     },
     "publishConfig": {
         "access": "public"

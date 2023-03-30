@@ -1,7 +1,7 @@
 {
-    "version": "3.2.5",
-    "useWorkspaces": true,
-    "packages": [
-        "packages/*"
-    ]
+  "version": "3.2.6",
+  "useWorkspaces": true,
+  "packages": [
+    "packages/*"
+  ]
 }
