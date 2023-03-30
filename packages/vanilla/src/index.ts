@@ -1,7 +1,7 @@
 import {EventTarget} from './EventEmitter';
 import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 import {PartialSelectionOptions} from './types';
-import {css, deepAssign, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
+import {css, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 
 // Re-export types
 export * from './types';
@@ -56,36 +56,47 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     constructor(opt: PartialSelectionOptions) {
         super();
 
-        this._options = deepAssign<SelectionOptions>({
+        this._options = {
             selectionAreaClass: 'selection-area',
             selectionContainerClass: undefined,
             selectables: [],
             document: window.document,
+            startAreas: ['html'],
+            boundaries: ['html'],
+            container: 'body',
+            ...opt,
 
             behaviour: {
                 overlap: 'invert',
                 intersect: 'touch',
-                startThreshold: {x: 10, y: 10},
+                ...opt.behaviour,
+                startThreshold: opt.behaviour?.startThreshold ?
+                    typeof opt.behaviour.startThreshold === 'number' ?
+                        opt.behaviour.startThreshold :
+                        {x: 10, y: 10, ...opt.behaviour.startThreshold} : {x: 10, y: 10},
                 scrolling: {
                     speedDivider: 10,
                     manualSpeed: 750,
-                    startScrollMargins: {x: 0, y: 0}
+                    ...opt.behaviour?.scrolling,
+                    startScrollMargins: {
+                        x: 0,
+                        y: 0,
+                        ...opt.behaviour?.scrolling?.startScrollMargins,
+                    }
                 }
             },
 
             features: {
                 range: true,
                 touch: true,
+                ...opt.features,
                 singleTap: {
                     allow: true,
-                    intersect: 'native'
+                    intersect: 'native',
+                    ...opt.features?.singleTap,
                 }
-            },
-
-            startAreas: ['html'],
-            boundaries: ['html'],
-            container: 'body'
-        }, opt);
+            }
+        };
 
         // Bind locale functions to instance
         /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -256,14 +267,13 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {x, y} = simplifyEvent(evt);
 
         // Check pixel threshold
-        const thresholdType = typeof startThreshold;
         if (
 
             // Single number for both coordinates
-            (thresholdType === 'number' && abs((x + y) - (x1 + y1)) >= startThreshold) ||
+            (typeof startThreshold === 'number' && abs((x + y) - (x1 + y1)) >= startThreshold) ||
 
             // Different x and y threshold
-            (thresholdType === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x || abs(y - y1) >= (startThreshold as Coordinates).y)
+            (typeof startThreshold === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x || abs(y - y1) >= (startThreshold as Coordinates).y)
         ) {
             off(document, ['mousemove', 'touchmove'], this._delayedTapMove, {passive: false});
 

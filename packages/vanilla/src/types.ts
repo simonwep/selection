@@ -1,7 +1,13 @@
 import type SelectionArea from './index';
 import type {Intersection} from './utils';
 
-export type Quantify<T> = Readonly<T[]> | T;
+/* eslint-disable @typescript-eslint/no-unused-vars */
+export type DeepPartial<T> =
+    T extends (infer U)[] ? T :
+        T extends HTMLElement ? T :
+            { [P in keyof T]?: DeepPartial<T[P]>; };
+
+export type Quantify<T> = T[] | T;
 
 export interface ScrollEvent extends MouseEvent {
     deltaY: number;
@@ -88,7 +94,6 @@ export interface SelectionOptions {
     features: Features;
 }
 
-export type PartialSelectionOptions = Partial<Omit<SelectionOptions, 'behaviour' | 'features'>> & {
-    behaviour?: Partial<Behaviour>;
-    features?: Partial<Features>;
-}
+export type PartialSelectionOptions = DeepPartial<Omit<SelectionOptions, 'document'>> & {
+    document?: Document;
+};
