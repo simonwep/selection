@@ -35,7 +35,7 @@ const selection = new SelectionArea({
 });
 
 // Prevent flickering
-document.body.style.display = 'unset';
+document.body.style.removeProperty('display');
 
 // Log version
 console.log(`Using Viselect v${SelectionArea.version}`);
