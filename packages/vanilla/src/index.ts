@@ -233,8 +233,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {stored} = this._selection;
         this._emitEvent('start', evt);
 
-        if (evt.shiftKey && stored.length && range) {
-            const reference = this._latestElement ?? stored[0];
+        if (evt.shiftKey && range && this._latestElement) {
+            const reference = this._latestElement;
 
             // Resolve correct range
             const [preceding, following] = reference.compareDocumentPosition(target) & 4 ?
@@ -246,6 +246,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             ), preceding, following];
 
             this.select(rangeItems);
+            this._latestElement = reference; // latestElement is by default cleared in .select()
         } else if (
             stored.includes(target) && (
                 stored.length === 1 || evt.ctrlKey ||
@@ -254,8 +255,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         ) {
             this.deselect(target);
         } else {
-            this._latestElement = target;
             this.select(target);
+            this._latestElement = target;
         }
 
         this._emitEvent('stop', evt);
@@ -614,7 +615,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         _selection.selected = newlyTouched;
         _selection.changed = {added, removed};
-        this._latestElement = newlyTouched[newlyTouched.length - 1];
+
+        // Prevent range selection when selection an area.
+        this._latestElement = undefined;
     }
 
     _emitEvent(name: keyof SelectionEvents, evt: MouseEvent | TouchEvent | null): unknown {
@@ -693,7 +696,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         }
 
         // Reset state
-        this._latestElement = undefined;
         this._selection = {
             stored: includeStored ? [] : stored,
             selected: [],
