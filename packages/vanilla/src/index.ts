@@ -179,7 +179,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._areaLocation = {x1: x, y1: y, x2: 0, y2: 0};
 
         // Lock scrolling in target container
-        const scrollElement = document.scrollingElement || document.body;
+        const scrollElement = document.scrollingElement ?? document.body;
         this._scrollDelta = {x: scrollElement.scrollLeft, y: scrollElement.scrollTop};
 
         // To detect single-click
@@ -443,7 +443,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     _onScroll(): void {
         const {_scrollDelta, _options: {document}} = this;
-        const {scrollTop, scrollLeft} = document.scrollingElement || document.body;
+        const {scrollTop, scrollLeft} = document.scrollingElement ?? document.body;
 
         // Adjust area start location
         this._areaLocation.x1 += _scrollDelta.x - scrollLeft;

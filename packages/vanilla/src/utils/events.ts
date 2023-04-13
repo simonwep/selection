@@ -77,6 +77,6 @@ export const simplifyEvent = (evt: any): {
     x: number;
     y: number;
 } => {
-    const { clientX, clientY, target } = (evt.touches && evt.touches[0] || evt);
+    const { clientX, clientY, target } = evt.touches?.[0] ?? evt;
     return {x: clientX, y: clientY, target};
 };

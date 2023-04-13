@@ -7,7 +7,7 @@ export class EventTarget<Events extends EventMap> {
     private readonly _listeners = new Map<keyof Events, Set<AnyFunction>>();
 
     public addEventListener<K extends keyof Events>(event: K, cb: Events[K]): this {
-        const set = this._listeners.get(event) || new Set();
+        const set = this._listeners.get(event) ?? new Set();
         this._listeners.set(event, set);
         set.add(cb as AnyFunction);
         return this;
@@ -20,7 +20,7 @@ export class EventTarget<Events extends EventMap> {
 
     public dispatchEvent<K extends keyof Events>(event: K, ...data: Parameters<Events[K]>): unknown {
         let ok = true;
-        for (const cb of (this._listeners.get(event) || [])) {
+        for (const cb of (this._listeners.get(event) ?? [])) {
             ok = (cb(...data) !== false) && ok;
         }
 
