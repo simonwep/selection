@@ -8,6 +8,9 @@
     "plugins": [
         "@typescript-eslint"
     ],
+    "rules": {
+        "semi": ["error", "always"]
+    },
     "overrides": [
         {
             "files": "*.ts",
