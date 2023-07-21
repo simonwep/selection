@@ -31,4 +31,6 @@ jobs:
 
       - name: Publish
         if: startsWith(github.event.ref, 'refs/tags/v')
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx lerna publish from-package --yes
