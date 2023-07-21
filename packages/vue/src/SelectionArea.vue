@@ -46,5 +46,5 @@ onBeforeUnmount(() => {
 
 defineExpose({
   selection: instance
-})
+});
 </script>
