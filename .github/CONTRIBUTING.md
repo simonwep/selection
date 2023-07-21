@@ -16,9 +16,9 @@
 
 #### Setup
 
-This project requires [npm](https://nodejs.org/en/) ad [node](https://nodejs.org/en/).
+This project requires [pnpm](https://pnpm.io) and [node](https://nodejs.org/en/).
  
-1. Fork this repo on [github](https://github.com/Simonwep/selection).
-2. Clone locally.
-3. From your local repro run `npm install`.
-4. Run `npm start dev`.
+1. Fork this repo on [GitHub](https://github.com/Simonwep/selection).
+2. Check out the master locally.
+3. From your local repro run `pnpm install`.
+4. Run `pnpm start dev`.

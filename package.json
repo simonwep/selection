@@ -3,39 +3,42 @@
     "author": "Simon Reinisch <contact@reinisch.io>",
     "private": true,
     "license": "MIT",
-    "scripts": {
-        "build": "lerna run build",
-        "lint": "eslint 'packages/**/{src,demo}/*.{ts,tsx,vue,js}'",
-        "lint:fix": "npm run lint -- --fix",
-        "test:ci": "npm run lint:fix && npm run build"
+    "packageManager": "pnpm@8.0.0",
+    "engines": {
+        "node": "^18.12.0"
     },
-    "workspaces": {
-        "packages": [
-            "packages/*"
-        ]
+    "scripts": {
+        "dev": "pnpm run --parallel dev",
+        "build": "pnpm run --recursive build",
+        "lint": "eslint 'packages/*/{src,demo}/*.{ts,tsx,vue,js}'",
+        "lint:fix": "pnpm run lint --fix",
+        "test:ci": "pnpm run lint:fix && pnpm run build",
+        "release:major": "lerna version major",
+        "release:minor": "lerna version minor",
+        "release:patch": "lerna version patch"
     },
     "devDependencies": {
-        "@preact/preset-vite": "^2.5.0",
-        "@types/react": "^18.0.31",
-        "@types/react-dom": "^18.0.11",
-        "@typescript-eslint/eslint-plugin": "^5.57.0",
-        "@typescript-eslint/parser": "^5.57.0",
-        "@vitejs/plugin-react": "^3.1.0",
-        "@vitejs/plugin-vue": "^4.1.0",
-        "@vue/compiler-sfc": "^3.2.47",
-        "@vue/eslint-config-typescript": "^11.0.2",
-        "eslint": "^8.37.0",
-        "eslint-plugin-react": "^7.32.2",
-        "eslint-plugin-vue": "^9.10.0",
-        "lerna": "^6.6.1",
-        "preact": "^10.13.2",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "typescript": "^5.0.2",
-        "vite": "^4.2.1",
-        "vite-plugin-banner": "^0.7.0",
-        "vite-plugin-dts": "^2.1.0",
-        "vue": "^3.2.47",
-        "vue-tsc": "^1.2.0"
+        "@preact/preset-vite": "2.5.0",
+        "@types/react": "18.2.15",
+        "@types/react-dom": "18.2.7",
+        "@typescript-eslint/eslint-plugin": "6.1.0",
+        "@typescript-eslint/parser": "6.1.0",
+        "@vitejs/plugin-react": "4.0.3",
+        "@vitejs/plugin-vue": "4.2.3",
+        "@vue/compiler-sfc": "3.3.4",
+        "@vue/eslint-config-typescript": "11.0.3",
+        "eslint": "8.45.0",
+        "eslint-plugin-react": "7.33.0",
+        "eslint-plugin-vue": "9.15.1",
+        "lerna": "7.1.4",
+        "preact": "10.16.0",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
+        "typescript": "5.1.6",
+        "vite": "4.4.6",
+        "vite-plugin-banner": "0.7.0",
+        "vite-plugin-dts": "3.3.1",
+        "vue": "3.3.4",
+        "vue-tsc": "1.8.5"
     }
 }

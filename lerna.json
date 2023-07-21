@@ -1,7 +1,4 @@
 {
   "version": "3.2.7",
-  "useWorkspaces": true,
-  "packages": [
-    "packages/*"
-  ]
+  "npmClient": "pnpm"
 }

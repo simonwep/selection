@@ -40,7 +40,7 @@
         "vue": ">=3.0.0"
     },
     "dependencies": {
-        "@viselect/vanilla": "^3.2.7"
+        "@viselect/vanilla": "workspace:*"
     },
     "publishConfig": {
         "access": "public"

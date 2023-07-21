@@ -38,7 +38,8 @@
         "preact": ">=10.5.15"
     },
     "dependencies": {
-        "@viselect/react": "^3.2.7"
+        "@viselect/vanilla": "workspace:*",
+        "@viselect/react": "workspace:*"
     },
     "publishConfig": {
         "access": "public"
