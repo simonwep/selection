@@ -9,7 +9,7 @@
     "license": "MIT",
     "main": "./dist/viselect.umd.js",
     "module": "./dist/viselect.mjs",
-    "types": "./dist/index.d.ts",
+    "types": "./dist/src/index.d.ts",
     "exports": {
         ".": {
             "import": "./dist/viselect.mjs",
