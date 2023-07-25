@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import SelectionArea, {SelectionEvent, SelectionEvents, SelectionOptions} from '@viselect/vanilla';
+import SelectionArea, {SelectionEvent, SelectionOptions} from '@viselect/vanilla';
 import {onBeforeUnmount, ref, watchEffect, shallowRef} from 'vue';
 
 const emit = defineEmits<{

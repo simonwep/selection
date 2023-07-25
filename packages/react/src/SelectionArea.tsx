@@ -22,6 +22,7 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
     const root = createRef<HTMLDivElement>();
 
     useEffect(() => {
+        /* eslint-disable @typescript-eslint/no-unused-vars */
         const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;
         const areaBoundaries = root.current as HTMLElement;
 
