@@ -30,11 +30,11 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
             ...opt
         });
 
-        onBeforeStart && selection.on('beforestart', onBeforeStart);
-        onBeforeDrag && selection.on('beforedrag', onBeforeDrag);
-        onStart && selection.on('start', onStart);
-        onMove && selection.on('move', onMove);
-        onStop && selection.on('stop', onStop);
+        selection.on('beforestart', evt => props.onBeforeStart?.(evt));
+        selection.on('beforedrag', evt => props.onBeforeDrag?.(evt));
+        selection.on('start', evt => props.onStart?.(evt));
+        selection.on('move', evt => props.onMove?.(evt));
+        selection.on('stop', evt => props.onStop?.(evt));
 
         setSelection(selection);
 

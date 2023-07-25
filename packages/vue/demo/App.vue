@@ -3,24 +3,24 @@
 
     <SelectionArea class="container green"
                    :options="{selectables: '.selectable'}"
-                   :on-move="onMove"
-                   :on-start="onStart">
+                   @move="onMove"
+                   @start="onStart">
         <div v-for="id of range(42)" :key="id" :data-key="id"
              class="selectable" :class="{selected: selected.has(id)}"/>
     </SelectionArea>
 
     <SelectionArea class="container blue"
                    :options="{selectables: '.selectable'}"
-                   :on-move="onMove"
-                   :on-start="onStart">
+                   @move="onMove"
+                   @start="onStart">
         <div v-for="id of range(42, 42)" :key="id" :data-key="id"
              class="selectable" :class="{selected: selected.has(id)}"/>
     </SelectionArea>
 
     <SelectionArea class="container red"
                    :options="{selectables: '.selectable'}"
-                   :on-move="onMove"
-                   :on-start="onStart">
+                   @move="onMove"
+                   @start="onStart">
         <div v-for="id of range(400, 84)" :key="id" :data-key="id"
              class="selectable" :class="{selected: selected.has(id)}"/>
     </SelectionArea>

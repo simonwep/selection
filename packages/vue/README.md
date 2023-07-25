@@ -136,7 +136,7 @@ org/guide/essentials/template-refs.html).
     ref="selectionAreaRef"
   >
     <div 
-        v-for="id of range(42)"
+        v-for="id of 42"
         class="selectable"
         :key="id" 
         :data-key="id"
@@ -151,10 +151,6 @@ import {ref, reactive, onMounted} from 'vue';
 
 const selected = reactive<Set<number>>(new Set());
 const selectionAreaRef = ref<SelectionAreaInstance>()
-
-const range = (to: number, offset = 0): number[] => {
-  return new Array(to).fill(0).map((_, i) => offset + i);
-};
 
 onMounted(() => {
     // log current selection

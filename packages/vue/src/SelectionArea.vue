@@ -5,16 +5,20 @@
 </template>
 
 <script lang="ts" setup>
-import SelectionArea, {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
+import SelectionArea, {SelectionEvent, SelectionEvents, SelectionOptions} from '@viselect/vanilla';
 import {onBeforeUnmount, ref, watchEffect, shallowRef} from 'vue';
+
+const emit = defineEmits<{
+  (e: 'before-start', v: SelectionEvent): void;
+  (e: 'before-drag', v: SelectionEvent): void;
+  (e: 'start', v: SelectionEvent): void;
+  (e: 'move', v: SelectionEvent): void;
+  (e: 'stop', v: SelectionEvent): void;
+  (e: 'init', v: SelectionArea): void;
+}>();
 
 const props = defineProps<{
   options: Omit<SelectionOptions, 'boundaries'>;
-  onBeforeStart?: SelectionEvents['beforestart'];
-  onBeforeDrag?: SelectionEvents['beforedrag'];
-  onStart?: SelectionEvents['start'];
-  onMove?: SelectionEvents['move'];
-  onStop?: SelectionEvents['stop'];
 }>();
 
 const container = ref<HTMLDivElement>();
@@ -23,19 +27,18 @@ const instance = shallowRef<SelectionArea | undefined>();
 watchEffect(() => {
   if (container.value) {
     instance.value?.destroy();
-
     instance.value = new SelectionArea({
       boundaries: container.value,
       ...props.options
     });
 
-    const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop} = props;
+    instance.value.on('beforestart', evt => emit('before-start', evt));
+    instance.value.on('beforedrag', evt => emit('before-drag', evt));
+    instance.value.on('start', evt => emit('start', evt));
+    instance.value.on('move', evt => emit('move', evt));
+    instance.value.on('stop', evt => emit('stop', evt));
 
-    onBeforeStart && instance.value.on('beforestart', onBeforeStart);
-    onBeforeDrag && instance.value.on('beforedrag', onBeforeDrag);
-    onStart && instance.value.on('start', onStart as SelectionEvents['start']);
-    onMove && instance.value.on('move', onMove as SelectionEvents['move']);
-    onStop && instance.value.on('stop', onStop as SelectionEvents['stop']);
+    emit('init', instance.value);
   }
 });
 
