@@ -11,6 +11,7 @@ export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'bou
     onStart?: SelectionEvents['start'];
     onMove?: SelectionEvents['move'];
     onStop?: SelectionEvents['stop'];
+    viewportRef?: React.RefObject<HTMLDivElement>;
 }
 
 const SelectionContext = createContext<VanillaSelectionArea  | undefined>(undefined);
@@ -19,11 +20,15 @@ export const useSelection = () => useContext(SelectionContext);
 
 export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props => {
     const [selectionState, setSelection] = useState<VanillaSelectionArea | undefined>(undefined);
-    const root = createRef<HTMLDivElement>();
+    const root = props.viewportRef ?? createRef<HTMLDivElement>();
 
     useEffect(() => {
-        const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;
-        const areaBoundaries = root.current as HTMLElement;
+        const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop, viewportRef, ...opt} = props;
+        const areaBoundaries = root.current;
+
+        if (!areaBoundaries) {
+            return;
+        }
 
         const selection = new VanillaSelectionArea({
             boundaries: areaBoundaries,
@@ -42,7 +47,7 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
             selection.destroy();
             setSelection(undefined);
         };
-    }, []);
+    }, [root.current]);
 
     return (
         <SelectionContext.Provider value={selectionState}>
