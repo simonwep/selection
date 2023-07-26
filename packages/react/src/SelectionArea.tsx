@@ -50,10 +50,14 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
     }, [root.current]);
 
     return (
-        <SelectionContext.Provider value={selectionState}>
-            <div ref={root} className={props.className} id={props.id}>
-                {props.children}
-            </div>
-        </SelectionContext.Provider>
+      <SelectionContext.Provider value={selectionState}>
+        <div
+          ref={props.viewportRef ? undefined : root}
+          className={props.className}
+          id={props.id}
+        >
+          {props.children}
+        </div>
+      </SelectionContext.Provider>
     );
 };
