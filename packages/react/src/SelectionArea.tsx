@@ -1,9 +1,9 @@
 /* eslint-disable no-use-before-define */
 import VanillaSelectionArea from '@viselect/vanilla';
-import {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
+import {SelectionEvents, PartialSelectionOptions} from '@viselect/vanilla';
 import React, {createRef, useEffect, createContext, useContext, useState} from 'react';
 
-export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, React.HTMLAttributes<HTMLDivElement> {
+export interface SelectionAreaProps extends Omit<PartialSelectionOptions, 'boundaries'>, React.HTMLAttributes<HTMLDivElement> {
     id?: string;
     className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];
