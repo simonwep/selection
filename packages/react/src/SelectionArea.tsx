@@ -1,9 +1,9 @@
 /* eslint-disable no-use-before-define */
 import VanillaSelectionArea from '@viselect/vanilla';
-import {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
+import {SelectionEvents, PartialSelectionOptions} from '@viselect/vanilla';
 import React, {createRef, useEffect, createContext, useContext, useState} from 'react';
 
-export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, React.HTMLAttributes<HTMLDivElement> {
+export interface SelectionAreaProps extends Omit<PartialSelectionOptions, 'boundaries'>, React.HTMLAttributes<HTMLDivElement> {
     id?: string;
     className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];
@@ -11,6 +11,7 @@ export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'bou
     onStart?: SelectionEvents['start'];
     onMove?: SelectionEvents['move'];
     onStop?: SelectionEvents['stop'];
+    viewportRef?: React.RefObject<HTMLDivElement>;
 }
 
 const SelectionContext = createContext<VanillaSelectionArea  | undefined>(undefined);
@@ -19,11 +20,15 @@ export const useSelection = () => useContext(SelectionContext);
 
 export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props => {
     const [selectionState, setSelection] = useState<VanillaSelectionArea | undefined>(undefined);
-    const root = createRef<HTMLDivElement>();
+    const root = props.viewportRef ?? createRef<HTMLDivElement>();
 
     useEffect(() => {
-        const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;
-        const areaBoundaries = root.current as HTMLElement;
+        const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop, viewportRef, ...opt} = props;
+        const areaBoundaries = root.current;
+
+        if (!areaBoundaries) {
+            return;
+        }
 
         const selection = new VanillaSelectionArea({
             boundaries: areaBoundaries,
@@ -42,13 +47,17 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
             selection.destroy();
             setSelection(undefined);
         };
-    }, []);
+    }, [root.current]);
 
     return (
-        <SelectionContext.Provider value={selectionState}>
-            <div ref={root} className={props.className} id={props.id}>
-                {props.children}
-            </div>
-        </SelectionContext.Provider>
+      <SelectionContext.Provider value={selectionState}>
+        <div
+          ref={props.viewportRef ? undefined : root}
+          className={props.className}
+          id={props.id}
+        >
+          {props.children}
+        </div>
+      </SelectionContext.Provider>
     );
 };

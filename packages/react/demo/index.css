@@ -4,12 +4,6 @@
     box-sizing: border-box;
 }
 
-html,
-body,
-#root {
-    height: 100%;
-}
-
 #root {
     width: 100%;
     max-width: 50em;
@@ -47,6 +41,18 @@ body,
     overflow: auto;
     padding: 0.5em;
     margin-bottom: 3em;
+}
+
+#root .viewport {
+    height: 150px;
+    overflow: auto;
+    margin-bottom: 3em;
+}
+
+#root .viewport .container {
+    max-height: unset;
+    margin-bottom: 0;
+    overflow: initial;
 }
 
 #root .container.red > div {
