@@ -307,7 +307,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             if (this._scrollAvailable) {
 
                 // Detect mouse scrolling
-                on(document, 'wheel', this._manualScroll, {passive: false});
+                on(this._targetElement, 'wheel', this._manualScroll, {passive: false});
 
                 /**
                  * The selection-area will also cover other element which are
@@ -546,7 +546,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._scrollSpeed.y = 0;
 
         // Unbind mouse scrolling listener
-        this._scrollAvailable && off(document, 'wheel', this._manualScroll, {passive: true});
+        off(this._targetElement, 'wheel', this._manualScroll, {passive: true});
 
         // Remove selection-area from dom
         this._clippingElement.remove();

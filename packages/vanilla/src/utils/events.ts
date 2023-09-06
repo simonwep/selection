@@ -4,49 +4,40 @@ type Method = 'addEventListener' | 'removeEventListener';
 type AnyFunction = (...arg: any) => any;
 
 export type EventBindingArgs = [
-        EventTarget | EventTarget[],
-        string | string[],
+    (EventTarget | undefined) | (EventTarget | undefined)[],
+    string | string[],
     AnyFunction,
     Record<string, unknown>?
 ];
 
-interface EventBinding {
-    (
-        elements: EventTarget | EventTarget[],
-        events: string | string[],
-        fn: AnyFunction,
-        options?: Record<string, unknown>
-    ): EventBindingArgs;
-}
-
 /* eslint-disable prefer-rest-params */
-function eventListener(method: Method): EventBinding {
-    return (
-        items: EventTarget | EventTarget[],
-        events: string | string[],
-        fn: AnyFunction, options = {}
-    ): EventBindingArgs => {
+const eventListener = (method: Method) => (
+    items: (EventTarget | undefined) | (EventTarget | undefined)[],
+    events: string | string[],
+    fn: AnyFunction, options = {}
+): EventBindingArgs => {
 
-        // Normalize array
-        if (items instanceof HTMLCollection || items instanceof NodeList) {
-            items = Array.from(items);
-        } else if (!Array.isArray(items)) {
-            items = [items];
-        }
+    // Normalize array
+    if (items instanceof HTMLCollection || items instanceof NodeList) {
+        items = Array.from(items);
+    } else if (!Array.isArray(items)) {
+        items = [items];
+    }
 
-        if (!Array.isArray(events)) {
-            events = [events];
-        }
+    if (!Array.isArray(events)) {
+        events = [events];
+    }
 
-        for (const el of items) {
+    for (const el of items) {
+        if (el) {
             for (const ev of events) {
                 el[method](ev, fn as EventListener, {capture: false, ...options});
             }
         }
+    }
 
-        return [items, events, fn, options];
-    };
-}
+    return [items, events, fn, options];
+};
 
 /**
  * Add event(s) to element(s).
@@ -77,6 +68,6 @@ export const simplifyEvent = (evt: any): {
     x: number;
     y: number;
 } => {
-    const { clientX, clientY, target } = evt.touches?.[0] ?? evt;
+    const {clientX, clientY, target} = evt.touches?.[0] ?? evt;
     return {x: clientX, y: clientY, target};
 };
