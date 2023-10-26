@@ -12,6 +12,7 @@
     "types": "./dist/src/index.d.ts",
     "exports": {
         ".": {
+            "types": "./dist/src/index.d.ts",
             "import": "./dist/viselect.mjs",
             "require": "./dist/viselect.umd.js"
         }
