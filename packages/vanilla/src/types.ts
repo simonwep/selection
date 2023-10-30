@@ -1,5 +1,5 @@
 import type SelectionArea from './index';
-import type {Intersection} from './utils';
+import type { Intersection } from './utils';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export type DeepPartial<T> =
@@ -58,13 +58,19 @@ export type OverlapMode = 'keep' | 'drop' | 'invert';
 export interface Scrolling {
     speedDivider: number;
     manualSpeed: number;
-    startScrollMargins: {x: number, y: number};
+    startScrollMargins: { x: number, y: number };
 }
 
 export interface SingleTap {
     allow: boolean;
     intersect: TapMode;
 }
+
+export type MouseButton = 0 // Main
+                        | 1 // Auxiliary 
+                        | 2 // Secondary
+                        | 3 // Fourth
+                        | 4 // Fifth
 
 export interface Features {
     singleTap: SingleTap;
@@ -77,6 +83,7 @@ export interface Behaviour {
     startThreshold: number | Coordinates;
     overlap: OverlapMode;
     scrolling: Scrolling;
+    ignoredButtons: MouseButton[]
 }
 
 export interface SelectionOptions {
