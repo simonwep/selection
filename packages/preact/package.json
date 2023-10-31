@@ -1,6 +1,6 @@
 {
     "name": "@viselect/preact",
-    "version": "3.4.0",
+    "version": "3.4.1",
     "description": "Preact wrapper around the viselect vanilla library",
     "author": "Simon Reinisch <contact@reinisch.io>",
     "bugs": "https://github.com/Simonwep/selection/issues",
