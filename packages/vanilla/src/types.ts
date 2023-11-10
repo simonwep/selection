@@ -55,6 +55,13 @@ export interface Coordinates {
 export type TapMode = 'touch' | 'native';
 export type OverlapMode = 'keep' | 'drop' | 'invert';
 
+// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button#value
+export type MouseButton = 0 // Main
+                        | 1 // Auxiliary
+                        | 2 // Secondary
+                        | 3 // Fourth
+                        | 4 // Fifth
+
 export interface Scrolling {
     speedDivider: number;
     manualSpeed: number;
@@ -77,6 +84,7 @@ export interface Behaviour {
     startThreshold: number | Coordinates;
     overlap: OverlapMode;
     scrolling: Scrolling;
+    ignoredButtons?: MouseButton[];
 }
 
 export interface SelectionOptions {

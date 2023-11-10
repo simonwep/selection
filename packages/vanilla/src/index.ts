@@ -1,5 +1,5 @@
 import {EventTarget} from './EventEmitter';
-import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
+import type { AreaLocation, Coordinates, MouseButton, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore } from './types';
 import {PartialSelectionOptions} from './types';
 import {css, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 
@@ -69,6 +69,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             behaviour: {
                 overlap: 'invert',
                 intersect: 'touch',
+                ignoredButtons: [],
                 ...opt.behaviour,
                 startThreshold: opt.behaviour?.startThreshold ?
                     typeof opt.behaviour.startThreshold === 'number' ?
@@ -150,6 +151,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _onTapStart(evt: MouseEvent | TouchEvent, silent = false): void {
+        if (evt instanceof MouseEvent && this._options.behaviour.ignoredButtons?.includes(evt.button as MouseButton)) 
+            return;
+
         const {x, y, target} = simplifyEvent(evt);
         const {_options} = this;
         const {document} = this._options;
