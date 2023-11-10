@@ -1,5 +1,5 @@
 import {EventTarget} from './EventEmitter';
-import type { AreaLocation, Coordinates, MouseButton, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore } from './types';
+import type {AreaLocation, Coordinates, MouseButton, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 import {PartialSelectionOptions} from './types';
 import {css, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
 
