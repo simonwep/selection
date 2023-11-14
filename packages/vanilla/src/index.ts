@@ -69,7 +69,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             behaviour: {
                 overlap: 'invert',
                 intersect: 'touch',
-                triggers: [{button: 0, modifiers: ["ctrl", "alt", "meta"]}],
+                triggers: [0],
                 ...opt.behaviour,
                 startThreshold: opt.behaviour?.startThreshold ?
                     typeof opt.behaviour.startThreshold === 'number' ?
