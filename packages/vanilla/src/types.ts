@@ -56,11 +56,23 @@ export type TapMode = 'touch' | 'native';
 export type OverlapMode = 'keep' | 'drop' | 'invert';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button#value
-export type MouseButton = 0 // Main
-                        | 1 // Auxiliary
-                        | 2 // Secondary
-                        | 3 // Fourth
-                        | 4 // Fifth
+export type MouseButton = 0  // Main
+                        | 1  // Auxiliary
+                        | 2  // Secondary
+                        | 3  // Fourth
+                        | 4; // Fifth
+
+export type Modifier = 'ctrl' 
+                     | 'meta' 
+                     | 'alt'
+                     | 'shift';
+
+export type Trigger = MouseButton | MouseButtonWithModifiers;
+
+export type MouseButtonWithModifiers =  {
+    button: MouseButton,
+    modifiers: Modifier[]
+};
 
 export interface Scrolling {
     speedDivider: number;
@@ -84,7 +96,7 @@ export interface Behaviour {
     startThreshold: number | Coordinates;
     overlap: OverlapMode;
     scrolling: Scrolling;
-    ignoredButtons?: MouseButton[];
+    triggers: Trigger[];
 }
 
 export interface SelectionOptions {
