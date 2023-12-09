@@ -1,7 +1,7 @@
 import {EventTarget} from './EventEmitter';
 import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 import {PartialSelectionOptions} from './types';
-import {css, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent} from './utils';
+import {css, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent, shouldTrigger} from './utils';
 
 // Re-export types
 export * from './types';
@@ -69,6 +69,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             behaviour: {
                 overlap: 'invert',
                 intersect: 'touch',
+                triggers: [0],
                 ...opt.behaviour,
                 startThreshold: opt.behaviour?.startThreshold ?
                     typeof opt.behaviour.startThreshold === 'number' ?
@@ -154,6 +155,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {_options} = this;
         const {document} = this._options;
         const targetBoundingClientRect = target.getBoundingClientRect();
+        
+        if (evt instanceof MouseEvent && !shouldTrigger(evt, _options.behaviour.triggers)) 
+            return;
 
         // Find start-areas and boundaries
         const startAreas = selectAll(_options.startAreas, _options.document);
