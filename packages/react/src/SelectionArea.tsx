@@ -1,11 +1,12 @@
 /* eslint-disable no-use-before-define */
 import VanillaSelectionArea from '@viselect/vanilla';
 import {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
-import React, {createRef, useEffect, createContext, useContext, useState} from 'react';
+import React, {useEffect, createContext, useContext, useState, useRef} from 'react';
 
-export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, React.HTMLAttributes<HTMLDivElement> {
+export interface SelectionAreaProps extends SelectionOptions, React.HTMLAttributes<HTMLDivElement> {
     id?: string;
     className?: string;
+    boundaries?: string[];
     onBeforeStart?: SelectionEvents['beforestart'];
     onBeforeDrag?: SelectionEvents['beforedrag'];
     onStart?: SelectionEvents['start'];
@@ -17,14 +18,19 @@ const SelectionContext = createContext<VanillaSelectionArea  | undefined>(undefi
 
 export const useSelection = () => useContext(SelectionContext);
 
-export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props => {
+export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = (props) => {
     const [selectionState, setSelection] = useState<VanillaSelectionArea | undefined>(undefined);
-    const root = createRef<HTMLDivElement>();
+
+    let root: React.RefObject<HTMLDivElement> | undefined;
+    if (!props.boundaries) {
+        root = useRef<HTMLDivElement>(null);
+    }
 
     useEffect(() => {
         /* eslint-disable @typescript-eslint/no-unused-vars */
-        const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;
-        const areaBoundaries = root.current as HTMLElement;
+        const {boundaries, onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;
+
+        const areaBoundaries = props.boundaries ? props.boundaries : root.current as HTMLElement;
 
         const selection = new VanillaSelectionArea({
             boundaries: areaBoundaries,
@@ -47,9 +53,13 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
 
     return (
         <SelectionContext.Provider value={selectionState}>
+            {props.boundaries ? (
+                props.children
+        ) : (
             <div ref={root} className={props.className} id={props.id}>
                 {props.children}
             </div>
-        </SelectionContext.Provider>
-    );
+        )}
+    </SelectionContext.Provider>
+  );
 };
