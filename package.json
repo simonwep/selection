@@ -5,7 +5,7 @@
     "license": "MIT",
     "packageManager": "pnpm@8.0.0",
     "engines": {
-        "node": "^18.12.0"
+        "node": "^20"
     },
     "scripts": {
         "dev": "pnpm run --parallel dev",
@@ -18,27 +18,27 @@
         "release:patch": "lerna version patch"
     },
     "devDependencies": {
-        "@preact/preset-vite": "2.5.0",
-        "@types/react": "18.2.21",
-        "@types/react-dom": "18.2.7",
-        "@typescript-eslint/eslint-plugin": "6.6.0",
-        "@typescript-eslint/parser": "6.6.0",
-        "@vitejs/plugin-react": "4.0.4",
-        "@vitejs/plugin-vue": "4.3.4",
-        "@vue/compiler-sfc": "3.3.4",
-        "@vue/eslint-config-typescript": "11.0.3",
-        "eslint": "8.48.0",
+        "@preact/preset-vite": "2.7.0",
+        "@types/react": "18.2.45",
+        "@types/react-dom": "18.2.18",
+        "@typescript-eslint/eslint-plugin": "6.14.0",
+        "@typescript-eslint/parser": "6.14.0",
+        "@vitejs/plugin-react": "4.2.1",
+        "@vitejs/plugin-vue": "4.5.2",
+        "@vue/compiler-sfc": "3.3.12",
+        "@vue/eslint-config-typescript": "12.0.0",
+        "eslint": "8.56.0",
         "eslint-plugin-react": "7.33.2",
-        "eslint-plugin-vue": "9.17.0",
-        "lerna": "7.2.0",
-        "preact": "10.17.1",
+        "eslint-plugin-vue": "9.19.2",
+        "lerna": "8.0.1",
+        "preact": "10.19.3",
         "react": "18.2.0",
         "react-dom": "18.2.0",
-        "typescript": "5.2.2",
-        "vite": "4.4.9",
-        "vite-plugin-banner": "0.7.0",
-        "vite-plugin-dts": "3.5.3",
-        "vue": "3.3.4",
-        "vue-tsc": "1.8.8"
+        "typescript": "5.3.3",
+        "vite": "5.0.10",
+        "vite-plugin-banner": "0.7.1",
+        "vite-plugin-dts": "3.6.4",
+        "vue": "3.3.12",
+        "vue-tsc": "1.8.25"
     }
 }
