@@ -156,8 +156,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {document} = this._options;
         const targetBoundingClientRect = target.getBoundingClientRect();
         
-        if (evt instanceof MouseEvent && !shouldTrigger(evt, _options.behaviour.triggers)) 
+        if (evt instanceof MouseEvent && !shouldTrigger(evt, _options.behaviour.triggers)) {
             return;
+        }
 
         // Find start-areas and boundaries
         const startAreas = selectAll(_options.startAreas, _options.document);

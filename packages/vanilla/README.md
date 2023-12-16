@@ -149,7 +149,8 @@ const selection = new SelectionArea({
         // triggers: [ { button: 0, modifiers: [ "ctrl", "shift" ] }, 2 ]
         // 
         // The default value is [0], enabling only the main mouse button (usually left click).
-        triggers: [0]
+        // On mac the ctrl will act as the meta key.
+        triggers: [0],
 
         // Scroll configuration.
         scrolling: {

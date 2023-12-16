@@ -62,8 +62,7 @@ export type MouseButton = 0  // Main
                         | 3  // Fourth
                         | 4; // Fifth
 
-export type Modifier = 'ctrl' 
-                     | 'meta' 
+export type Modifier = 'ctrl'
                      | 'alt'
                      | 'shift';
 
