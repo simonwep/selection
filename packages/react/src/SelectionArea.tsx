@@ -1,9 +1,9 @@
 /* eslint-disable no-use-before-define */
 import VanillaSelectionArea from '@viselect/vanilla';
 import {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
-import React, {createRef, useEffect, createContext, useContext, useState} from 'react';
+import React, {useEffect, createContext, useContext, useRef, useState} from 'react';
 
-export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, React.HTMLAttributes<HTMLDivElement> {
+export interface SelectionAreaProps extends Partial<SelectionOptions>, React.HTMLAttributes<HTMLDivElement> {
     id?: string;
     className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];
@@ -19,12 +19,12 @@ export const useSelection = () => useContext(SelectionContext);
 
 export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props => {
     const [selectionState, setSelection] = useState<VanillaSelectionArea | undefined>(undefined);
-    const root = createRef<HTMLDivElement>();
+    const root = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         /* eslint-disable @typescript-eslint/no-unused-vars */
-        const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;
-        const areaBoundaries = root.current as HTMLElement;
+        const {boundaries, onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;
+        const areaBoundaries = boundaries ? boundaries : (root.current as HTMLElement);
 
         const selection = new VanillaSelectionArea({
             boundaries: areaBoundaries,
@@ -47,9 +47,13 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = props 
 
     return (
         <SelectionContext.Provider value={selectionState}>
-            <div ref={root} className={props.className} id={props.id}>
-                {props.children}
-            </div>
+            {props.boundaries ? (
+                props.children
+            ) : (
+                <div ref={root} className={props.className} id={props.id}>
+                    {props.children}
+                </div>
+            )}
         </SelectionContext.Provider>
     );
 };
