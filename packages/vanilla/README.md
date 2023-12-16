@@ -136,6 +136,21 @@ const selection = new SelectionArea({
         // Or specifiy the threshold for each axis by passing an object like {x: <number>, y: <number>}.
         startThreshold: 10,
 
+        // List of triggers that should cause the selection to begin.
+        // Each element in the list can be one of the following
+        //      - a MouseButton (numbers 0 through 4)
+        //        see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button#value
+        //      - an object of shape { button: MouseButton, modifiers: Modifier[] }
+        //        where a Modifier is ( 'ctrl' | 'meta' | 'alt' | 'shift' )
+        //
+        // To trigger the selection with e.g. <CTRL + SHIFT + LEFT-CLICK> OR <RIGHT-CLICK> the
+        // trigger property should look like
+        //
+        // triggers: [ { button: 0, modifiers: [ "ctrl", "shift" ] }, 2 ]
+        // 
+        // The default value is [0], enabling only the main mouse button (usually left click).
+        triggers: [0]
+
         // Scroll configuration.
         scrolling: {
 
