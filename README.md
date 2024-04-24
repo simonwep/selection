@@ -54,14 +54,10 @@
 
 Check out the documentation for the package you want to use:
 
-* [@viselect/vanilla](packages/vanilla) ([demo](https://codesandbox.io/s/viselectvanilla-kt332?file=/src/main.ts)) - To be used with plain [JavaScript](http://vanilla-js.com/)
-  or [TypeScript](https://www.typescriptlang.org/).
-* [@viselect/preact](packages/preact) ([demo](https://codesandbox.io/s/viselectpreact-kjo9e?file=/src/app.tsx)) - [Preact](https://preactjs.com/) wrapper.
-* [@viselect/react](packages/react) ([demo](https://codesandbox.io/s/viselectreact-sbn83?file=/src/App.tsx)) - [React](https://reactjs.org/) wrapper.
-* [@viselect/vue](packages/vue) ([demo](https://codesandbox.io/s/viselectvue-x13g6?file=/src/App.vue)) - [Vue3](https://v3.vuejs.org/) wrapper.
-* @viselect/lit - TBA (planned).
-* @viselect/svelte - TBA (planned).
-* @viselect/angular - TBA (planned).
+* [@viselect/vanilla](packages/vanilla) - To be used with plain [JavaScript](http://vanilla-js.com/) or [TypeScript](https://www.typescriptlang.org/).
+* [@viselect/preact](packages/preact) - [Preact](https://preactjs.com/) wrapper.
+* [@viselect/react](packages/react) - [React](https://reactjs.org/) wrapper.
+* [@viselect/vue](packages/vue)  - [Vue3](https://v3.vuejs.org/) wrapper.
 
 > Check out [recipes](packages/vanilla/recipes.md) for commonly asked questions and how to solve them using the standart library!
 > For information about events and more check out the [vanilla readme](packages/vanilla/README.md)!
