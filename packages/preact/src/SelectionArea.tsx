@@ -1,11 +1,11 @@
 /* eslint-disable no-use-before-define */
 import VanillaSelectionArea from '@viselect/vanilla';
 import {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
-import {createContext, createRef, FunctionalComponent} from 'preact';
-import {HTMLAttributes, useContext} from 'preact/compat';
+import {createContext, createRef, FunctionalComponent, JSX} from 'preact';
+import {useContext} from 'preact/compat';
 import {useEffect, useState} from 'preact/hooks';
 
-export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, HTMLAttributes<HTMLDivElement> {
+export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, JSX.HTMLAttributes<HTMLDivElement> {
     id?: string;
     className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];

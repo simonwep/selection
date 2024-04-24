@@ -51,5 +51,5 @@ render(
         <SelectableArea boxes={42} offset={42} className="blue"/>
         <SelectableArea boxes={252} offset={82} className="red"/>
     </>,
-    document.getElementById('root')
+    document.getElementById('root') as HTMLElement
 );
