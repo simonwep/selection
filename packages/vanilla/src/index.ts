@@ -155,7 +155,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {_options} = this;
         const {document} = this._options;
         const targetBoundingClientRect = target.getBoundingClientRect();
-        
+
         if (evt instanceof MouseEvent && !shouldTrigger(evt, _options.behaviour.triggers)) {
             return;
         }
@@ -263,8 +263,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             this.select(target);
             this._latestElement = target;
         }
-
-        this._emitEvent('stop', evt);
     }
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {

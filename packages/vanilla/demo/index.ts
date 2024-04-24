@@ -39,3 +39,11 @@ const selection = new SelectionArea({
         el.classList.remove('selected');
     }
 });
+
+/* eslint-disable no-console */
+selection
+    .on('beforestart', (evt) => console.log('beforestart', evt))
+    .on('start', (evt) => console.log('start', evt))
+    .on('beforedrag', (evt) => console.log('beforedrag', evt))
+    .on('move', (evt) => console.log('move', evt))
+    .on('stop', (evt) => console.log('stop', evt));
