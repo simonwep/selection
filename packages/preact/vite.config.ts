@@ -11,12 +11,6 @@ export default defineConfig(env => ({
 
     plugins: [preact(), banner(header), dts()],
 
-    resolve: {
-        alias: {
-            'react': 'preact/compat'
-        }
-    },
-
     build: {
         sourcemap: true,
         minify: 'esbuild',
@@ -26,11 +20,11 @@ export default defineConfig(env => ({
             fileName: 'viselect',
         },
         rollupOptions: {
-            external: ['preact', '@viselect/react'],
+            external: ['preact', 'preact/hooks', '@viselect/vanilla'],
             output: {
                 globals: {
                     preact: 'Preact',
-                    '@viselect/react': 'SelectionArea'
+                    '@viselect/vanilla': 'SelectionArea'
                 },
             },
         },

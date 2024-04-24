@@ -2,8 +2,7 @@
 import VanillaSelectionArea from '@viselect/vanilla';
 import {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
 import {createContext, createRef, FunctionalComponent, JSX} from 'preact';
-import {useContext} from 'preact/compat';
-import {useEffect, useState} from 'preact/hooks';
+import {useEffect, useContext, useState} from 'preact/hooks';
 
 export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, JSX.HTMLAttributes<HTMLDivElement> {
     id?: string;
