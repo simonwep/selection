@@ -125,8 +125,7 @@ const onMove = ({store: {changed: {added, removed}}}: SelectionEvent) => {
 
 ##### `selection`
 
-It's possible to get the current `SelectionArea`-instance via [template refs](https://vuejs.
-org/guide/essentials/template-refs.html).
+It's possible to get the current `SelectionArea`-instance via [template refs](https://vuejs.org/guide/essentials/template-refs.html).
 
 ```vue
 <template>
