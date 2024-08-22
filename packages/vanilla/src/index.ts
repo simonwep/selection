@@ -113,7 +113,10 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._clippingElement.appendChild(this._area);
 
         this._area.classList.add(selectionAreaClass);
-        selectionContainerClass && this._clippingElement.classList.add(selectionContainerClass);
+
+        if (selectionContainerClass) {
+            this._clippingElement.classList.add(selectionContainerClass);
+        }
 
         css(this._area, {
             willChange: 'top, left, bottom, right, width, height',
@@ -145,9 +148,12 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const fn = activate ? on : off;
 
         fn(document, 'mousedown', this._onTapStart);
-        features.touch && fn(document, 'touchstart', this._onTapStart, {
-            passive: false
-        });
+
+        if(features.touch) {
+            fn(document, 'touchstart', this._onTapStart, {
+                passive: false
+            });
+        }
     }
 
     _onTapStart(evt: MouseEvent | TouchEvent, silent = false): void {
