@@ -1,10 +1,10 @@
 /* eslint-disable no-use-before-define */
 import VanillaSelectionArea from '@viselect/vanilla';
-import {SelectionEvents, SelectionOptions} from '@viselect/vanilla';
+import {SelectionEvents, PartialSelectionOptions} from '@viselect/vanilla';
 import {createContext, createRef, FunctionalComponent, JSX} from 'preact';
 import {useEffect, useContext, useState} from 'preact/hooks';
 
-export interface SelectionAreaProps extends Omit<Partial<SelectionOptions>, 'boundaries'>, JSX.HTMLAttributes<HTMLDivElement> {
+export interface SelectionAreaProps extends PartialSelectionOptions, JSX.HTMLAttributes<HTMLDivElement> {
     id?: string;
     className?: string;
     onBeforeStart?: SelectionEvents['beforestart'];
@@ -48,9 +48,13 @@ export const SelectionArea: FunctionalComponent<SelectionAreaProps> = props => {
 
     return (
         <SelectionContext.Provider value={selectionState}>
-            <div ref={root} className={props.className} id={props.id}>
-                {props.children}
-            </div>
+            {props.boundaries ? (
+                props.children
+            ) : (
+                <div ref={root} className={props.className} id={props.id}>
+                    {props.children}
+                </div>
+            )}
         </SelectionContext.Provider>
     );
 };

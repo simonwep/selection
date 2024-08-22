@@ -59,36 +59,33 @@ Check out the documentation for the package you want to use:
 * [@viselect/react](packages/react) - [React](https://reactjs.org/) wrapper.
 * [@viselect/vue](packages/vue)  - [Vue3](https://v3.vuejs.org/) wrapper.
 
-> Check out [recipes](packages/vanilla/recipes.md) for commonly asked questions and how to solve them using the standart library!
+> Check out [recipes](packages/vanilla/recipes.md) for commonly asked questions and how to solve them using the standard library!
 > For information about events and more check out the [vanilla readme](packages/vanilla/README.md)!
 
 ### Browser support
 
-This library will always have the previous year as its target. For 2021 for example the target will be ES2020.
-It always provides both a `UMD` (`.js`) and `.mjs` version. If you want to support legacy browsers, please use the feature of your bundler to transpile dependencie. In case of
-webpack and babel (give [vite](https://vitejs.dev/) a try, it's awesome) you'll have to install corresponding plugins such
-as [babel-plugin-proposal-optional-chaining](https://babeljs.io/docs/en/babel-plugin-proposal-optional-chaining) and include the dependency from `node_modules` which is normally
-entirely excluded from being processed.
+This library will always produce an ESNext bundle.
+If you want to support legacy browsers, please use the feature of your bundler to transpile dependencies.
+In case of webpack and babel (give [vite](https://vitejs.dev/) a try, it's awesome) you'll have to install corresponding plugins such as [babel-plugin-proposal-optional-chaining](https://babeljs.io/docs/en/babel-plugin-proposal-optional-chaining) and include the dependency from `node_modules` which is normally entirely excluded from being processed.
 
 I do this to provide maximum flexibility and give those who target ESNext a chance to make full use of how this library is bundled.
 Everything else is just a matter of configuration :)
 
 ### Is this library the right choice for me?
 
-Viselect primarily focuses on being a high-performant engine to select elements with various boundaries, behaviours and modes in your browser.
-Viselect is to "full-blown libraries" what is [popper.js](https://popper.js.org/) to [tippy.js](https://atomiks.github.io/tippyjs/) - the _core_ of your feature / of another
-library.
+Viselect primarily focuses on being a high-performant engine to select elements with various boundaries, behaviors, and modes in your browser.
+Viselect is to "full-blown libraries" what is [popper.js](https://popper.js.org/) to [tippy.js](https://atomiks.github.io/tippyjs/) - the _core_ of your feature.
 
 ### Development
 
 Use the following commands to work on this locally (we use [lerna](https://lerna.js.org/) to manage this):
 
-* `npm run dev` _- Spawns a dev-server for all packages. Every framework-dependend package is bundled with the vanilla version._
+* `npm run dev` _- Spawns a dev-server for all packages. Every framework-dependent package is bundled with the vanilla version._
 * `npm run build` _- Builds all packages in parallel._
 * `npm run lint:fix` _- Lints and fixes all errors in all packages._
 
 For the development servers [vite](https://vitejs.dev/) is used. It's superb, you should give it a try.
-To bundle it we use [rollup](https://rollupjs.org/) (which is btw also used by vite behind the scenes) to have full control over how the bundle looks like.
+To bundle it, we use [rollup](https://rollupjs.org/) (which is btw also used by vite behind the scenes) to have full control over how the bundle looks like.
 
 ### Releasing a new version
 

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import SelectionArea, {SelectionEvent, SelectionOptions} from '@viselect/vanilla';
+import SelectionArea, {SelectionEvent, PartialSelectionOptions} from '@viselect/vanilla';
 import {onBeforeUnmount, ref, watchEffect, shallowRef} from 'vue';
 
 const emit = defineEmits<{
@@ -18,7 +18,7 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps<{
-  options: Omit<SelectionOptions, 'boundaries'>;
+  options: Omit<PartialSelectionOptions, 'boundaries'>;
 }>();
 
 const container = ref<HTMLDivElement>();

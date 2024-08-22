@@ -45,6 +45,10 @@
 
 <br>
 
+> [!NOTE]
+> This is merely a convenience wrapper around [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla).
+> The core API is fairly simple, if you want to have full control over it, you should roll out your own wrapper in your app.
+
 ### Installation
 
 Install using your package manager of choice:
@@ -53,7 +57,7 @@ Install using your package manager of choice:
 npm install @viselect/vue
 ```
 
-Last but not least you'll need to add some basic styles to make your selection-area visible:
+Last but not least, you'll need to add some basic styles to make your selection-area visible:
 
 ```css
 .selection-area {
@@ -63,9 +67,9 @@ Last but not least you'll need to add some basic styles to make your selection-a
 }
 ```
 
-Additionally, to not interfere with text-selection, selection-js won't prevent any default events anymore (as of `v2.0.3`). This however can cause problems with the actual
-selection ("introduced" by [#99](https://github.com/Simonwep/selection/pull/99), reported in [#103](https://github.com/Simonwep/selection/issues/103)). If you don't care about
-text-selection, add the following to the container where all your selectables are located:
+Additionally, to not interfere with text-selection, selection-js won't prevent any default events anymore (as of `v2.0.3`).
+This, however, can cause problems with the actual selection ("introduced" by [#99](https://github.com/Simonwep/selection/pull/99), reported in [#103](https://github.com/Simonwep/selection/issues/103)).
+If you don't care about text-selection, add the following to the container where all your selectables are located:
 
 ```css
 .container {
@@ -75,7 +79,7 @@ text-selection, add the following to the container where all your selectables ar
 
 ### Usage
 
-> Events are handled using props because you cannot return a value in events synchronously.
+> Events are handled using props because you can’t return a value in events synchronously.
 
 ```vue
 <template>
@@ -145,15 +149,15 @@ It's possible to get the current `SelectionArea`-instance via [template refs](ht
 </template>
 
 <script lang="ts" setup>
-import type {SelectionAreaInstance} from '@viselect/vue';
-import {ref, reactive, onMounted} from 'vue';
+import {SelectionArea} from '@viselect/vue';
+import {ref, reactive, watchEffect} from 'vue';
 
 const selected = reactive<Set<number>>(new Set());
-const selectionAreaRef = ref<SelectionAreaInstance>()
+const selectionAreaRef = ref<InstanceType<typeof SelectionArea>>();
 
-onMounted(() => {
-    // log current selection
-    console.log(selectionAreaRef.value?.selection)
-})
+watchEffect(() => {
+  // log selection instance
+  console.log(selectionAreaRef.value?.selection)
+});
 </script>
 ```
