@@ -32,6 +32,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     // Target container (element) and boundary (cached)
     private _targetElement?: Element;
+    private _targetBoundary?: Element;
+    private _targetBoundaryScrolled = true;
     private _targetRect?: DOMRect;
     private _selectables: Element[] = [];
     private _latestElement?: Element;
@@ -42,12 +44,11 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     // Dynamically constructed area rect
     private _areaLocation: AreaLocation = {y1: 0, x2: 0, y2: 0, x1: 0};
 
-    // If a single click is being performed.
-    // It's a single-click until the user dragged the mouse.
+    // If a single click is being performed, it's a single-click until the user dragged the mouse
     private _singleClick = true;
     private _frame: Frames;
 
-    // Is getting set on movement.
+    // Required data for scrolling
     private _scrollAvailable = true;
     private _scrollingActive = false;
     private _scrollSpeed: Coordinates = {x: 0, y: 0};
@@ -90,6 +91,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             features: {
                 range: true,
                 touch: true,
+                deselectOnBlur: false,
                 ...opt.features,
                 singleTap: {
                     allow: true,
@@ -149,26 +151,23 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         fn(document, 'mousedown', this._onTapStart);
 
-        if(features.touch) {
-            fn(document, 'touchstart', this._onTapStart, {
-                passive: false
-            });
+        if (features.touch) {
+            fn(document, 'touchstart', this._onTapStart, {passive: false});
         }
     }
 
     _onTapStart(evt: MouseEvent | TouchEvent, silent = false): void {
         const {x, y, target} = simplifyEvent(evt);
-        const {_options} = this;
-        const {document} = this._options;
+        const {document, startAreas, boundaries, features, behaviour} = this._options;
         const targetBoundingClientRect = target.getBoundingClientRect();
 
-        if (evt instanceof MouseEvent && !shouldTrigger(evt, _options.behaviour.triggers)) {
+        if (evt instanceof MouseEvent && !shouldTrigger(evt, behaviour.triggers)) {
             return;
         }
 
         // Find start-areas and boundaries
-        const startAreas = selectAll(_options.startAreas, _options.document);
-        const resolvedBoundaries = selectAll(_options.boundaries, _options.document);
+        const resolvedStartAreas = selectAll(startAreas, document);
+        const resolvedBoundaries = selectAll(boundaries, document);
 
         // Check in which container the user currently acts
         this._targetElement = resolvedBoundaries.find(el =>
@@ -177,9 +176,10 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         // Check if area starts in one of the start areas / boundaries
         const evtPath = evt.composedPath();
-        if (!this._targetElement ||
-            !startAreas.find(el => evtPath.includes(el)) ||
-            !resolvedBoundaries.find(el => evtPath.includes(el))) {
+        const targetStartArea = resolvedStartAreas.find(el => evtPath.includes(el));
+        this._targetBoundary = resolvedBoundaries.find(el => evtPath.includes(el));
+
+        if (!this._targetElement || !targetStartArea || !this._targetBoundary) {
             return;
         }
 
@@ -200,6 +200,11 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         on(document, ['touchmove', 'mousemove'], this._delayedTapMove, {passive: false});
         on(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
         on(document, 'scroll', this._onScroll);
+
+        if (features.deselectOnBlur) {
+            this._targetBoundaryScrolled = false;
+            on(this._targetBoundary, 'scroll', this._onStartAreaScroll);
+        }
     }
 
     _onSingleTap(evt: MouseEvent | TouchEvent): void {
@@ -233,11 +238,16 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         // Traverse dom upwards to check if target is selectable
         while (!this._selectables.includes(target)) {
-            if (!target.parentElement) {
+            if (target.parentElement) {
+                target = target.parentElement;
+            } else {
+                if (!this._targetBoundaryScrolled) {
+                    this.clearSelection();
+                }
+
                 return;
             }
 
-            target = target.parentElement;
         }
 
         // Grab current store first in case it gets set back
@@ -465,6 +475,11 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._frame.next(null);
     }
 
+    _onStartAreaScroll(): void {
+        this._targetBoundaryScrolled = true;
+        off(this._targetElement, 'scroll', this._onStartAreaScroll);
+    }
+
     _manualScroll(evt: ScrollEvent): void {
         const {manualSpeed} = this._options.behaviour.scrolling;
 
@@ -475,7 +490,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._scrollSpeed.x += deltaX * manualSpeed;
         this._onTapMove(evt);
 
-        // Prevent default scrolling behaviour, e.g. page scrolling
+        // Prevent default scrolling behavior, e.g. page scrolling
         evt.preventDefault();
     }
 
@@ -536,6 +551,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {_singleClick} = this;
 
         // Remove event handlers
+        off(this._targetElement, 'scroll', this._onStartAreaScroll);
         off(document, ['mousemove', 'touchmove'], this._delayedTapMove);
         off(document, ['touchmove', 'mousemove'], this._onTapMove);
         off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop);
@@ -614,7 +630,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
             if (!newlyTouched.includes(node) && !(
 
-                // Check if user wants to keep previously selected elements, e.g.
+                // Check if the user wants to keep previously selected elements, e.g.
                 // not make them part of the current selection as soon as they're touched.
                 keep && stored.includes(node)
             )) {
@@ -669,7 +685,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     /**
      * Manually triggers the start of a selection
-     * @param evt A MouseEvent / TouchEvent -like object
+     * @param evt A MouseEvent / TouchEvent-like object
      * @param silent If beforestart should be fired,
      */
     trigger(evt: MouseEvent | TouchEvent, silent = true): void {
@@ -678,14 +694,14 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     /**
      * Can be used if during a selection elements have been added.
-     * Will update everything which can be selected.
+     * Will update everything that can be selected.
      */
     resolveSelectables(): void {
         this._selectables = selectAll(this._options.selectables, this._options.document);
     }
 
     /**
-     * Same as deselect, but for all elements currently selected.
+     * Same as deselecting, but for all elements currently selected.
      * @param includeStored If the store should also get cleared
      * @param quiet If move / stop events should be fired
      */
@@ -767,7 +783,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         changed.added.push(...elements);
         changed.removed = [];
 
-        // We don't know which element was "selected" first so clear it
+        // We don't know which element was "selected" first, so clear it
         this._latestElement = undefined;
 
         // Fire event
@@ -803,7 +819,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             ...elements.filter(el => !changed.removed.includes(el))
         );
 
-        // We don't know which element was "selected" first so clear it
+        // We don't know which element was "selected" first, so clear it
         this._latestElement = undefined;
 
         // Fire event

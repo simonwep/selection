@@ -85,6 +85,7 @@ export interface SingleTap {
 }
 
 export interface Features {
+    deselectOnBlur: boolean;
     singleTap: SingleTap;
     range: boolean;
     touch: boolean;

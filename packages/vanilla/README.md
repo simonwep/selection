@@ -179,6 +179,10 @@ const selection = new SelectionArea({
         // Range selection.
         range: true,
 
+        // De-select all if user clicks clicks outside selectables.
+        // Disabled by default because it is not possible to reliably detect if the user clicked on a scrollbar.
+        deselectOnBlur: false,
+
         // Configuration in case a selectable gets just clicked.
         singleTap: {
 
