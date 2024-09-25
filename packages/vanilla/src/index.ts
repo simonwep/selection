@@ -9,6 +9,13 @@ export * from './types';
 // Some var shorting for better compression and readability
 const {abs, max, min, ceil} = Math;
 
+const makeSelectionStore = (stored: Element[] = []): SelectionStore => ({
+    stored,
+    selected: [],
+    touched: [],
+    changed: {added: [], removed: []}
+});
+
 export default class SelectionArea extends EventTarget<SelectionEvents> {
     public static version = VERSION;
 
@@ -16,15 +23,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     private readonly _options: SelectionOptions;
 
     // Selection store
-    private _selection: SelectionStore = {
-        stored: [],
-        selected: [],
-        touched: [],
-        changed: {
-            added: [], // Added elements since last selection
-            removed: [] // Removed elements since last selection
-        }
-    };
+    private _selection: SelectionStore = makeSelectionStore();
 
     // Area element and clipping element
     private readonly _area: HTMLElement;
@@ -38,11 +37,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     private _selectables: Element[] = [];
     private _latestElement?: Element;
 
-    // Caches the position of the selection-area
-    private readonly _areaRect = new DOMRect();
-
     // Dynamically constructed area rect
     private _areaLocation: AreaLocation = {y1: 0, x2: 0, y2: 0, x1: 0};
+    private _areaRect = new DOMRect();
 
     // If a single click is being performed, it's a single-click until the user dragged the mouse
     private _singleClick = true;
@@ -145,7 +142,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this.enable();
     }
 
-    _bindStartEvents(activate = true): void {
+    _toggleStartEvents(activate = true): void {
         const {document, features} = this._options;
         const fn = activate ? on : off;
 
@@ -391,11 +388,11 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _onTapMove(evt: MouseEvent | TouchEvent): void {
-        const {x, y} = simplifyEvent(evt);
         const {_scrollSpeed, _areaLocation, _options, _frame} = this;
         const {speedDivider} = _options.behaviour.scrolling;
         const _targetElement = this._targetElement as Element;
 
+        const {x, y} = simplifyEvent(evt);
         _areaLocation.x2 = x;
         _areaLocation.y2 = y;
 
@@ -495,7 +492,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     _recalculateSelectionAreaRect(): void {
-        const {_scrollSpeed, _areaLocation, _areaRect, _targetElement, _options} = this;
+        const {_scrollSpeed, _areaLocation, _targetElement, _options} = this;
         const {scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth} = _targetElement as Element;
         const _targetRect = this._targetRect as DOMRect;
 
@@ -529,10 +526,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const x4 = max(x1, x2);
         const y4 = max(y1, y2);
 
-        _areaRect.x = x3;
-        _areaRect.y = y3;
-        _areaRect.width = x4 - x3;
-        _areaRect.height = y4 - y3;
+        this._areaRect = new DOMRect(x3, y3, x4 - x3, y4 - y3);
     }
 
     _redrawSelectionArea(): void {
@@ -721,12 +715,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         }
 
         // Reset state
-        this._selection = {
-            stored: includeStored ? [] : stored,
-            selected: [],
-            touched: [],
-            changed: {added: [], removed: []}
-        };
+        this._selection = makeSelectionStore(includeStored ? [] : stored);
     }
 
     /**
@@ -762,8 +751,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     /* eslint-disable no-invalid-this */
-    disable = this._bindStartEvents.bind(this, false);
-    enable = this._bindStartEvents;
+    disable = this._toggleStartEvents.bind(this, false);
+    enable = this._toggleStartEvents;
 
     /**
      * Adds elements to the selection
