@@ -79,6 +79,10 @@ If you don't care about text-selection, add the following to the container where
 
 ### Usage
 
+> [!NOTE]
+> All options are exposed as props.
+> They're a one-to-one mapping of the original options found in the [vanilla](../vanilla#configuration) version!
+
 > Events are handled using props because you can’t return a value in events synchronously.
 
 ```vue

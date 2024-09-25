@@ -79,7 +79,9 @@ If you don't care about text-selection, add the following to the container where
 
 ### Usage
 
-> All options are exposed as props. They're a one-to-one mapping of the original options found in the [vanilla](../vanilla) version!
+> [!NOTE]
+> All options are exposed as props.
+> They're a one-to-one mapping of the original options found in the [vanilla](../vanilla#configuration) version!
 
 ```tsx
 import SelectionArea, {SelectionEvent} from '@viselect/preact';

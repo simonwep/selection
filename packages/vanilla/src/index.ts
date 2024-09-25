@@ -171,7 +171,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             intersects(el.getBoundingClientRect(), targetBoundingClientRect)
         );
 
-        // Check if area starts in one of the start areas / boundaries
+        // Check if the area starts in one of the start areas / boundaries
         const evtPath = evt.composedPath();
         const targetStartArea = resolvedStartAreas.find(el => evtPath.includes(el));
         this._targetBoundary = resolvedBoundaries.find(el => evtPath.includes(el));
@@ -186,7 +186,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         this._areaLocation = {x1: x, y1: y, x2: 0, y2: 0};
 
-        // Lock scrolling in target container
+        // Lock scrolling in the target container
         const scrollElement = document.scrollingElement ?? document.body;
         this._scrollDelta = {x: scrollElement.scrollLeft, y: scrollElement.scrollTop};
 
@@ -227,13 +227,13 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         /**
          * Resolve selectables again.
-         * If the user started in a scrollable area they will be reduced
+         * If the user started in a scrollable area, they will be reduced
          * to the current area. Prevent the exclusion of these if a range-selection
          * gets performed.
          */
         this.resolveSelectables();
 
-        // Traverse dom upwards to check if target is selectable
+        // Traverse dom upwards to check if the target is selectable
         while (!this._selectables.includes(target)) {
             if (target.parentElement) {
                 target = target.parentElement;
@@ -247,14 +247,14 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         }
 
-        // Grab current store first in case it gets set back
+        // Grab the current store first in case it gets set back
         const {stored} = this._selection;
         this._emitEvent('start', evt);
 
         if (evt.shiftKey && range && this._latestElement) {
             const reference = this._latestElement;
 
-            // Resolve correct range
+            // Resolve the correct range
             const [preceding, following] = reference.compareDocumentPosition(target) & 4 ?
                 [target, reference] : [reference, target];
 
@@ -264,7 +264,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             ), preceding, following];
 
             this.select(rangeItems);
-            this._latestElement = reference; // latestElement is by default cleared in .select()
+            this._latestElement = reference; // the latestElement is by default cleared in .select()
         } else if (
             stored.includes(target) && (
                 stored.length === 1 || evt.ctrlKey ||
@@ -280,10 +280,10 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     _delayedTapMove(evt: MouseEvent | TouchEvent): void {
         const {container, document, behaviour: {startThreshold}} = this._options;
-        const {x1, y1} = this._areaLocation; // Coordinates of first "tap"
+        const {x1, y1} = this._areaLocation; // Coordinates of the first "tap"
         const {x, y} = simplifyEvent(evt);
 
-        // Check pixel threshold
+        // Check the pixel threshold
         if (
 
             // Single number for both coordinates
@@ -315,7 +315,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             // Just saving the boundaries of this container for later
             this._targetRect = this._targetElement!.getBoundingClientRect();
 
-            // Find container and check if it's scrollable
+            // Find a container and check if it's scrollable
             this._scrollAvailable =
                 this._targetElement!.scrollHeight !== this._targetElement!.clientHeight ||
                 this._targetElement!.scrollWidth !== this._targetElement!.clientWidth;
@@ -326,9 +326,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
                 on(this._targetElement, 'wheel', this._manualScroll, {passive: false});
 
                 /**
-                 * The selection-area will also cover other element which are
+                 * The selection-area will also cover another element
                  * out of the current scrollable parent. So find all elements
-                 * which are in the current scrollable element. Later these are
+                 * that are in the current scrollable element. Now these are
                  * the only selectables instead of all.
                  */
                 this._selectables = this._selectables.filter(s => this._targetElement!.contains(s));
@@ -351,8 +351,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
             /**
              * To clip the area, the selection area has a parent
-             * which has exact the same dimensions as the scrollable element.
-             * Now if the area exceeds these boundaries it will be cropped.
+             * which has exactly the same dimensions as the scrollable element.
+             * Now if the area exceeds these boundaries, it will be cropped.
              */
             css(_clippingElement, {
                 top: tr.top,
@@ -363,7 +363,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
             /**
              * The area element is relative to the clipping element,
-             * but when this is moved or transformed we need to correct
+             * but when this is moved or transformed, we need to correct
              * the positions via a negative margin.
              */
             css(_area, {
@@ -435,8 +435,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         } else {
 
             /**
-             * Perform redraw only if scrolling is not active.
-             * If scrolling is active this area is getting re-dragged by the
+             * Perform redrawing only if scrolling is not active.
+             * If scrolling is active, this area is getting re-dragged by the
              * anonymize scroll function.
              */
             _frame.next(evt);
@@ -450,7 +450,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         /**
          * - Prevent auto-refresh for when pulling down on touch devices.
-         * - Prevent auto-scroll by the browser when on safari and scrolling is handled by viselect.
+         * - Prevent auto-scroll by the browser when on safari, and scrolling is handled by this library.
          */
         if ((features.touch && isTouchDevice()) || (this._scrollAvailable && isSafariBrowser())) {
             evt.preventDefault(); // Prevent swipe-down refresh
@@ -591,13 +591,13 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         for (let i = 0; i < _selectables.length; i++) {
             const node = _selectables[i];
 
-            // Check if area intersects element
+            // Check if the area intersects an element
             if (intersects(_areaRect, node.getBoundingClientRect(), intersect)) {
 
                 // Check if the element wasn't present in the last selection.
                 if (!selected.includes(node)) {
 
-                    // Check if user wants to invert the selection for already selected elements
+                    // Check if the user wants to invert the selection for already selected elements
                     if (invert && stored.includes(node)) {
                         removed.push(node);
                         continue;
@@ -624,7 +624,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
             if (!newlyTouched.includes(node) && !(
 
-                // Check if the user wants to keep previously selected elements, e.g.
+                // Check if the user wants to keep previously selected elements, e.g.,
                 // not make them part of the current selection as soon as they're touched.
                 keep && stored.includes(node)
             )) {
@@ -733,8 +733,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     /**
-     * Cancel the current selection process.
-     * @param keepEvent {boolean} true to fire a stop event after cancel.
+     * Cancel the current selection process, pass true to fire a stop event after cancel.
      */
     cancel(keepEvent = false): void {
         this._onTapStop(null, !keepEvent);
