@@ -5,7 +5,7 @@ import dts from 'vite-plugin-dts';
 
 const header = `/*! @viselect/vanilla v${version} MIT | https://github.com/Simonwep/selection/tree/master/packages/vanilla */`;
 
-export default defineConfig(env => ({
+export default defineConfig((env) => ({
     root: env.mode === 'production' ? '.' : './demo',
 
     plugins: [
@@ -29,5 +29,15 @@ export default defineConfig(env => ({
 
     define: {
         'VERSION': JSON.stringify(version)
-    }
+    },
+    test: {
+        // Lit recommends using browser environment for testing
+        // https://lit.dev/docs/tools/testing/#testing-in-the-browser
+        reporters: ['html'],
+        browser: {
+          enabled: true,
+          name: 'chromium',
+          provider: 'playwright',
+        },
+      },
 }));
