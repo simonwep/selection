@@ -19,7 +19,8 @@
     },
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "test": "vitest --ui --dir ./tests"
     },
     "files": [
         "dist"
@@ -36,5 +37,11 @@
     ],
     "publishConfig": {
         "access": "public"
+    },
+    "devDependencies": {
+        "@testing-library/dom": "^10.4.0",
+        "context": "link:@vitest/browser/context",
+        "playwright": "^1.47.2",
+        "vitest": "^2.1.2"
     }
 }
