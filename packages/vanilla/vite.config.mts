@@ -30,14 +30,13 @@ export default defineConfig((env) => ({
     define: {
         'VERSION': JSON.stringify(version)
     },
+
     test: {
-        // Lit recommends using browser environment for testing
-        // https://lit.dev/docs/tools/testing/#testing-in-the-browser
         reporters: ['html'],
         browser: {
-          enabled: true,
-          name: 'chromium',
-          provider: 'playwright',
+            enabled: true,
+            name: 'chromium',
+            provider: 'playwright',
         },
-      },
+    },
 }));
