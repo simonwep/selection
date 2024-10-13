@@ -4,3 +4,5 @@ dist
 *.iml
 .idea/
 .log
+html/
+test-results/
