@@ -24,6 +24,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Setup ESLint cache
+        uses: actions/cache@v4
+        with:
+          path: ./.eslintcache
+          key: ${{ runner.os }}-eslint-${{ hashFiles('**/pnpm-lock.yaml', '**/eslint.config.mjs') }}
+
       - name: Lint
         run: pnpm run lint
 

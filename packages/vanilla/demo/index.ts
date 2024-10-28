@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import SelectionArea from '../src';
 import './index.css';
 
@@ -40,7 +41,7 @@ const selection = new SelectionArea({
     }
 });
 
-/* eslint-disable no-console */
+
 selection
     .on('beforestart', (evt) => console.log('beforestart', evt))
     .on('start', (evt) => console.log('start', evt))

@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import VanillaSelectionArea from '@viselect/vanilla';
 import {SelectionEvents, PartialSelectionOptions} from '@viselect/vanilla';
 import React, {useEffect, createContext, useContext, useRef, useState} from 'react';

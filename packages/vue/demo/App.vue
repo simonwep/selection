@@ -1,29 +1,50 @@
 <template>
-    <h1>Vue</h1>
+  <h1>Vue</h1>
 
-    <SelectionArea class="container green"
-                   :options="{selectables: '.selectable'}"
-                   @move="onMove"
-                   @start="onStart">
-        <div v-for="id of range(42)" :key="id" :data-key="id"
-             class="selectable" :class="{selected: selected.has(id)}"/>
-    </SelectionArea>
+  <SelectionArea
+    class="container green"
+    :options="{selectables: '.selectable'}"
+    @move="onMove"
+    @start="onStart"
+  >
+    <div
+      v-for="id of range(42)"
+      :key="id"
+      :data-key="id"
+      class="selectable"
+      :class="{selected: selected.has(id)}"
+    />
+  </SelectionArea>
 
-    <SelectionArea class="container blue"
-                   :options="{selectables: '.selectable'}"
-                   @move="onMove"
-                   @start="onStart">
-        <div v-for="id of range(42, 42)" :key="id" :data-key="id"
-             class="selectable" :class="{selected: selected.has(id)}"/>
-    </SelectionArea>
+  <SelectionArea
+    class="container blue"
+    :options="{selectables: '.selectable'}"
+    @move="onMove"
+    @start="onStart"
+  >
+    <div
+      v-for="id of range(42, 42)"
+      :key="id"
+      :data-key="id"
+      class="selectable"
+      :class="{selected: selected.has(id)}"
+    />
+  </SelectionArea>
 
-    <SelectionArea class="container red"
-                   :options="{selectables: '.selectable'}"
-                   @move="onMove"
-                   @start="onStart">
-        <div v-for="id of range(400, 84)" :key="id" :data-key="id"
-             class="selectable" :class="{selected: selected.has(id)}"/>
-    </SelectionArea>
+  <SelectionArea
+    class="container red"
+    :options="{selectables: '.selectable'}"
+    @move="onMove"
+    @start="onStart"
+  >
+    <div
+      v-for="id of range(400, 84)"
+      :key="id"
+      :data-key="id"
+      class="selectable"
+      :class="{selected: selected.has(id)}"
+    />
+  </SelectionArea>
 </template>
 
 <script lang="ts" setup>

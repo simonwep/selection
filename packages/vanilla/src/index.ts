@@ -749,7 +749,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         super.unbindAllListeners();
     }
 
-    /* eslint-disable no-invalid-this */
     disable = this._toggleStartEvents.bind(this, false);
     enable = this._toggleStartEvents;
 
