@@ -5,3 +5,4 @@ export * from './selectAll';
 export * from './constants';
 export * from './frames';
 export * from './shouldTrigger';
+export * from './domRect';

@@ -1,7 +1,7 @@
 import {EventTarget} from './EventEmitter';
 import type {AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore} from './types';
 import {PartialSelectionOptions} from './types';
-import {css, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent, shouldTrigger} from './utils';
+import {css, domRect, frames, Frames, intersects, isSafariBrowser, isTouchDevice, off, on, selectAll, SelectAllSelectors, simplifyEvent, shouldTrigger} from './utils';
 
 // Re-export types
 export * from './types';
@@ -39,7 +39,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     // Dynamically constructed area rect
     private _areaLocation: AreaLocation = {y1: 0, x2: 0, y2: 0, x1: 0};
-    private _areaRect = new DOMRect();
+    private _areaRect =  domRect();
 
     // If a single click is being performed, it's a single-click until the user dragged the mouse
     private _singleClick = true;
@@ -526,7 +526,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const x4 = max(x1, x2);
         const y4 = max(y1, y2);
 
-        this._areaRect = new DOMRect(x3, y3, x4 - x3, y4 - y3);
+        this._areaRect = domRect(x3, y3, x4 - x3, y4 - y3);
     }
 
     _redrawSelectionArea(): void {

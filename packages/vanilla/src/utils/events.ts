@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Method = 'addEventListener' | 'removeEventListener';
 type AnyFunction = (...arg: any) => any;
@@ -10,7 +9,6 @@ export type EventBindingArgs = [
     Record<string, unknown>?
 ];
 
-/* eslint-disable prefer-rest-params */
 const eventListener = (method: Method) => (
     items: (EventTarget | undefined) | (EventTarget | undefined)[],
     events: string | string[],
