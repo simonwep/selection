@@ -1,9 +1,8 @@
 import type SelectionArea from './index';
 import type {Intersection} from './utils';
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 export type DeepPartial<T> =
-    T extends (infer U)[] ? T :
+    T extends unknown[] ? T :
         T extends HTMLElement ? T :
             { [P in keyof T]?: DeepPartial<T[P]>; };
 
