@@ -10,7 +10,7 @@
     "scripts": {
         "dev": "pnpm run --parallel dev",
         "build": "pnpm run --recursive build",
-        "lint": "eslint 'packages/*/{src,demo}/*.{ts,tsx,vue,js}' --cache",
+        "lint": "eslint 'packages/*/{src,demo}/**/*.{ts,tsx,vue,js}' --cache",
         "lint:fix": "pnpm run lint --fix",
         "test:ci": "pnpm run lint:fix && pnpm run build",
         "release:major": "lerna version major",

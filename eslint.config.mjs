@@ -10,24 +10,7 @@ export default [
   ...vue.configs['flat/recommended'],
   react.configs.flat.recommended,
   {
-    files: ['**/*.{js,mjs}'],
-    rules: {
-      semi: ['error', 'always'],
-      'no-console': 'error'
-    }
-  },
-  {
-    files: ['**/*.ts'],
-    languageOptions: {
-      parser: tsParser
-    },
-    rules: {
-      '@typescript-eslint/no-non-null-assertion': 'off',
-      'no-console': 'error'
-    }
-  },
-  {
-    files: ['**/*.tsx'],
+    files: ['**/*.ts', '**/*.tsx', '**/*.mjs'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -44,10 +27,12 @@ export default [
       }
     },
     rules: {
+      '@typescript-eslint/no-non-null-assertion': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
-      'no-console': 'error'
-    },
+      'no-console': 'error',
+      quotes: ['error', 'single']
+    }
   },
   {
     files: ['**/*.vue'],

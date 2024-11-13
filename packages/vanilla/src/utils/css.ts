@@ -19,10 +19,15 @@ export function css(
     if (typeof attr === 'object') {
 
         for (const [key, value] of Object.entries(attr)) {
-            value !== undefined && (style[key as any] = unitify(value));
+            if (value !== undefined) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                style[key as any] = unitify(value);
+            }
+
         }
 
     } else if (val !== undefined) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         style[attr as any] = unitify(val);
     }
 }

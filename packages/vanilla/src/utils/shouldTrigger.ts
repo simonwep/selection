@@ -1,4 +1,4 @@
-import {Trigger} from "../types";
+import {Trigger} from '../types';
 
 /**
  * Determines whether a MouseEvent should execute until completion depending on
@@ -11,21 +11,21 @@ import {Trigger} from "../types";
 export function shouldTrigger(event: MouseEvent, triggers: Trigger[]): boolean {
     for (const trigger of triggers) {
         // The trigger requires only a specific button to be pressed
-        if (typeof trigger === "number") {
+        if (typeof trigger === 'number') {
             return event.button === trigger;
         }
 
         // The trigger requires a specific button to be pressed AND some modifiers
-        if (typeof trigger === "object") {
+        if (typeof trigger === 'object') {
             const reqButtonIsPressed = trigger.button === event.button;
 
             const allReqModifiersArePressed = trigger.modifiers.every((modifier) => {
                 switch (modifier) {
-                    case "alt":
+                    case 'alt':
                         return event.altKey;
-                    case "ctrl":
+                    case 'ctrl':
                         return event.ctrlKey || event.metaKey;
-                    case "shift":
+                    case 'shift':
                         return event.shiftKey;
                 }
             });

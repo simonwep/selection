@@ -1,5 +1,5 @@
 import type SelectionArea from './index';
-import type {Intersection} from './utils';
+import type {Intersection} from './utils/intersects';
 
 export type DeepPartial<T> =
     T extends unknown[] ? T :
