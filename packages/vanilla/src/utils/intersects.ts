@@ -7,7 +7,7 @@ export type Intersection = 'center' | 'cover' | 'touch'
  * @param mode Options are center, cover or touch.
  * @returns {boolean} If both elements intersects each other.
  */
-export function intersects(a: DOMRect, b: DOMRect, mode: Intersection = 'touch'): boolean {
+export const intersects = (a: DOMRect, b: DOMRect, mode: Intersection = 'touch'): boolean => {
     switch (mode) {
         case 'center': {
             const bxc = b.left + b.width / 2;
@@ -31,4 +31,4 @@ export function intersects(a: DOMRect, b: DOMRect, mode: Intersection = 'touch')
                 a.top <= b.bottom;
         }
     }
-}
+};

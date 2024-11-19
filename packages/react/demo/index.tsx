@@ -3,11 +3,11 @@ import {createRoot} from 'react-dom/client';
 import SelectionArea, {SelectionEvent} from '../src';
 import './index.css';
 
-function SelectableArea({boxes, offset, className}: {
+const SelectableArea = ({boxes, offset, className}: {
     boxes: number;
     offset: number;
     className: string;
-}) {
+}) => {
     const [selected, setSelected] = useState<Set<number>>(() => new Set());
 
     const extractIds = (els: Element[]): number[] =>
@@ -43,7 +43,7 @@ function SelectableArea({boxes, offset, className}: {
             ))}
         </SelectionArea>
     );
-}
+};
 
 
 const root = createRoot(document.getElementById('root') as HTMLElement);

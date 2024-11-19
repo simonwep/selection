@@ -2,7 +2,7 @@
     "include": ["src", "demo"],
     "compilerOptions": {
         "target": "ESNext",
-        "useDefineForClassFields": true,
+        "useDefineForClassFields": false,
         "module": "ESNext",
         "lib": ["ESNext", "DOM"],
         "moduleResolution": "Node",

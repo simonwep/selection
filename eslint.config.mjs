@@ -3,6 +3,7 @@ import ts from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 import vue from 'eslint-plugin-vue';
 import tsParser from '@typescript-eslint/parser';
+import preferArrowFunctions from 'eslint-plugin-prefer-arrow-functions';
 
 export default [
   js.configs.recommended,
@@ -21,6 +22,9 @@ export default [
         }
       }
     },
+    plugins: {
+      'prefer-arrow-functions': preferArrowFunctions
+    },
     settings: {
       react: {
         version: 'detect'
@@ -28,6 +32,7 @@ export default [
     },
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'off',
+      'prefer-arrow-functions/prefer-arrow-functions': 'error',
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       'no-console': 'error',

@@ -13,7 +13,7 @@ export const frames = <F extends AnyFunction>(fn: F): Frames<F> => {
     let lock = false;
 
     return {
-        next(...args: Parameters<F>): void {
+        next: (...args: Parameters<F>): void => {
             previousArgs = args;
 
             if (!lock) {
@@ -24,7 +24,7 @@ export const frames = <F extends AnyFunction>(fn: F): Frames<F> => {
                 });
             }
         },
-        cancel() {
+        cancel: () => {
             cancelAnimationFrame(frameId);
             lock = false;
         }

@@ -8,7 +8,7 @@ import {Trigger} from '../types';
  * @param triggers A list of Triggers that signify that the event should execute until completion
  * @returns Whether the MouseEvent should execute until completion
  */
-export function shouldTrigger(event: MouseEvent, triggers: Trigger[]): boolean {
+export const shouldTrigger = (event: MouseEvent, triggers: Trigger[]): boolean => {
     for (const trigger of triggers) {
         // The trigger requires only a specific button to be pressed
         if (typeof trigger === 'number') {
@@ -36,4 +36,4 @@ export function shouldTrigger(event: MouseEvent, triggers: Trigger[]): boolean {
 
     // By default, we do not process the event
     return false;
-}
+};

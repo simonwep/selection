@@ -18,7 +18,7 @@ export class EventTarget<Events extends EventMap> {
         return this;
     }
 
-    public dispatchEvent<K extends keyof Events>(event: K, ...data: Parameters<Events[K]>): unknown {
+    public dispatchEvent<K extends keyof Events>(event: K, ...data: Parameters<Events[K]>): boolean {
         let ok = true;
         for (const cb of (this._listeners.get(event) ?? [])) {
             ok = (cb(...data) !== false) && ok;

@@ -3,11 +3,11 @@ import {useState} from 'preact/hooks';
 import SelectionArea, {SelectionEvent} from '../src';
 import './index.css';
 
-function SelectableArea({boxes, offset, className}: {
+const SelectableArea = ({boxes, offset, className}: {
     boxes: number;
     offset: number;
     className: string;
-}) {
+}) => {
     const [selected, setSelected] = useState<Set<number>>(() => new Set());
     const extractIds = (els: Element[]): number[] =>
         els.map(v => v.getAttribute('data-key'))
@@ -42,7 +42,7 @@ function SelectableArea({boxes, offset, className}: {
             ))}
         </SelectionArea>
     );
-}
+};
 
 render(
     <>

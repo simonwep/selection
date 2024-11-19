@@ -44,6 +44,9 @@ importers:
       eslint:
         specifier: 9.13.0
         version: 9.13.0
+      eslint-plugin-prefer-arrow-functions:
+        specifier: 3.4.1
+        version: 3.4.1(eslint@9.13.0)
       eslint-plugin-react:
         specifier: 7.37.2
         version: 7.37.2(eslint@9.13.0)
@@ -1747,6 +1750,12 @@ packages:
   escape-string-regexp@4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
+
+  eslint-plugin-prefer-arrow-functions@3.4.1:
+    resolution: {integrity: sha512-c8NP0E8xpkRqDq2eDSRr+wA4jwkwOEVNnZx4YY3O0V9M7OhtKdQIj5zmzIXwu+ueURmbwYrnz65sEoLLoIVZpg==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      eslint: '>=8.0.0'
 
   eslint-plugin-react@7.37.2:
     resolution: {integrity: sha512-EsTAnj9fLVr/GZleBLFbj/sSuXeWmp1eXIN60ceYnZveqEaUCyW4X+Vh4WTdUhCkW4xutXYqTXCUSyqD4rB75w==}
@@ -5850,6 +5859,10 @@ snapshots:
   escape-string-regexp@1.0.5: {}
 
   escape-string-regexp@4.0.0: {}
+
+  eslint-plugin-prefer-arrow-functions@3.4.1(eslint@9.13.0):
+    dependencies:
+      eslint: 9.13.0
 
   eslint-plugin-react@7.37.2(eslint@9.13.0):
     dependencies:
