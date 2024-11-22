@@ -833,10 +833,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             stored.includes(el)
         );
 
-        if (!elements.length) {
-            return;
-        }
-
         this._selection.stored = stored.filter(el => !elements.includes(el));
         this._selection.selected = selected.filter(el => !elements.includes(el));
         this._selection.changed.added = [];
