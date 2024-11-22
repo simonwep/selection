@@ -1,6 +1,6 @@
 {
     "name": "@viselect/vanilla",
-    "version": "3.6.0",
+    "version": "3.7.0",
     "description": "Simple, lightweight and modern library library for making visual DOM Selections.",
     "author": "Simon Reinisch <contact@reinisch.io>",
     "bugs": "https://github.com/Simonwep/selection/issues",
