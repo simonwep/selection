@@ -58,6 +58,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     private _scrollSpeed: Coordinates = {x: 0, y: 0};
     private _scrollDelta: Coordinates = {x: 0, y: 0};
 
+    // Required for keydown scrolling
+    private _lastMousePosition = {x: 0, y: 0};
+
     constructor(opt: PartialSelectionOptions) {
         super();
 
@@ -330,7 +333,11 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
             if (this._scrollAvailable) {
 
                 // Detect mouse scrolling
-                on(this._targetElement, 'wheel', this._manualScroll, {passive: false});
+                on(this._targetElement, 'wheel', this._wheelScroll, {passive: false});
+
+                // Detect keyboard scrolling
+                on(this._options.document, 'keydown', this._keyboardScroll, {passive: false});
+
 
                 /**
                  * The selection-area will also cover another element
@@ -402,6 +409,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {x, y} = simplifyEvent(evt);
         _areaLocation.x2 = x;
         _areaLocation.y2 = y;
+
+        this._lastMousePosition.x = x;
+        this._lastMousePosition.y = y;
 
         if (this._scrollAvailable && !this._scrollingActive && (_scrollSpeed.y || _scrollSpeed.x)) {
 
@@ -484,7 +494,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         off(this._targetElement, 'scroll', this._onStartAreaScroll);
     }
 
-    _manualScroll(evt: ScrollEvent): void {
+    _wheelScroll(evt: ScrollEvent): void {
         const {manualSpeed} = this._options.behaviour.scrolling;
 
         // Consistent scrolling speed on all browsers
@@ -496,6 +506,24 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
         // Prevent default scrolling behavior, e.g. page scrolling
         evt.preventDefault();
+    }
+
+    _keyboardScroll(evt: KeyboardEvent): void {
+        const {manualSpeed} = this._options.behaviour.scrolling;
+
+        const deltaX = evt.key === 'ArrowLeft' ? -1 : evt.key === 'ArrowRight' ? 1 : 0;
+        const deltaY = evt.key === 'ArrowUp' ? -1 : evt.key === 'ArrowDown' ? 1 : 0;
+
+        this._scrollSpeed.x += Math.sign(deltaX) * manualSpeed;
+        this._scrollSpeed.y += Math.sign(deltaY) * manualSpeed;
+
+        evt.preventDefault();
+
+        this._onTapMove({
+            clientX: this._lastMousePosition.x,
+            clientY: this._lastMousePosition.y,
+            preventDefault: () => void 0,
+        } as ScrollEvent);
     }
 
     _recalculateSelectionAreaRect(): void {
@@ -572,7 +600,10 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._scrollSpeed.y = 0;
 
         // Unbind mouse scrolling listener
-        off(this._targetElement, 'wheel', this._manualScroll, {passive: true});
+        off(this._targetElement, 'wheel', this._wheelScroll, {passive: true});
+
+        // Unbind keyboard scrolling listener
+        off(this._options.document, 'keydown', this._keyboardScroll, {passive: true,});
 
         // Remove selection-area from dom
         this._clippingElement.remove();
