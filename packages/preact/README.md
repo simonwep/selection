@@ -84,7 +84,7 @@ If you don't care about text-selection, add the following to the container where
 > They're a one-to-one mapping of the original options found in the [vanilla](../vanilla#configuration) version!
 
 ```tsx
-import SelectionArea, {SelectionEvent} from '@viselect/preact';
+import {SelectionArea, SelectionEvent} from '@viselect/preact';
 import {FunctionalComponent} from 'preact';
 import {useState} from 'preact/hooks';
 

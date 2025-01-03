@@ -87,7 +87,7 @@ If you don't care about text-selection, add the following to the container where
 > They're a one-to-one mapping of the original options found in the [vanilla](../vanilla#configuration) version!
 
 ```tsx
-import SelectionArea, {SelectionEvent} from '@viselect/react';
+import {SelectionArea, SelectionEvent} from '@viselect/react';
 import React, {FunctionComponent, useState} from 'react';
 
 const App: FunctionComponent = () => {

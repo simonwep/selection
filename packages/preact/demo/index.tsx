@@ -1,6 +1,6 @@
 import {render} from 'preact';
 import {useState} from 'preact/hooks';
-import SelectionArea, {SelectionEvent} from '../src';
+import {SelectionArea, SelectionEvent} from '../src';
 import './index.css';
 
 const SelectableArea = ({boxes, offset, className}: {

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import SelectionArea, {SelectionEvent} from '../src';
+import {SelectionArea, SelectionEvent} from '../src';
 import './index.css';
 
 const SelectableArea = ({boxes, offset, className}: {
