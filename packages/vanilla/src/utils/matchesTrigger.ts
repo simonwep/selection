@@ -1,4 +1,21 @@
-import {Trigger} from '../types';
+
+// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button#value
+export type MouseButton = 0  // Main
+    | 1  // Auxiliary
+    | 2  // Secondary
+    | 3  // Fourth
+    | 4; // Fifth
+
+export type Modifier = 'ctrl'
+    | 'alt'
+    | 'shift';
+
+export type Trigger = MouseButton | MouseButtonWithModifiers;
+
+export type MouseButtonWithModifiers =  {
+    button: MouseButton,
+    modifiers: Modifier[]
+};
 
 /**
  * Determines whether a MouseEvent should execute until completion depending on
@@ -8,8 +25,9 @@ import {Trigger} from '../types';
  * @param triggers A list of Triggers that signify that the event should execute until completion
  * @returns Whether the MouseEvent should execute until completion
  */
-export const shouldTrigger = (event: MouseEvent, triggers: Trigger[]): boolean => {
-    for (const trigger of triggers) {
+export const matchesTrigger = (event: MouseEvent, triggers: Trigger[]): boolean =>
+    triggers.some((trigger) => {
+
         // The trigger requires only a specific button to be pressed
         if (typeof trigger === 'number') {
             return event.button === trigger;
@@ -17,9 +35,11 @@ export const shouldTrigger = (event: MouseEvent, triggers: Trigger[]): boolean =
 
         // The trigger requires a specific button to be pressed AND some modifiers
         if (typeof trigger === 'object') {
-            const reqButtonIsPressed = trigger.button === event.button;
+            if (trigger.button !== event.button) {
+                return false;
+            }
 
-            const allReqModifiersArePressed = trigger.modifiers.every((modifier) => {
+            return trigger.modifiers.every((modifier) => {
                 switch (modifier) {
                     case 'alt':
                         return event.altKey;
@@ -29,11 +49,7 @@ export const shouldTrigger = (event: MouseEvent, triggers: Trigger[]): boolean =
                         return event.shiftKey;
                 }
             });
-
-            return reqButtonIsPressed && allReqModifiersArePressed;
         }
-    }
 
-    // By default, we do not process the event
-    return false;
-};
+        return false;
+    });

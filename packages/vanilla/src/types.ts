@@ -1,5 +1,6 @@
 import type SelectionArea from './index';
 import type {Intersection} from './utils/intersects';
+import type {Trigger} from './utils/matchesTrigger';
 
 export type DeepPartial<T> =
     T extends unknown[] ? T :
@@ -53,24 +54,6 @@ export interface Coordinates {
 
 export type TapMode = 'touch' | 'native';
 export type OverlapMode = 'keep' | 'drop' | 'invert';
-
-// https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button#value
-export type MouseButton = 0  // Main
-                        | 1  // Auxiliary
-                        | 2  // Secondary
-                        | 3  // Fourth
-                        | 4; // Fifth
-
-export type Modifier = 'ctrl'
-                     | 'alt'
-                     | 'shift';
-
-export type Trigger = MouseButton | MouseButtonWithModifiers;
-
-export type MouseButtonWithModifiers =  {
-    button: MouseButton,
-    modifiers: Modifier[]
-};
 
 export interface Scrolling {
     speedDivider: number;

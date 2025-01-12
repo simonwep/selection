@@ -8,7 +8,7 @@ import {intersects} from './utils/intersects';
 import {isSafariBrowser, isTouchDevice} from './utils/browser';
 import {on, off, simplifyEvent} from './utils/events';
 import {selectAll, SelectAllSelectors} from './utils/selectAll';
-import {shouldTrigger} from './utils/shouldTrigger';
+import {matchesTrigger} from './utils/matchesTrigger';
 
 // Re-export types
 export * from './types';
@@ -168,7 +168,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         const {document, startAreas, boundaries, features, behaviour} = this._options;
         const targetBoundingClientRect = target.getBoundingClientRect();
 
-        if (evt instanceof MouseEvent && !shouldTrigger(evt, behaviour.triggers)) {
+        if (evt instanceof MouseEvent && !matchesTrigger(evt, behaviour.triggers)) {
             return;
         }
 
