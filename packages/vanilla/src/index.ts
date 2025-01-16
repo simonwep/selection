@@ -795,7 +795,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     /**
      * Cancel the current selection process, pass true to fire a stop event after cancel
-     * @param keepEvent - If a stop event should be fired
+     * @param keepEvent If a stop event should be fired
      */
     cancel(keepEvent = false): void {
         this._onTapStop(null, !keepEvent);
@@ -823,8 +823,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     /**
      * Adds elements to the selection
-     * @param query - CSS Query, can be an array of queries
-     * @param quiet - If this should not trigger the move event
+     * @param query CSS Query, can be an array of queries
+     * @param quiet If this should not trigger the move event
      */
     select(query: SelectAllSelectors, quiet = false): Element[] {
         const {changed, selected, stored} = this._selection;
@@ -853,8 +853,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     /**
      * Removes a particular element from the selection
-     * @param query - CSS Query, can be an array of queries
-     * @param quiet - If this should not trigger the move event
+     * @param query CSS Query, can be an array of queries
+     * @param quiet If this should not trigger the move event
      */
     deselect(query: SelectAllSelectors, quiet = false) {
         const {selected, stored, changed} = this._selection;

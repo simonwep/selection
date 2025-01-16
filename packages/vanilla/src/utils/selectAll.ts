@@ -1,4 +1,6 @@
-export type SelectAllSelectors = readonly (string | Element)[] | string | Element;
+import {arrayify} from './arrayify';
+
+export type SelectAllSelectors = (string | Element)[] | string | Element;
 
 /**
  * Takes a selector (or array of selectors) and returns the matched nodes.
@@ -6,23 +8,14 @@ export type SelectAllSelectors = readonly (string | Element)[] | string | Elemen
  * @param doc
  * @returns {Array} Array of DOM-Nodes.
  */
-export const selectAll = (selector: SelectAllSelectors, doc: Document = document): Element[] => {
-    const list = !Array.isArray(selector) ? [selector] : selector;
-    let nodes: Element[] = [];
-
-    for (let i = 0, l = list.length; i < l; i++) {
-        const item = list[i];
-
-        if (typeof item === 'string') {
-            /**
-             * We can't use the spread operator here as with large amounts of elements
-             * we'll get a "Maximum call stack size exceeded"-error.
-             */
-            nodes = nodes.concat(Array.from(doc.querySelectorAll(item)));
-        } else if (item instanceof Element) {
-            nodes.push(item);
-        }
-    }
-
-    return nodes;
-};
+export const selectAll = (selector: SelectAllSelectors, doc: Document = document): Element[] =>
+    arrayify(selector)
+        .map(item =>
+            typeof item === 'string'
+                ? Array.from(doc.querySelectorAll(item))
+                : item instanceof Element
+                    ? item
+                    : null
+        )
+        .flat()
+        .filter(Boolean) as Element[];

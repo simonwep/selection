@@ -1,30 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {arrayify} from './arrayify';
+
 type Method = 'addEventListener' | 'removeEventListener';
 type AnyFunction = (...arg: any) => any;
-
-export type EventBindingArgs = [
-    (EventTarget | undefined) | (EventTarget | undefined)[],
-    string | string[],
-    AnyFunction,
-    Record<string, unknown>?
-];
 
 const eventListener = (method: Method) => (
     items: (EventTarget | undefined) | (EventTarget | undefined)[],
     events: string | string[],
-    fn: AnyFunction, options = {}
-): EventBindingArgs => {
+    fn: AnyFunction,
+    options = {}
+) => {
 
     // Normalize array
     if (items instanceof HTMLCollection || items instanceof NodeList) {
         items = Array.from(items);
-    } else if (!Array.isArray(items)) {
-        items = [items];
     }
 
-    if (!Array.isArray(events)) {
-        events = [events];
-    }
+    events = arrayify(events)
+    items = arrayify(items);
 
     for (const el of items) {
         if (el) {
@@ -33,8 +26,6 @@ const eventListener = (method: Method) => (
             }
         }
     }
-
-    return [items, events, fn, options];
 };
 
 /**
