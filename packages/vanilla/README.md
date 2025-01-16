@@ -225,6 +225,9 @@ Use the `on(event, cb)` and `off(event, cb)` functions to bind / unbind event-li
 | `deselect(query: SelectAllSelectors, quiet = false): Element[]` | Manually deselect elements, if `quiet` is set to `true` this will not fire the `move` & `stop` event.                                               |
 | `clearSelection(includeStored = true, quiet = false): void`     | Clears the selection, pass `false` to keep previously selected elements.  If `quiet` is set to `true` this will not fire the `move` & `stop` event. |
 | `trigger(evt: MouseEvent / TouchEvent, silent = true): void`    | Manually trigger a selection.                                                                                                                       |
+| `getSelectables(): Element[]`                                   | Returns all selectables.                                                                                                                            |
+| `getAreaLocation(): AreaLocation`                               | Returns the current location of the selection area.                                                                                                 |
+| `setAreaLocation(location: AreaLocation): void`                 | Update the location of the selection area.                                                                                                          |
 
 
 ### Example

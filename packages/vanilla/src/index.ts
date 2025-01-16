@@ -718,22 +718,22 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     /**
      * Manually triggers the start of a selection
      * @param evt A MouseEvent / TouchEvent-like object
-     * @param silent If beforestart should be fired,
+     * @param silent If beforestart should be fired
      */
     trigger(evt: MouseEvent | TouchEvent, silent = true): void {
         this._onTapStart(evt, silent);
     }
 
     /**
-     * Can be used if during a selection elements have been added.
-     * Will update everything that can be selected.
+     * Can be used if during a selection elements have been added
+     * Will update everything that can be selected
      */
     resolveSelectables(): void {
         this._selectables = selectAll(this._options.selectables, this._options.document);
     }
 
     /**
-     * Same as deselecting, but for all elements currently selected.
+     * Same as deselecting, but for all elements currently selected
      * @param includeStored If the store should also get cleared
      * @param quiet If move / stop events should be fired
      */
@@ -771,7 +771,31 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     /**
-     * Cancel the current selection process, pass true to fire a stop event after cancel.
+     * @returns {Element[]} Available selectable elements for current selection
+     */
+    getSelectables(): Element[] {
+        return this._selectables;
+    }
+
+    /**
+     * Set the location of the selection area
+     * @param location A partial AreaLocation object
+     */
+    setAreaLocation(location: Partial<AreaLocation>) {
+        Object.assign(this._areaLocation, location);
+        this._redrawSelectionArea();
+    }
+
+    /**
+     * @returns {AreaLocation} The current location of the selection area
+     */
+    getAreaLocation(): AreaLocation {
+        return this._areaLocation;
+    }
+
+    /**
+     * Cancel the current selection process, pass true to fire a stop event after cancel
+     * @param keepEvent - If a stop event should be fired
      */
     cancel(keepEvent = false): void {
         this._onTapStop(null, !keepEvent);
@@ -787,8 +811,15 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         super.unbindAllListeners();
     }
 
-    disable = this._toggleStartEvents.bind(this, false);
+    /**
+     * Enable selecting elements
+     */
     enable = this._toggleStartEvents;
+
+    /**
+     * Disable selecting elements
+     */
+    disable = this._toggleStartEvents.bind(this, false);
 
     /**
      * Adds elements to the selection
@@ -821,7 +852,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     /**
-     * Removes a particular element from the selection.
+     * Removes a particular element from the selection
      * @param query - CSS Query, can be an array of queries
      * @param quiet - If this should not trigger the move event
      */
