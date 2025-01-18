@@ -3,7 +3,7 @@ import {version} from './package.json';
 import banner from 'vite-plugin-banner';
 import dts from 'vite-plugin-dts';
 
-const header = `/*! @viselect/vanilla v${version} MIT | https://github.com/Simonwep/selection/tree/master/packages/vanilla */`;
+const header = `/*! @viselect/vanilla v${version} MIT | https://github.com/simonwep/viselect/tree/master/packages/vanilla */`;
 
 export default defineConfig(env => ({
     root: env.mode === 'production' ? '.' : './demo',

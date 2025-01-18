@@ -5,7 +5,7 @@ import dts from 'vite-plugin-dts';
 import banner from 'vite-plugin-banner';
 import {version} from './package.json';
 
-const header = `/*! @viselect/vue v${version} MIT | https://github.com/Simonwep/selection/tree/master/packages/vue */`;
+const header = `/*! @viselect/vue v${version} MIT | https://github.com/simonwep/viselect/tree/master/packages/vue */`;
 
 export default defineConfig(env => ({
     root: env.mode === 'production' ? '.' : './demo',

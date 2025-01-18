@@ -4,7 +4,7 @@ import banner from 'vite-plugin-banner';
 import dts from 'vite-plugin-dts';
 import {version} from './package.json';
 
-const header = `/*! @viselect/preact v${version} MIT | https://github.com/Simonwep/selection/tree/master/packages/preact */`;
+const header = `/*! @viselect/preact v${version} MIT | https://github.com/simonwep/viselect/tree/master/packages/preact */`;
 
 export default defineConfig(env => ({
     root: env.mode === 'production' ? '.' : './demo',

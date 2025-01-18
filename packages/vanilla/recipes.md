@@ -1,6 +1,6 @@
 ### Requested features - immediately brought to life by a bit of code
 
-#### Allowing the user to scroll with two fingers ([#70](https://github.com/Simonwep/selection/issues/70))
+#### Allowing the user to scroll with two fingers ([#70](https://github.com/simonwep/viselect/issues/70))
 
 ```js
 selection.on('beforestart', (() => {
@@ -31,7 +31,7 @@ selection.on('beforestart', (() => {
 })());
 ```
 
-#### Preventing the start of a selection based on certain conditions ([#73](https://github.com/Simonwep/selection/issues/73))
+#### Preventing the start of a selection based on certain conditions ([#73](https://github.com/simonwep/viselect/issues/73))
 
 ```js
 selection.on('beforestart', ({event}) => {
@@ -48,7 +48,7 @@ selection.on('beforestart', ({event}) => {
 });
 ```
 
-#### Preventing select from right click, middle mouse or left click ([#101](https://github.com/Simonwep/selection/issues/101))
+#### Preventing select from right click, middle mouse or left click ([#101](https://github.com/simonwep/viselect/issues/101))
 ```js
 selection.on('beforestart', (event) => {
     const allowedButtons = [
@@ -62,8 +62,8 @@ selection.on('beforestart', (event) => {
 });
 ```
 
-> Feel free to submit a [PR](https://github.com/Simonwep/selection/compare) or create
-> an [issue](https://github.com/Simonwep/selection/issues/new?assignees=Simonwep&labels=&template=feature_request.md&title=) if
+> Feel free to submit a [PR](https://github.com/simonwep/viselect/compare) or create
+> an [issue](https://github.com/simonwep/viselect/issues/new?assignees=Simonwep&labels=&template=feature_request.md&title=) if
 > you got any ideas for more examples!
 
 #### Preventing text-selection

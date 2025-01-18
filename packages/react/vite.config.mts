@@ -4,7 +4,7 @@ import banner from 'vite-plugin-banner';
 import dts from 'vite-plugin-dts';
 import {version} from './package.json';
 
-const header = `/*! @viselect/react v${version} MIT | https://github.com/Simonwep/selection/tree/master/packages/react */`;
+const header = `/*! @viselect/react v${version} MIT | https://github.com/simonwep/viselect/tree/master/packages/react */`;
 
 export default defineConfig(env => ({
     root: env.mode === 'production' ? '.' : './demo',

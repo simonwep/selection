@@ -7,4 +7,4 @@ assignees: ''
 
 ---
 
-**Use [discussions](https://github.com/Simonwep/selection/discussions).**
+**Use [discussions](https://github.com/simonwep/viselect/discussions).**
