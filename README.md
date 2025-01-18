@@ -51,6 +51,10 @@
 
 ### Getting started
 
+> [!NOTE]
+> I'm currently in the middle of moving the migration from readmes to a new docs websites.
+> Stay tuned for a better, more detailed documentation in the coming weeks!
+
 Check out the documentation for the package you want to use:
 
 * [@viselect/vanilla](packages/vanilla) - To be used with plain [JavaScript](http://vanilla-js.com/) or [TypeScript](https://www.typescriptlang.org/).

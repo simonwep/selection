@@ -3,7 +3,7 @@
     "author": "Simon Reinisch <contact@reinisch.io>",
     "private": true,
     "license": "MIT",
-    "packageManager": "pnpm@9.11.0",
+    "packageManager": "pnpm@9.15.0",
     "engines": {
         "node": "^22"
     },
