@@ -13,21 +13,20 @@ export interface SelectionAreaProps extends PartialSelectionOptions, JSX.HTMLAtt
     onStop?: SelectionEvents['stop'];
 }
 
-const SelectionContext = createContext<VanillaSelectionArea  | undefined>(undefined);
+const SelectionContext = createContext<VanillaSelectionArea | undefined>(undefined);
 
 export const useSelection = () => useContext(SelectionContext);
 
 export const SelectionArea: FunctionalComponent<SelectionAreaProps> = props => {
-    const [selectionState, setSelection] = useState<VanillaSelectionArea | undefined>(undefined);
+    const [instance, setInstance] = useState<VanillaSelectionArea | undefined>(undefined);
     const root = createRef<HTMLDivElement>();
 
     useEffect(() => {
         /* eslint-disable @typescript-eslint/no-unused-vars */
-        const {onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;
-        const areaBoundaries = root.current as HTMLElement;
+        const {boundaries = root.current, onBeforeStart, onBeforeDrag, onStart, onMove, onStop, ...opt} = props;
 
         const selection = new VanillaSelectionArea({
-            boundaries: areaBoundaries,
+            boundaries: boundaries as HTMLElement,
             ...opt
         });
 
@@ -37,16 +36,16 @@ export const SelectionArea: FunctionalComponent<SelectionAreaProps> = props => {
         selection.on('move', evt => props.onMove?.(evt));
         selection.on('stop', evt => props.onStop?.(evt));
 
-        setSelection(selection);
+        setInstance(selection);
 
         return () => {
             selection.destroy();
-            setSelection(undefined);
+            setInstance(undefined);
         };
     }, []);
 
     return (
-        <SelectionContext.Provider value={selectionState}>
+        <SelectionContext.Provider value={instance}>
             {props.boundaries ? (
                 props.children
             ) : (

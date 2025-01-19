@@ -1,4 +1,4 @@
-export type Intersection = 'center' | 'cover' | 'touch'
+export type Intersection = 'center' | 'cover' | 'touch';
 
 /**
  * Check if two DOM-Elements intersects each other.

@@ -10,12 +10,12 @@ export type Modifier = 'ctrl'
     | 'alt'
     | 'shift';
 
-export type Trigger = MouseButton | MouseButtonWithModifiers;
-
 export type MouseButtonWithModifiers =  {
     button: MouseButton,
     modifiers: Modifier[]
 };
+
+export type Trigger = MouseButton | MouseButtonWithModifiers;
 
 /**
  * Determines whether a MouseEvent should execute until completion depending on
