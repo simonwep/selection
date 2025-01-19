@@ -23,6 +23,7 @@ export default defineConfig({
                     {text: 'Quickstart', link: 'pages/quickstart'},
                     {text: 'API Reference', link: 'pages/api-reference'},
                     {text: 'Custom Integration', link: 'pages/custom-integration'},
+                    {text: 'FAQ', link: 'pages/faq'},
                 ]
             },
             {

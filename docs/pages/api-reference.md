@@ -7,7 +7,7 @@ outline: deep
 The `SelectionArea` is the main class of the library, it is responsible for handling the selection process.
 It is passed to each event and can be used to interact with the selection process.
 
-### Static Properties
+## Static Properties
 
 The only static property is the version of the library.
 
@@ -15,9 +15,88 @@ The only static property is the version of the library.
 version: string;
 ```
 
-### Methods
+## Events
 
-#### `constructor`
+All events receive a [selection event](#selectionevent) object.
+Events are bind/unbind using the [on](#on--addeventlistener) and [off](#off--removeeventlistener) methods:
+
+```ts
+selection.on('beforestart', evt => {
+
+  // Use this event to decide whether a selection should take place or not.
+  // For example if the user should be able to normally interact with input-elements you 
+  // may want to prevent a selection if the user clicks such a element:
+  // selection.on('beforestart', ({event}) => {
+  //   return event.target.tagName !== 'INPUT'; // Returning false prevents a selection
+  // });
+
+  console.log('beforestart', evt);
+}).on('beforedrag', evt => {
+
+  // Same as 'beforestart' but before a selection via dragging happens.
+  console.log('beforedrag', evt);
+}).on('start', evt => {
+
+  // A selection got initiated, you could now clear the previous selection or
+  // keep it if in case of multi-selection.
+  console.log('start', evt);
+}).on('move', evt => {
+
+  // Here you can update elements based on their state.
+  console.log('move', evt);
+}).on('stop', evt => {
+
+  // Do something with the selected elements.
+  console.log('stop', evt);
+});
+```
+
+### `beforestart`
+
+The user tapped one of the areas within the specified boundaries.
+Return `false` to cancel selection immediately.
+
+```typescript
+beforestart: (e: SelectionEvent) => boolean | void;
+```
+
+### `beforedrag`
+
+Same as `beforestart` but _before_ the user starts selecting by dragging the mouse.
+Can be used to conditionally allow a selection by dragging. Return `false` to cancel the selection.
+
+```typescript
+beforedrag: (e: SelectionEvent) => boolean | void;
+```
+
+### `start`
+
+Selection started, here you can decide if you want to keep your previously selected elements.
+
+```typescript
+start: (e: SelectionEvent) => void;
+```
+
+### `move`
+
+Selection is active, user is moving the pointer around.
+This is where you apply styles to selected elements and process them further.
+
+```typescript
+move: (e: SelectionEvent) => void;
+```
+
+### `stop`
+
+Selection has stopped.
+
+```typescript
+stop: (e: SelectionEvent) => void;
+```
+
+## Methods
+
+### `constructor`
 
 Instantiates a new `SelectionArea`.
 
@@ -27,7 +106,31 @@ constructor(opt: PartialSelectionOptions): SelectionArea;
 
 - `opt: PartialSelectionOptions` - The options for the selection area.
 
-#### `trigger`
+### `on` / `addEventListener`
+
+Binds an event listener, listener functions are documented under [Events](#events).
+
+```typescript
+on(event: string, listener: (e: SelectionEvent) => void): void;
+addEventListener(event: string, listener: (e: SelectionEvent) => void): void;
+```
+
+- `event: string` - The event to listen to.
+- `listener: (e: SelectionEvent) => void` - The listener function.
+
+### `off` / `removeEventListener`
+
+Unbinds an event listener, listener functions are documented under [Events](#events).
+
+```typescript
+off(event: string, listener: (e: SelectionEvent) => void): void;
+removeEventListener(event: string, listener: (e: SelectionEvent) => void): void;
+```
+
+- `event: string` - The event to unbind.
+- `listener: (e: SelectionEvent) => void` - The listener function.
+
+### `trigger`
 
 Manually triggers the start of a selection, can be used to start a selection without a user interaction.
 
@@ -38,7 +141,7 @@ trigger(evt: MouseEvent | TouchEvent, silent = true): void;
 - `evt: MouseEvent | TouchEvent` - A MouseEvent or TouchEvent-like object.
 - `silent: boolean` - If `beforestart` should be fired.
 
-#### `resolveSelectables`
+### `resolveSelectables`
 
 Updates the list of selectables, useful if new elements have been added during a selection.
 
@@ -46,7 +149,7 @@ Updates the list of selectables, useful if new elements have been added during a
 resolveSelectables(): void;
 ```
 
-#### `clearSelection`
+### `clearSelection`
 
 Clears the selection.
 
@@ -57,7 +160,7 @@ clearSelection(includeStored = true, quiet = false): void;
 - `includeStored: boolean` - If the store should also get cleared.
 - `quiet: boolean` - If move/stop events should be fired.
 
-#### `getSelection`
+### `getSelection`
 
 Returns currently selected elements.
 
@@ -65,7 +168,7 @@ Returns currently selected elements.
 getSelection(): Element[];
 ```
 
-#### `getSelectionArea`
+### `getSelectionArea`
 
 Returns the selection area element.
 
@@ -73,7 +176,7 @@ Returns the selection area element.
 getSelectionArea(): HTMLElement;
 ```
 
-#### `getSelectables`
+### `getSelectables`
 
 Returns all selectables.
 
@@ -81,7 +184,7 @@ Returns all selectables.
 getSelectables(): Element[];
 ```
 
-#### `setAreaLocation`
+### `setAreaLocation`
 
 Sets the location of the selection area.
 
@@ -91,7 +194,7 @@ setAreaLocation(location: Partial<AreaLocation>): void;
 
 - `location: Partial<AreaLocation>` - A partial AreaLocation object.
 
-#### `getAreaLocation`
+### `getAreaLocation`
 
 Returns the current location of the selection area.
 
@@ -99,7 +202,7 @@ Returns the current location of the selection area.
 getAreaLocation(): AreaLocation;
 ```
 
-#### `cancel`
+### `cancel`
 
 Cancels the current selection process.
 
@@ -109,7 +212,7 @@ cancel(keepEvent = false): void;
 
 - `keepEvent: boolean` - If a stop event should be fired.
 
-#### `destroy`
+### `destroy`
 
 Unbinds all events and removes the area-element.
 
@@ -117,7 +220,7 @@ Unbinds all events and removes the area-element.
 destroy(): void;
 ```
 
-#### `enable`
+### `enable`
 
 Enables selecting elements, this is the default state.
 
@@ -125,7 +228,7 @@ Enables selecting elements, this is the default state.
 enable(): void;
 ```
 
-#### `disable`
+### `disable`
 
 Disables selecting elements.
 
@@ -133,7 +236,7 @@ Disables selecting elements.
 disable(): void;
 ```
 
-#### `select`
+### `select`
 
 Manually selects elements and adds them to the store.
 
@@ -144,7 +247,7 @@ select(query: SelectAllSelectors, quiet = false): Element[];
 - `query: SelectAllSelectors` - CSS Query, can be an array of queries.
 - `quiet: boolean` - If this should not trigger the move event.
 
-#### `deselect`
+### `deselect`
 
 Manually deselects elements and removes them from the store.
 
@@ -159,6 +262,9 @@ deselect(query: SelectAllSelectors, quiet = false): Element[];
 
 ### `DeepPartial<T>`
 
+> [!WARNING]
+> Internal type, subject to change at any time.
+
 A type that makes all properties in `T` optional and allows for nested optional properties.
 
 ```typescript
@@ -166,6 +272,9 @@ type DeepPartial<T> = T extends unknown[] ? T : T extends HTMLElement ? T : { [P
 ```
 
 ### `Quantify<T>`
+
+> [!WARNING]
+> Internal type, subject to change at any time.
 
 A type that allows `T` to be an array or a single value.
 
@@ -179,8 +288,8 @@ An interface that extends `MouseEvent` with additional properties.
 
 ```typescript
 interface ScrollEvent extends MouseEvent {
-    deltaY: number;
-    deltaX: number;
+  deltaY: number;
+  deltaX: number;
 }
 ```
 
@@ -190,8 +299,8 @@ An interface representing elements that have been added or removed.
 
 ```typescript
 interface ChangedElements {
-    added: Element[];
-    removed: Element[];
+  added: Element[];
+  removed: Element[];
 }
 ```
 
@@ -201,10 +310,10 @@ An interface representing the selection store.
 
 ```typescript
 interface SelectionStore {
-    touched: Element[];
-    stored: Element[];
-    selected: Element[];
-    changed: ChangedElements;
+  touched: Element[];
+  stored: Element[];
+  selected: Element[];
+  changed: ChangedElements;
 }
 ```
 
@@ -214,9 +323,9 @@ An interface representing a selection event.
 
 ```typescript
 interface SelectionEvent {
-    event: MouseEvent | TouchEvent | null;
-    store: SelectionStore;
-    selection: SelectionArea;
+  event: MouseEvent | TouchEvent | null;
+  store: SelectionStore;
+  selection: SelectionArea;
 }
 ```
 
@@ -224,36 +333,16 @@ interface SelectionEvent {
 - `store` - The current state of the selection store.
 - `selection` - The selection area instance.
 
-### `SelectionEvents`
-
-An interface representing the selection events.
-
-```typescript
-interface SelectionEvents {
-    beforestart: (e: SelectionEvent) => boolean | void;
-    beforedrag: (e: SelectionEvent) => boolean | void;
-    start: (e: SelectionEvent) => void;
-    move: (e: SelectionEvent) => void;
-    stop: (e: SelectionEvent) => void;
-}
-```
-
-- `beforestart` - Fired before the selection starts, if `false` is returned the selection will be canceled.
-- `beforedrag` - Fired before the selection area is moved, if `false` is returned the move will be canceled.
-- `start` - Fired when the selection starts.
-- `move` - Fired when the selection area is moved.
-- `stop` - Fired when the selection stops.
-
 ### `AreaLocation`
 
 An interface representing the location of the selection area.
 
 ```typescript
 interface AreaLocation {
-    x1: number;
-    y1: number;
-    x2: number;
-    y2: number;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
 }
 ```
 
@@ -263,8 +352,8 @@ An interface representing coordinates.
 
 ```typescript
 interface Coordinates {
-    x: number;
-    y: number;
+  x: number;
+  y: number;
 }
 ```
 
@@ -278,6 +367,30 @@ type TapMode = 'touch' | 'native';
 
 - `touch` - The element was at the time of click touched "visually" (default).
 - `native` - The element was the actual element of the click event.
+
+### `Intersection`
+
+A type representing the intersection mode.
+
+```typescript
+type Intersection = 'center' | 'cover' | 'touch';
+```
+
+- `center` - The element is selected if the center of the given element is touched.
+- `cover` - The element is selected if the whole element is covered by the selection area.
+- `touch` - The element is selected if the selection area touches the element.
+
+### `Trigger`
+
+A type representing the trigger for the selection.
+Specifies which mouse button or combination of buttons and modifiers should trigger the selection.
+
+```ts
+type MouseButton = 0 | 1  | 2 | 3 | 4;
+type Modifier = 'ctrl' | 'alt' | 'shift';
+type MouseButtonWithModifiers = { button: MouseButton; modifiers: Modifier[]; };
+type Trigger = MouseButton | MouseButtonWithModifiers;
+```
 
 ### `OverlapMode`
 
@@ -298,41 +411,41 @@ It consists of the following interfaces:
 
 ```typescript
 interface SingleTap {
-    allow: boolean;
-    intersect: TapMode;
+  allow: boolean;
+  intersect: TapMode;
 }
 
 interface Features {
-    deselectOnBlur: boolean;
-    singleTap: SingleTap;
-    range: boolean;
-    touch: boolean;
+  deselectOnBlur: boolean;
+  singleTap: SingleTap;
+  range: boolean;
+  touch: boolean;
 }
 
 interface Scrolling {
-    speedDivider: number;
-    manualSpeed: number;
-    startScrollMargins: {x: number, y: number};
+  speedDivider: number;
+  manualSpeed: number;
+  startScrollMargins: {x: number, y: number};
 }
 
 interface Behaviour {
-    intersect: Intersection;
-    startThreshold: number | Coordinates;
-    overlap: OverlapMode;
-    scrolling: Scrolling;
-    triggers: Trigger[];
+  intersect: Intersection;
+  startThreshold: number | Coordinates;
+  overlap: OverlapMode;
+  scrolling: Scrolling;
+  triggers: Trigger[];
 }
 
 interface SelectionOptions {
-    selectionAreaClass: string;
-    selectionContainerClass: string | undefined;
-    container: Quantify<string | HTMLElement>;
-    document: Document;
-    selectables: Quantify<string>;
-    startAreas: Quantify<string | HTMLElement>;
-    boundaries: Quantify<string | HTMLElement>;
-    behaviour: Behaviour;
-    features: Features;
+  selectionAreaClass: string;
+  selectionContainerClass: string | undefined;
+  container: Quantify<string | HTMLElement>;
+  document: Document;
+  selectables: Quantify<string>;
+  startAreas: Quantify<string | HTMLElement>;
+  boundaries: Quantify<string | HTMLElement>;
+  behaviour: Behaviour;
+  features: Features;
 }
 ```
 
@@ -342,6 +455,6 @@ Type of what can be passed to the `SelectionArea` constructor.
 
 ```typescript
 type PartialSelectionOptions = DeepPartial<Omit<SelectionOptions, 'document'>> & {
-    document?: Document;
+  document?: Document;
 };
 ```

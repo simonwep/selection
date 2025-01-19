@@ -22,13 +22,13 @@ features:
       details: A cutting-edge bundle for modern web development, ensuring compatibility with the latest standards and practices.
     - icon: 🔩
       title: Ultra Tiny
-      details: Extremely lightweight, around 4kb in size, making it perfect for performance-critical applications.
+      details: Extremely lightweight, around 4kb in size, making it perfect for performance and size-critical applications.
     - icon: 👌
       title: Simple Usage
-      details: Easy to use with minimal setup required, allowing developers to integrate it quickly into their projects.
+      details: Easy to use with minimal setup required, allowing developers to integrate it quickly into any kind of project.
     - icon: ⚡
       title: Highly Optimized
-      details: Performance-focused and highly efficient, designed to handle large datasets and complex operations smoothly.
+      details: Performance-focused and highly efficient, designed to handle large amounts of DOM elements with ease.
     - icon: 🚀
       title: Zero Dependencies
       details: No external dependencies required, reducing the risk of conflicts and simplifying the build process.
@@ -39,10 +39,10 @@ features:
       title: Scroll Support
       details: Supports both vertical and horizontal scrolling, ensuring smooth navigation and interaction.
     - icon: 💪
-      title: Proven Stability
-      details: Over 3 years of development and widely used in many applications, demonstrating its reliability and robustness.
+      title: Battle Tested
+      details: Over 6 years of development and widely used in many applications, demonstrating its reliability and robustness.
     - icon: 🖼
       title: Framework Support
-      details: Compatible with major frameworks (work in progress), making it versatile and easy to integrate with various technologies.
+      details: Compatible with major frameworks and easy to "hack" for custom integrations, providing flexibility and versatility.
 ---
 
