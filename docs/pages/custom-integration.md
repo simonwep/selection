@@ -23,7 +23,7 @@ Example based on vue and react:
 </template>
 
 <script lang="ts" setup>
-import {shallowRef, useTemplateRef, watch} from 'vue';
+import { shallowRef, useTemplateRef, watchEffect } from 'vue';
 import SelectionArea, { SelectionEvent } from '@viselect/vanilla';
 
 // Refs to the container and the instance
@@ -37,12 +37,12 @@ const start = (evt: SelectionEvent) => console.log('start', evt);
 const move = (evt: SelectionEvent) => console.log('move', evt);
 const stop = (evt: SelectionEvent) => console.log('stop', evt);
 
-// Watch container and mount the instance
-watch(container, (element) => {
-  if (element) {
+// Watch container as well as prop and mount instance
+watchEffect(() => {
+  if (container.value) {
     instance.value?.destroy();
     instance.value = new SelectionArea({
-      boundaries: element,
+      boundaries: container.value,
       // ...your options
     });
 

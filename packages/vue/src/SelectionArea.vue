@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import SelectionArea, {SelectionEvent, PartialSelectionOptions} from '@viselect/vanilla';
-import {onBeforeUnmount, shallowRef, useTemplateRef, watch} from 'vue';
+import {onBeforeUnmount, shallowRef, useTemplateRef, watchEffect} from 'vue';
 
 const emit = defineEmits<{
   (e: 'before-start', v: SelectionEvent): void;
@@ -24,11 +24,11 @@ const props = defineProps<{
 const container = useTemplateRef('container');
 const instance = shallowRef<SelectionArea | undefined>();
 
-watch(container, (element) => {
-  if (element) {
+watchEffect(() => {
+  if (container.value) {
     instance.value?.destroy();
     instance.value = new SelectionArea({
-      boundaries: element,
+      boundaries: container.value,
       ...props.options
     });
 
