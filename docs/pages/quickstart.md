@@ -49,44 +49,44 @@ const selection = new SelectionArea({
 
 ```css [styles.css]
 .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    border-radius: 15px;
-    padding: 15px;
-    margin: 15px 0;
-    user-select: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  border-radius: 15px;
+  padding: 10px;
+  margin: 15px 0;
+  user-select: none;
 }
 
 .container div {
-    height: 50px;
-    width: 50px;
-    margin: 3px;
-    background: rgba(66, 68, 90, 0.075);
-    border-radius: 10px;
-    cursor: pointer;
+  height: 50px;
+  width: 50px;
+  margin: 4px;
+  background: rgba(66, 68, 90, 0.075);
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .container.blue {
-    border: 2px dashed #a8b1ff;
+  border: 2px dashed #a8b1ff;
 }
 
 .container.purple {
-    border: 2px dashed #c8abfa;
+  border: 2px dashed #c8abfa;
 }
 
 .container.blue div.selected {
-    background: #5c73e7;
+  background: #5c73e7;
 }
 
 .container.purple div.selected {
-    background: #a879e6;
+  background: #a879e6;
 }
 
 .selectionArea {
-    background: rgba(102, 110, 255, 0.16);
-    border: 1px solid rgb(62, 99, 221);
-    border-radius: 0.15em;
+  background: rgba(102, 110, 255, 0.16);
+  border: 1px solid rgb(62, 99, 221);
+  border-radius: 0.15em;
 }
 ```
 
@@ -99,21 +99,31 @@ const selection = new SelectionArea({
 
 Which will give you something like this:
 
-<div :class="[$style.container, $style.purple]"/>
+<div ref="container" :class="[$style.container, $style.purple]"/>
 <div :class="[$style.container, $style.blue]"/>
 
 <script setup>
-import { useCssModule, onMounted } from 'vue';
+import {useCssModule, onMounted, useTemplateRef} from 'vue';
 import SelectionArea from '@viselect/vanilla';
 
 const styles = useCssModule();
+const container = useTemplateRef('container');
+const { matches: mobile } = window.matchMedia('(max-width: 430px)');
 
 onMounted(() => {
-  [[styles.purple, 33], [styles.blue, 33]].forEach(([selector, items]) => {
+  const { width } = container.value.getBoundingClientRect();
+  const boxes = 33;
+  const rows = 3;
+  const totalBoxMargin = 4 * 2 * (boxes / rows);
+  const boxWidth = (width - 20 - 4 - totalBoxMargin) / ((boxes / rows));
+  
+  [[styles.purple, boxes], [styles.blue, boxes]].forEach(([selector, items]) => {
     const container = document.querySelector(`.${selector}`);
   
     for (let i = 0; i < items; i++) {
-    container.appendChild(document.createElement('div'));
+      const div = document.createElement('div');
+      div.style.width = div.style.height = `${Math.floor(boxWidth)}px`;
+      container.appendChild(div);
     }
   });
 
@@ -123,8 +133,8 @@ onMounted(() => {
     selectionAreaClass: styles.selectionArea
   }).on('start', ({ store, event }) => {
     if (!event.ctrlKey && !event.metaKey) {
-    store.stored.forEach(el => el.classList.remove(styles.selected));
-    selection.clearSelection();
+      store.stored.forEach(el => el.classList.remove(styles.selected));
+      selection.clearSelection();
     }
   }).on('move', ({ store: { changed: { added, removed } } }) => {
     added.forEach(el => el.classList.add(styles.selected));
@@ -137,19 +147,17 @@ onMounted(() => {
 .container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: center;
   border-radius: 15px;
-  padding: 15px;
+  padding: 10px;
   margin: 15px 0;
   user-select: none;
 }
 
 .container div {
-  height: 50px;
-  width: 50px;
-  margin: 3px;
+  margin: 4px;
   background: rgba(66, 68, 90, 0.075);
-  border-radius: 10px;
+  border-radius: 0.75vw;
   cursor: pointer;
 }
 
